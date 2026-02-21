@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="description" content="PIANKY OS — Personal Life Operating System">
+  <title>PIANKY OS</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/views.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-quote">
+      <p id="loading-quote-text" class="loading-quote-text"></p>
+      <p id="loading-quote-author" class="loading-quote-author"></p>
+    </div>
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Modal Overlay -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div id="modal" class="modal">
+      <div id="modal-header" class="modal-header">
+        <h3 id="modal-title"></h3>
+        <button id="modal-close" class="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-footer" class="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- App Layout -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation (Desktop) -->
+    <nav id="nav-sidebar" class="nav-sidebar hidden">
+      <div class="nav-logo">
+        <h2>PIANKY</h2>
+        <span>Life Operating System</span>
+      </div>
+      <div id="nav-items" class="nav-items"></div>
+      <div class="nav-footer">
+        <div id="nav-xp" class="nav-xp-summary"></div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="app-content">
+      <div id="app"></div>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav id="nav-bottom" class="nav-bottom hidden">
+      <div id="nav-bottom-items" class="nav-bottom-items"></div>
+    </nav>
+  </div>
+
+  <!-- App Entry Point -->
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+/* ============================================================
+   LIFE OS — Animations & Transitions
+   ============================================================ */
+
+/* --- Keyframes --- */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes checkBounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.85); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes xpFloat {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(1.2);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(212, 175, 55, 0.1);
+  }
+}
+
+@keyframes urgentPulse {
+  0%, 100% {
+    border-color: var(--deadline-urgent);
+    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
+  }
+  50% {
+    border-color: var(--deadline-urgent);
+    box-shadow: 0 0 0 8px rgba(231, 76, 60, 0);
+  }
+}
+
+@keyframes progressShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* --- Animation Classes --- */
+.anim-fade-in {
+  animation: fadeIn var(--transition-base) ease forwards;
+}
+
+.anim-fade-out {
+  animation: fadeOut var(--transition-base) ease forwards;
+}
+
+.anim-slide-up {
+  animation: slideUp var(--transition-base) ease forwards;
+}
+
+.anim-slide-down {
+  animation: slideDown var(--transition-base) ease forwards;
+}
+
+.anim-slide-in-right {
+  animation: slideInRight var(--transition-base) ease forwards;
+}
+
+.anim-scale-in {
+  animation: scaleIn var(--transition-base) ease forwards;
+}
+
+.anim-check-bounce {
+  animation: checkBounce 0.4s ease;
+}
+
+.anim-xp-float {
+  animation: xpFloat 1.5s ease forwards;
+}
+
+.anim-glow-pulse {
+  animation: glowPulse 2s ease infinite;
+}
+
+.anim-urgent-pulse {
+  animation: urgentPulse 2s ease infinite;
+}
+
+/* Staggered list items */
+.stagger-item {
+  opacity: 0;
+  animation: slideUp var(--transition-base) ease forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
+.stagger-item:nth-child(4) { animation-delay: 150ms; }
+.stagger-item:nth-child(5) { animation-delay: 200ms; }
+.stagger-item:nth-child(6) { animation-delay: 250ms; }
+.stagger-item:nth-child(7) { animation-delay: 300ms; }
+.stagger-item:nth-child(8) { animation-delay: 350ms; }
+.stagger-item:nth-child(9) { animation-delay: 400ms; }
+.stagger-item:nth-child(10) { animation-delay: 450ms; }
+
+/* Progress bar shimmer */
+.progress-bar-fill.shimmer {
+  background-size: 200% 100%;
+  background-image: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    #e5c349 25%,
+    var(--accent) 50%,
+    #e5c349 75%,
+    var(--accent) 100%
+  );
+  animation: progressShimmer 2s linear infinite;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
