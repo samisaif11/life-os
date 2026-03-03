@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════
- * ALI N' / FNM — Production Dashboard — Google Sheets Backend
+ * LIFE OS — Sami's Dashboard — Google Sheets Backend
  * ═══════════════════════════════════════════════════════════════
  *
  * This Apps Script provides a REST-like API for the Production Dashboard.
