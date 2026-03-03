@@ -32,7 +32,7 @@ const SHEETS = {
 
 // ═══════ COLUMN DEFINITIONS ═══════
 const TASK_COLS     = ['id','name','project','person','partner','priority','due','done','blocked','blockedBy','order','notes','createdAt','completedAt','doneDate','subtasks'];
-const DEADLINE_COLS = ['id','date','title','project','partner','type','allDay','keepCount'];
+const DEADLINE_COLS = ['id','date','title','project','partner','type','allDay','keepCount','notes'];
 const PROJECT_COLS  = ['title','year','status','type','director'];
 const CLOSED_COLS   = ['title','year','director'];
 const PEOPLE_COLS   = ['code','name','role'];
@@ -69,7 +69,8 @@ function doGet(e) {
       partner:   str(row.partner),
       type:      str(row.type) || 'hard',
       allDay:    toBool(row.allDay),
-      keepCount: toBool(row.keepCount)
+      keepCount: toBool(row.keepCount),
+      notes:     str(row.notes)
     }));
 
     // --- Projects ---
@@ -210,7 +211,7 @@ function doPost(e) {
     writeSheet(ss, SHEETS.DEADLINES, DEADLINE_COLS,
       (D.deadlines || []).map(d => [
         d.id, d.date, d.title, d.project, d.partner,
-        d.type, d.allDay ? 'TRUE' : 'FALSE', d.keepCount ? 'TRUE' : 'FALSE'
+        d.type, d.allDay ? 'TRUE' : 'FALSE', d.keepCount ? 'TRUE' : 'FALSE', d.notes || ''
       ]));
 
     // --- Projects ---
