@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALI N' / FNM — Production Dashboard</title>
+<title>SAMI'S Life OS</title>
 <link rel="icon" type="image/png" href="assets/images/logo.png">
 <link rel="apple-touch-icon" href="assets/images/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -923,6 +923,18 @@ window._tryHide = function(){
   ov.addEventListener('touchend',   resume, {passive:true});
   qSkip.addEventListener('click',     e=>{e.stopPropagation(); finish();});
   qSkip.addEventListener('mousedown', e=>e.stopPropagation());
+
+  // Spacebar toggles pause/resume
+  function onKey(e){
+    if(e.code==='Space'&&!e.target.matches('input,textarea,select,button')){
+      e.preventDefault();
+      paused ? resume() : pause();
+    }
+  }
+  document.addEventListener('keydown', onKey);
+  // Clean up listener once quote is done
+  const _finish = finish;
+  finish = function(){ document.removeEventListener('keydown', onKey); _finish(); };
 })();
 
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
