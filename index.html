@@ -775,16 +775,15 @@ const MAKE_WEBHOOK_URL = ''; // Paste your Make.com webhook URL here
 
 function sendToMake(deadline) {
   if (!MAKE_WEBHOOK_URL) return;
+  const code = (PC[deadline.project] && PC[deadline.project].code) ? PC[deadline.project].code : deadline.project;
+  const eventTitle = `${code} | ${deadline.title} | ${deadline.type.toUpperCase()}`;
   fetch(MAKE_WEBHOOK_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      title: deadline.title,
-      project: deadline.project,
+      eventTitle,
       date: deadline.date,
       allDay: deadline.allDay,
-      type: deadline.type,
-      partner: deadline.partner,
       notes: deadline.notes || ''
     })
   }).catch(err => console.error('Make.com webhook failed:', err));
