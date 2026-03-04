@@ -445,42 +445,28 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 /* Settings project row meta */
 .prow-meta{font-size:.58rem;color:var(--t3);display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:2px}
 /* Invoices */
-.inv-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:var(--r);padding:18px 20px;margin-bottom:6px;display:flex;align-items:center;gap:16px;transition:var(--tr);position:relative}
-.inv-card:hover{border-color:var(--b1);background:var(--bg-3)}
-.inv-card.draft{border-left:3px solid var(--orange)}
-.inv-card.sent{border-left:3px solid var(--green)}
-.inv-num{font-family:'JetBrains Mono';font-size:.9rem;font-weight:700;color:var(--gold);min-width:80px}
-.inv-info{flex:1;min-width:0}
-.inv-title{font-size:var(--tf);font-weight:400;text-transform:uppercase;letter-spacing:.3px;line-height:1.3;margin-bottom:4px;font-size:1rem}
-.inv-meta{display:flex;gap:5px;flex-wrap:wrap;align-items:center;opacity:.5}
-.inv-amt{font-family:'JetBrains Mono';font-size:.85rem;font-weight:700;color:var(--t1);text-align:right;min-width:100px}
-.inv-amt-sub{font-size:.6rem;color:var(--t3);font-weight:400}
-.inv-acts{display:flex;gap:4px;flex-shrink:0;align-items:center}
-.inv-acts button{font-size:12px;cursor:pointer;background:none;border:1px solid var(--b0);border-radius:4px;color:var(--t3);transition:var(--tr);padding:4px 8px;opacity:0;white-space:nowrap;font-family:'Outfit';font-weight:600;text-transform:uppercase;letter-spacing:.6px;font-size:.55rem}
-.inv-card:hover .inv-acts button{opacity:1}
-.inv-acts button:hover{border-color:var(--gold);color:var(--gold)}
-.inv-acts .inv-pdf-btn:hover{border-color:var(--blue);color:var(--blue)}
-.inv-acts .inv-email-btn:hover{border-color:var(--green);color:var(--green)}
-.inv-acts .inv-del-btn:hover{border-color:var(--red);color:var(--red)}
-.inv-status{font-size:.55rem;padding:3px 9px;border-radius:20px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
-.inv-status.draft{background:var(--orange-d);color:var(--orange)}
-.inv-status.sent{background:var(--green-d);color:var(--green)}
-.inv-date{font-family:'JetBrains Mono';font-size:.68rem;color:var(--t3)}
+.arch-del-btn{opacity:0;font-size:.55rem;padding:3px 7px;background:none;border:1px solid var(--b0);border-radius:4px;color:var(--t3);cursor:pointer;transition:var(--tr);font-family:'Outfit';font-weight:600;text-transform:uppercase;letter-spacing:.6px}.tsk:hover .arch-del-btn{opacity:1}.arch-del-btn:hover{border-color:var(--red)!important;color:var(--red)!important}
+.ppillar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:4px 0}
+.ppillar{border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:8px;cursor:default;transition:var(--tr);position:relative}
+.ppillar:hover{filter:brightness(1.05)}
+.ppillar-code{font-family:'JetBrains Mono';font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;opacity:.7}
+.ppillar-name{font-size:1rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase;line-height:1.2}
+.ppillar-foot{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.ppillar-cnt{font-size:.6rem}
+.ppillar-edit{opacity:0;background:none;border:1px solid rgba(255,255,255,.15);border-radius:4px;color:inherit;cursor:pointer;padding:3px 7px;font-size:.55rem;font-family:'Outfit';font-weight:600;text-transform:uppercase;transition:var(--tr)}
+.ppillar:hover .ppillar-edit{opacity:.7}.ppillar-edit:hover{opacity:1!important;border-color:currentColor!important}
 </style>
 </head>
 <body>
 
 <header class="hdr">
   <div class="logo-wrap" id="logoContainer">
-    <!-- Logo will be rendered here by JavaScript based on COMPANY_LOGO setting -->
-    <div class="logo-text"><span>ALI N'</span><span class="logo-div"></span><span>FNM</span></div>
-    <span class="logo-sub">Production Dashboard</span>
+    <div id="headerGreeting" style="font-family:'Outfit';font-weight:600;font-size:.85rem;letter-spacing:.2px;color:var(--t1)"></div>
   </div>
   <nav class="nav">
     <button class="nav-tab active" data-v="tasks">Tasks</button>
     <button class="nav-tab" data-v="deadlines">Deadlines</button>
     <button class="nav-tab" data-v="projects">Projects</button>
-    <button class="nav-tab" data-v="invoices">Invoices</button>
   </nav>
   <div class="hdr-r">
     <div class="clk" id="clk"></div>
@@ -503,10 +489,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <button class="nbtn" id="ntTgl">+ NEW TASK</button>
     <div class="tfrm" id="tFrm">
       <div class="fr" style="grid-template-columns:1fr"><div><label class="fl">Task Name</label><input type="text" class="fi" id="fN" placeholder="E.G., SEND DCP SPECS TO FILMS BOUTIQUE" style="text-transform:uppercase"></div></div>
-      <div class="fr fr4">
+      <div class="fr fr2">
         <div><label class="fl">Project</label><select class="fs" id="fP"></select></div>
-        <div class="sug-w"><label class="fl">Assignees</label><div class="mtag-w" id="fPeW"><input type="text" class="mtag-inp" id="fPe" placeholder="Type..." autocomplete="off"></div><div class="sug-l" id="sugPe"></div></div>
-        <div class="sug-w"><label class="fl">Partners</label><div class="mtag-w" id="fPaW"><input type="text" class="mtag-inp" id="fPa" placeholder="Type..." autocomplete="off"></div><div class="sug-l" id="sugPa"></div></div>
         <div><label class="fl">Priority</label><select class="fs" id="fPr"><option value="1">1 — URGENT</option><option value="2">2 — HIGH</option><option value="3" selected>3 — NORMAL</option><option value="4">4 — LOW</option><option value="5">5 — MINIMAL</option></select></div>
       </div>
       <div class="fr fr3">
@@ -519,7 +503,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   </div>
   <div id="tList"></div>
   <div class="csec">
-    <div class="chdr"><div class="ctgl" id="cTgl"><span class="ch">▶</span><h3>COMPLETED (<span id="cCnt">0</span>)</h3></div><button class="edb" id="edBtn">☀ END DAY</button></div>
+    <div class="chdr"><div class="ctgl" id="cTgl"><span class="ch">▶</span><h3>COMPLETED (<span id="cCnt">0</span>)</h3></div><div style="display:flex;gap:6px"><button class="edb" id="edBtn">☀ END DAY</button><button class="edb" id="clrArchBtn" style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:var(--red)">✕ CLEAR ALL</button></div></div>
     <div class="clist" id="cList"></div>
   </div>
 </div>
@@ -558,9 +542,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <input type="text" class="fi" id="nprN" placeholder="Title" style="flex:2;min-width:140px;text-transform:uppercase">
     <input type="text" class="fi" id="nprCd" placeholder="CODE" style="width:70px">
     <input type="color" class="clr-i" id="nprFg" value="#60a5fa" title="Accent Color" style="width:32px;height:32px">
-    <input type="text" class="fi" id="nprDir" placeholder="Director" style="flex:1;min-width:100px">
-    <input type="number" class="fi" id="nprYr" placeholder="Year" min="1990" max="2040" style="width:70px">
-    <select class="fs" id="nprTyp"><option value="Feature Film">Feature Film</option><option value="Short Film">Short Film</option><option value="Feature Doc">Feature Doc</option><option value="TV Series">TV Series</option></select>
+    <select class="fs" id="nprCat" title="Category"><option value="film">FILM</option><option value="personal">PERSONAL</option></select>
+    <select class="fs" id="nprTyp"><option value="Feature Film">Feature Film</option><option value="Feature Documentary">Feature Documentary</option><option value="Short Fiction">Short Fiction</option><option value="Short Documentary">Short Documentary</option></select>
     <select class="fs" id="nprSt"><option value="idea">IDEA</option><option value="dev">DEVELOPMENT</option><option value="funding">FUNDING</option><option value="pre-production">PRE-PRODUCTION</option><option value="shooting">SHOOTING</option><option value="post">POST-PRODUCTION</option><option value="distribution">DISTRIBUTION</option><option value="delivery">FINAL DELIVERY</option></select>
     <input type="text" class="fi" id="nprPoster" placeholder="Poster URL (optional)" style="flex:1;min-width:120px">
     <button class="btn btn-g" id="aPrj" style="padding:7px 14px;font-size:.7rem">CREATE</button>
@@ -569,88 +552,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   <div id="pSecs"></div>
 </div>
 
-<!-- Invoice View -->
-<div class="vw" id="v-invoices">
-  <!-- Stats bar -->
-  <div class="stats">
-    <div class="st"><div class="st-n" id="invTotal" style="color:var(--gold)">—</div><div class="st-l">Total Invoices</div></div>
-    <div class="st"><div class="st-n" id="invDraft" style="color:var(--orange)">—</div><div class="st-l">Drafts</div></div>
-    <div class="st"><div class="st-n" id="invSent" style="color:var(--green)">—</div><div class="st-l">Sent</div></div>
-    <div class="st"><div class="st-n" id="invYear" style="color:var(--blue)">—</div><div class="st-l">This Year</div></div>
-  </div>
-
-  <!-- Filters -->
-  <div class="flts" id="invFlts"></div>
-
-  <!-- New Invoice button + form -->
-  <div class="ntbar">
-    <button class="nbtn" id="niTgl">+ NEW INVOICE</button>
-    <div class="tfrm" id="iFrm">
-      <div class="fr fr2">
-        <div><label class="fl">Invoice Number</label><input type="text" class="fi" id="fiNum" placeholder="2026-08"></div>
-        <div><label class="fl">Date</label>
-          <div style="display:flex;gap:4px;align-items:center">
-            <input type="hidden" id="fiDate">
-            <div class="cal-wrap" style="flex:1">
-              <button type="button" class="fi" id="fiDateCal" style="text-align:left;cursor:pointer;display:flex;align-items:center;gap:6px;width:100%">
-                <span style="opacity:.5">📅</span><span id="fiDateLabel" style="flex:1">—</span>
-              </button>
-              <div class="cal-pop" id="fiDateCalPop"></div>
-            </div>
-            <button type="button" class="setnow-b" id="fiDateToday" style="white-space:nowrap;padding:8px 10px">TODAY</button>
-          </div>
-        </div>
-      </div>
-      <div class="fr fr2">
-        <div><label class="fl">Project</label><select class="fs" id="fiProj"></select></div>
-        <div class="sug-w"><label class="fl">Client</label><input type="text" class="fi" id="fiClient" placeholder="e.g., CANAL PLUS" autocomplete="off"><div class="sug-l" id="sugInvCl"></div></div>
-      </div>
-      <div class="fr" style="grid-template-columns:1fr"><div><label class="fl">Description</label><input type="text" class="fi" id="fiDesc" placeholder="e.g., Préachat de droits de diffusion cryptée et Catch-up TV"></div></div>
-
-      <!-- Client details (collapsible) -->
-      <details style="margin:8px 0">
-        <summary style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);cursor:pointer;margin-bottom:8px">Client Details (Address, SIREN...)</summary>
-        <div class="fr fr2">
-          <div><label class="fl">Client Address</label><input type="text" class="fi" id="fiClAddr" placeholder="2, RUE DES CÉVENNES..."></div>
-          <div><label class="fl">SIREN</label><input type="text" class="fi" id="fiClSIREN" placeholder="420 624 553"></div>
-        </div>
-        <div class="fr fr2">
-          <div><label class="fl">Cost Center / Réf</label><input type="text" class="fi" id="fiClCC" placeholder="Optional"></div>
-          <div><label class="fl">Deal / Contract Ref</label><input type="text" class="fi" id="fiClDeal" placeholder="Optional"></div>
-        </div>
-      </details>
-
-      <!-- Amounts -->
-      <div class="fr fr4">
-        <div><label class="fl">Diffusion HT</label><input type="text" class="fi" id="fiDiffHT" placeholder="218 000"></div>
-        <div><label class="fl">TVA %</label><select class="fs" id="fiTVA"><option value="10">10%</option><option value="20">20%</option><option value="0">0%</option></select></div>
-        <div><label class="fl">Diffusion TTC</label><input type="text" class="fi" id="fiDiffTTC" placeholder="Auto-calculated" readonly style="opacity:.6"></div>
-        <div></div>
-      </div>
-      <div class="fr fr4">
-        <div><label class="fl">Catch-up HT</label><input type="text" class="fi" id="fiCatchHT" placeholder="Optional"></div>
-        <div><label class="fl">Catch-up TVA %</label><select class="fs" id="fiCatchTVA"><option value="10">10%</option><option value="20">20%</option><option value="0">0%</option></select></div>
-        <div><label class="fl">Catch-up TTC</label><input type="text" class="fi" id="fiCatchTTC" placeholder="Auto" readonly style="opacity:.6"></div>
-        <div></div>
-      </div>
-
-      <!-- Bank + Notes -->
-      <div class="fr fr2">
-        <div><label class="fl">Bank Account (RIB)</label><select class="fs" id="fiBankAcct"></select></div>
-        <div><label class="fl">Notes</label><input type="text" class="fi" id="fiNotes" placeholder="Optional..."></div>
-      </div>
-
-      <div class="fac">
-        <button class="btn btn-gh" id="ciInv">CANCEL</button>
-        <button class="btn btn-g" id="siInv">CREATE INVOICE</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Invoice List -->
-  <div id="invList"></div>
-</div>
-</div>
 
 <div class="sov" id="sOv2"></div>
 <div class="sdr" id="sDr">
@@ -670,7 +571,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 <!-- Edit Task Modal -->
 <div class="mbg" id="eMdl"><div class="mdl"><h3>✎ Edit Task</h3>
   <div class="fg"><label class="fl">Task Name</label><input type="text" class="fi" id="eN" style="text-transform:uppercase"></div>
-  <div class="fr fr4"><div class="fg"><label class="fl">Project</label><select class="fs" id="eP"></select></div><div class="fg sug-w"><label class="fl">Assignees</label><div class="mtag-w" id="ePeW"><input type="text" class="mtag-inp" id="ePe" autocomplete="off" placeholder="Type..."></div><div class="sug-l" id="sugEPe"></div></div><div class="fg sug-w"><label class="fl">Partners</label><div class="mtag-w" id="ePaW"><input type="text" class="mtag-inp" id="ePa" autocomplete="off" placeholder="Type..."></div><div class="sug-l" id="sugEPa"></div></div><div class="fg"><label class="fl">Priority</label><select class="fs" id="ePr"><option value="1">1-URGENT</option><option value="2">2-HIGH</option><option value="3">3-NORMAL</option><option value="4">4-LOW</option><option value="5">5-MINIMAL</option></select></div></div>
+  <div class="fr fr2"><div class="fg"><label class="fl">Project</label><select class="fs" id="eP"></select></div><div class="fg"><label class="fl">Priority</label><select class="fs" id="ePr"><option value="1">1-URGENT</option><option value="2">2-HIGH</option><option value="3">3-NORMAL</option><option value="4">4-LOW</option><option value="5">5-MINIMAL</option></select></div></div>
   <div class="fr fr2"><div class="fg"><label class="fl">Due Date</label><div style="display:flex;gap:4px;align-items:center"><input type="hidden" id="eDu"><div class="cal-wrap" style="flex:1"><button type="button" class="fi" id="eDuCal" style="text-align:left;cursor:pointer;display:flex;align-items:center;gap:6px;width:100%"><span style="opacity:.5">📅</span><span id="eDuLabel" style="flex:1">—</span></button><div class="cal-pop" id="eDuCalPop"></div></div><button type="button" class="setnow-b" id="eDuToday" style="white-space:nowrap;padding:8px 10px">TODAY</button><button type="button" class="setnow-b" id="eDuClear" style="white-space:nowrap;padding:8px 10px;color:var(--t3)">✕</button></div></div><div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="eNo"></div></div>
   <div class="mdla"><button class="btn btn-r" id="eTDel" style="margin-right:auto">DELETE</button><button class="btn btn-gh" id="eTC">CANCEL</button><button class="btn btn-g" id="eTS">SAVE</button></div></div></div>
 
@@ -698,8 +599,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 <!-- Edit Project Modal -->
 <div class="mbg" id="ePrjMdl"><div class="mdl"><h3>✎ Edit Project</h3>
   <div class="fr fr2"><div class="fg"><label class="fl">Title</label><input type="text" class="fi" id="epN"></div><div class="fg"><label class="fl">Code</label><input type="text" class="fi" id="epCd2" placeholder="e.g. CMÁ" maxlength="8"></div></div>
-  <div class="fr fr3"><div class="fg"><label class="fl">Accent Color</label><input type="color" class="clr-i" id="epClr" style="width:100%;height:34px" value="#d4af37"></div><div class="fg"><label class="fl">Year</label><input type="number" class="fi" id="epYr" min="1990" max="2040"></div><div class="fg"><label class="fl">Status</label><select class="fs" id="epStat"></select></div></div>
-  <div class="fr fr2"><div class="fg"><label class="fl">Director</label><input type="text" class="fi" id="epDir" placeholder="Full name"></div><div class="fg"><label class="fl">Type</label><select class="fs" id="epTyp"><option value="Feature Film">Feature Film</option><option value="Short Film">Short Film</option><option value="Feature Doc">Feature Doc</option><option value="TV Series">TV Series</option></select></div></div>
+  <div class="fr fr3"><div class="fg"><label class="fl">Accent Color</label><input type="color" class="clr-i" id="epClr" style="width:100%;height:34px" value="#d4af37"></div><div class="fg"><label class="fl">Category</label><select class="fs" id="epCat"><option value="film">FILM</option><option value="personal">PERSONAL</option></select></div><div class="fg"><label class="fl">Status</label><select class="fs" id="epStat"></select></div></div>
+  <div class="fr fr2" id="epFilmFields"><div class="fg"><label class="fl">Type</label><select class="fs" id="epTyp"><option value="Feature Film">Feature Film</option><option value="Feature Documentary">Feature Documentary</option><option value="Short Fiction">Short Fiction</option><option value="Short Documentary">Short Documentary</option></select></div><div></div></div>
   <div class="fg"><label class="fl">Poster</label>
     <div style="display:flex;gap:10px;align-items:flex-start">
       <div style="position:relative;flex-shrink:0">
@@ -715,62 +616,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   <div class="mdla"><button class="btn btn-gh" id="ePrjCn">CANCEL</button><button class="btn btn-g" id="ePrjSv">SAVE</button></div>
 </div></div>
 
-<!-- Edit Invoice Modal -->
-<div class="mbg" id="eiMdl"><div class="mdl" style="width:560px"><h3>✎ Edit Invoice</h3>
-  <div class="fr fr2">
-    <div class="fg"><label class="fl">Invoice #</label><input type="text" class="fi" id="eiNum"></div>
-    <div class="fg"><label class="fl">Date</label>
-      <div style="display:flex;gap:4px;align-items:center">
-        <input type="hidden" id="eiDate">
-        <div class="cal-wrap" style="flex:1">
-          <button type="button" class="fi" id="eiDateCal" style="text-align:left;cursor:pointer;display:flex;align-items:center;gap:6px;width:100%">
-            <span style="opacity:.5">📅</span><span id="eiDateLabel" style="flex:1">—</span>
-          </button>
-          <div class="cal-pop" id="eiDateCalPop"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="fr fr2">
-    <div class="fg"><label class="fl">Project</label><select class="fs" id="eiProj"></select></div>
-    <div class="fg"><label class="fl">Client</label><input type="text" class="fi" id="eiClient"></div>
-  </div>
-  <div class="fg"><label class="fl">Description</label><input type="text" class="fi" id="eiDesc"></div>
-  <details style="margin:8px 0">
-    <summary style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);cursor:pointer;margin-bottom:8px">Client Details</summary>
-    <div class="fr fr2">
-      <div class="fg"><label class="fl">Address</label><input type="text" class="fi" id="eiClAddr"></div>
-      <div class="fg"><label class="fl">SIREN</label><input type="text" class="fi" id="eiClSIREN"></div>
-    </div>
-    <div class="fr fr2">
-      <div class="fg"><label class="fl">Cost Center</label><input type="text" class="fi" id="eiClCC"></div>
-      <div class="fg"><label class="fl">Deal Ref</label><input type="text" class="fi" id="eiClDeal"></div>
-    </div>
-  </details>
-  <div class="fr fr4">
-    <div class="fg"><label class="fl">Diffusion HT</label><input type="text" class="fi" id="eiDiffHT"></div>
-    <div class="fg"><label class="fl">TVA %</label><select class="fs" id="eiTVA"><option value="10">10%</option><option value="20">20%</option><option value="0">0%</option></select></div>
-    <div class="fg"><label class="fl">Diffusion TTC</label><input type="text" class="fi" id="eiDiffTTC" readonly style="opacity:.6"></div>
-    <div></div>
-  </div>
-  <div class="fr fr4">
-    <div class="fg"><label class="fl">Catch-up HT</label><input type="text" class="fi" id="eiCatchHT"></div>
-    <div class="fg"><label class="fl">Catch-up TVA</label><select class="fs" id="eiCatchTVA"><option value="10">10%</option><option value="20">20%</option><option value="0">0%</option></select></div>
-    <div class="fg"><label class="fl">Catch-up TTC</label><input type="text" class="fi" id="eiCatchTTC" readonly style="opacity:.6"></div>
-    <div></div>
-  </div>
-  <div class="fr fr2">
-    <div class="fg"><label class="fl">Bank Account</label><select class="fs" id="eiBankAcct"></select></div>
-    <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="eiNotes"></div>
-  </div>
-  <div class="fg"><label class="fl">Status</label><select class="fs" id="eiStatus"><option value="draft">DRAFT</option><option value="sent">SENT</option></select></div>
-  <div class="mdla">
-    <button class="btn btn-r" id="eiDel" style="margin-right:auto">DELETE</button>
-    <button class="btn btn-gh" id="eiCn">CANCEL</button>
-    <button class="btn btn-g" id="eiSv">SAVE</button>
-  </div>
-</div></div>
-
 <div class="toast" id="toast"></div>
 <!-- Cloud Sync UI -->
 <div class="sync-indicator" id="syncInd"><span class="sync-dot"></span><span id="syncTxt">SYNCED</span></div>
@@ -782,10 +627,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <div class="q-text" id="qText"></div>
     <span class="q-deco close">&rdquo;</span>
     <div class="q-author" id="qAuthor"></div>
-    <div class="q-paused-hint">HOLD TO PAUSE · RELEASE TO CONTINUE</div>
   </div>
   <div class="q-footer">
-    <div class="q-greeting" id="qGreeting"></div>
     <button class="q-skip" id="qSkip">SKIP →</button>
   </div>
 </div>
@@ -876,9 +719,8 @@ window._tryHide = function(){
   const gi = id => document.getElementById(id);
   const ov = gi('loadOv');
   if(!ov) return;
-  const qText=gi('qText'), qAuthor=gi('qAuthor'), qFill=gi('qFill'), qSkip=gi('qSkip'), qGreeting=gi('qGreeting');
-
-  qGreeting.textContent = greeting();
+  const qText=gi('qText'), qAuthor=gi('qAuthor'), qFill=gi('qFill'), qSkip=gi('qSkip');
+  const hg=gi('headerGreeting'); if(hg) hg.textContent=greeting();
   const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
   qText.textContent = q.t;
   qAuthor.textContent = '— ' + q.a;
@@ -1204,7 +1046,6 @@ document.querySelectorAll('.nav-tab').forEach(t=>t.addEventListener('click',()=>
   $('v-'+t.dataset.v).classList.add('active');
   if(t.dataset.v==='deadlines')renderDL();
   if(t.dataset.v==='projects')renderProj();
-  if(t.dataset.v==='invoices'){ renderInv(); fillInvDD(); }
 }));
 
 /* ═══════ AUTO-SUGGEST ═══════ */
@@ -1226,20 +1067,11 @@ function mtagGetVals(wrapId){const w=$(wrapId);if(!w)return[];return Array.from(
 function mtagSetVals(wrapId,vals,colorMap){const w=$(wrapId);if(!w)return;w.querySelectorAll('.mtag-t').forEach(t=>t.remove());const inp=w.querySelector('.mtag-inp');(vals||[]).forEach(v=>{if(!v)return;const co=gc(colorMap,v);const t=document.createElement('span');t.className='mtag-t';t.dataset.v=v;t.style.background=co.b;t.style.color=co.c;t.innerHTML=`${v}<span class="mtag-x">&times;</span>`;t.querySelector('.mtag-x').onclick=e=>{e.stopPropagation();t.remove()};w.insertBefore(t,inp)})}
 function mtagAdd(wrapId,val,colorMap){val=val.trim().toUpperCase();if(!val)return;const existing=mtagGetVals(wrapId);if(existing.includes(val))return;const w=$(wrapId);const inp=w.querySelector('.mtag-inp');const co=gc(colorMap,val);const t=document.createElement('span');t.className='mtag-t';t.dataset.v=val;t.style.background=co.b;t.style.color=co.c;t.innerHTML=`${val}<span class="mtag-x">&times;</span>`;t.querySelector('.mtag-x').onclick=e=>{e.stopPropagation();t.remove()};w.insertBefore(t,inp);inp.value=''}
 function initSug(){
-  mkSug('fPe','sugPe',gPS,v=>mtagAdd('fPeW',v,PP));
-  mkSug('fPa','sugPa',gPaS,v=>mtagAdd('fPaW',v,PA));
   mkSug('fBl','sugBl',gAll);mkSug('fdPa','sugDPa',gPaS);mkSug('fdPe','sugDPe',gPS);mkSug('blInp','sugBlM',gAll);
-  mkSug('ePe','sugEPe',gPS,v=>mtagAdd('ePeW',v,PP));
-  mkSug('ePa','sugEPa',gPaS,v=>mtagAdd('ePaW',v,PA));
   mkSug('edPa','sugEdPa',gPaS);mkSug('edPe','sugEdPe',gPS);
   // Enter key adds typed value as tag
-  ['fPe','ePe'].forEach(id=>{$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();mtagAdd(id+'W'.replace('PeW','PeW'),$(id).value,PP);$(id).value=''}})});
-  ['fPa','ePa'].forEach(id=>{$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();mtagAdd(id+'W'.replace('PaW','PaW'),$(id).value,PA);$(id).value=''}})});
-  // Click on wrapper focuses input
-  ['fPeW','fPaW','ePeW','ePaW'].forEach(id=>{const w=$(id);if(w)w.onclick=()=>w.querySelector('.mtag-inp')?.focus()});
-  initInvSug();
 }
-function renderLogo(){const c=$('logoContainer');if(!c)return;if(COMPANY_LOGO){c.innerHTML=`<img class="logo-img" src="${COMPANY_LOGO}" alt="Company Logo" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'logo-text\\'><span>ALI N\\'</span><span class=\\'logo-div\\'></span><span>FNM</span></div><span class=\\'logo-sub\\'>Production Dashboard</span>'">`}}
+function renderLogo(){}
 
 /* ═══════ LIVE PREVIEW ═══════ */
 ['npaFg','npaBg'].forEach(id=>$(id).addEventListener('input',()=>{const fg=$('npaFg').value;$('paPrv').style.background=hexToRgba(fg,.15);$('paPrv').style.color=fg;$('paPrv').textContent=($('npaC').value||$('npaN').value||'PREVIEW').toUpperCase()}));
@@ -1283,6 +1115,7 @@ function renderT(){
   // Bind
   el.querySelectorAll('.tc').forEach(x=>x.onclick=()=>tglD(+x.dataset.id));
   cl.querySelectorAll('.tc').forEach(x=>x.onclick=()=>tglD(+x.dataset.id));
+  cl.querySelectorAll('.arch-del-btn').forEach(b=>b.onclick=e=>{e.stopPropagation();pH('delete archived');D.completed=D.completed.filter(t=>t.id!==+b.dataset.id);renderT()});
   el.querySelectorAll('.tbb').forEach(x=>x.onclick=()=>{const t=D.tasks.find(t=>t.id===+x.dataset.id);if(t.blocked){pH('unblock');t.blocked=false;t.blockedBy=null;toast('UNBLOCKED','gld');renderT()}else{bId=+x.dataset.id;$('blInp').value='';$('bMdl').classList.add('op');$('blInp').focus()}});
   el.querySelectorAll('.tedb').forEach(x=>x.onclick=()=>openET(+x.dataset.id));
   // Subtask: "+" button toggles inline input
@@ -1389,7 +1222,7 @@ function tkEl(t,isDT=false,isArch=false){
   const partners=Array.isArray(t.partner)?t.partner:t.partner?[t.partner]:[];
   const personTags=persons.map(p=>tg(p,gc(PP,p))).join('');
   const partnerTags=partners.map(p=>tg(p,gc(PA,p))).join('');
-  const inner=`<div class="${cls}" data-id="${t.id}">${!isArch?'<div class="drag-h"><span></span><span></span><span></span></div>':''}<div class="${tcCls}" data-id="${t.id}">${t.done?'✓':''}</div><div class="tp p${t.priority}"></div><div class="tb"><div class="tsk-txt">${t.project?`<span style="color:${pc.c};opacity:.5;font-size:0.85em">${pc.code}</span> `:''}${t.name}</div>${pBar}<div class="tm">${personTags}${partnerTags}${t.blocked?`<span class="bbadge">🔒 ${t.blockedBy||'?'}</span>`:''}</div>${noteHtml}${subHtml}${subAddHtml}</div><div class="tr">${t.due&&dt?`<div class="td ${dc}">${dt}</div>`:''}<div class="tact">${!isArch?`<button class="pin-btn${t.pinned?' pinned':''}" data-id="${t.id}" title="${t.pinned?'Unpin':'Pin'} task">📌</button><button class="st-add-btn" data-id="${t.id}" title="Add subtask">+</button><button class="tedb" data-id="${t.id}">✎</button><button class="tbb" data-id="${t.id}">${t.blocked?'🔓':'🔒'}</button>`:''}</div></div></div>`;
+  const inner=`<div class="${cls}" data-id="${t.id}">${!isArch?'<div class="drag-h"><span></span><span></span><span></span></div>':''}<div class="${tcCls}" data-id="${t.id}">${t.done?'✓':''}</div><div class="tp p${t.priority}"></div><div class="tb"><div class="tsk-txt">${t.project?`<span style="color:${pc.c};opacity:.5;font-size:0.85em">${pc.code}</span> `:''}${t.name}</div>${pBar}<div class="tm">${personTags}${partnerTags}${t.blocked?`<span class="bbadge">🔒 ${t.blockedBy||'?'}</span>`:''}</div>${noteHtml}${subHtml}${subAddHtml}</div><div class="tr">${t.due&&dt?`<div class="td ${dc}">${dt}</div>`:''}<div class="tact">${!isArch?`<button class="pin-btn${t.pinned?' pinned':''}" data-id="${t.id}" title="${t.pinned?'Unpin':'Pin'} task">📌</button><button class="st-add-btn" data-id="${t.id}" title="Add subtask">+</button><button class="tedb" data-id="${t.id}">✎</button><button class="tbb" data-id="${t.id}">${t.blocked?'🔓':'🔒'}</button>`:`<button class="arch-del-btn" data-id="${t.id}" title="Delete">✕</button>`}</div></div></div>`;
   if(isArch)return inner;
   return`<div class="tsk-swipe-wrap" data-swipe-id="${t.id}"><div class="swipe-bg swipe-bg-right">✓ DONE</div><div class="swipe-bg swipe-bg-left">✕ DELETE</div>${inner}</div>`
 }
@@ -1470,7 +1303,7 @@ function updateSts(){const o=D.tasks.filter(t=>!t.done);$('sO').textContent=o.le
   $('sD').textContent=doneActive+doneArchived+doneSubs;
   $('sOv').textContent=o.filter(t=>t.due&&dB(t.due)<0).length}
 
-function fillDD(){['fP','fdP','eP','edP','fiProj','eiProj'].forEach(id=>{const s=$(id);if(!s)return;s.innerHTML='<option value="">—</option>';D.projects.forEach(p=>s.innerHTML+=`<option value="${p.title}">${gpc(p.title).code} — ${p.title}</option>`);if(D.closed.length){s.innerHTML+=`<option disabled style="font-size:.6rem;color:var(--t3)">── COMPLETED ──</option>`;D.closed.forEach(p=>s.innerHTML+=`<option value="${p.title}" style="color:#22c55e">${gpc(p.title).code} — ${p.title}</option>`)}})}
+function fillDD(){['fP','fdP','eP','edP'].forEach(id=>{const s=$(id);if(!s)return;s.innerHTML='<option value="">—</option>';D.projects.forEach(p=>s.innerHTML+=`<option value="${p.title}">${gpc(p.title).code} — ${p.title}</option>`);if(D.closed.length){s.innerHTML+=`<option disabled style="font-size:.6rem;color:var(--t3)">── COMPLETED ──</option>`;D.closed.forEach(p=>s.innerHTML+=`<option value="${p.title}" style="color:#22c55e">${gpc(p.title).code} — ${p.title}</option>`)}})}
 
 // Task form
 $('ntTgl').onclick=()=>{const f=$('tFrm');f.classList.toggle('open');if(f.classList.contains('open')){$('fDu').value=td();updateCalLabel('fDu');$('fN').focus()}};
@@ -1518,17 +1351,13 @@ initCal('fDuCal','fDuCalPop','fDu');
 initCal('eDuCal','eDuCalPop','eDu');
 initCal('fdDateCal','fdDateCalPop','fdDate');
 initCal('edDateCal','edDateCalPop','edDate');
-initCal('fiDateCal','fiDateCalPop','fiDate');
-initCal('eiDateCal','eiDateCalPop','eiDate');
 $('cTask').onclick=()=>$('tFrm').classList.remove('open');
 $('sTask').onclick=()=>{const n=$('fN').value.trim().toUpperCase();if(!n){toast('ENTER A TASK NAME','rd');return}pH('create task');const bl=$('fBl').value.trim().toUpperCase();const mn=D.tasks.length?Math.min(...D.tasks.map(t=>t.order)):0;
-  // Get multi-tag values; also include typed-but-not-entered text
-  let persons=mtagGetVals('fPeW');const typedPe=$('fPe').value.trim().toUpperCase();if(typedPe&&!persons.includes(typedPe))persons.push(typedPe);
-  let partners=mtagGetVals('fPaW');const typedPa=$('fPa').value.trim().toUpperCase();if(typedPa&&!partners.includes(typedPa))partners.push(typedPa);
-  D.tasks.push({id:D.nid++,name:n,project:$('fP').value,person:persons,partner:partners,priority:+$('fPr').value,due:$('fDu').value||null,done:false,doneDate:null,blocked:!!bl,blockedBy:bl||null,order:mn-1,notes:$('fNo').value.trim(),createdAt:nowI(),completedAt:null,subtasks:[]});
-  ['fN','fBl','fNo'].forEach(i=>$(i).value='');$('fPe').value='';$('fPa').value='';$('fPeW').querySelectorAll('.mtag-t').forEach(t=>t.remove());$('fPaW').querySelectorAll('.mtag-t').forEach(t=>t.remove());$('fPr').value='3';$('fDu').value='';toast('TASK CREATED','gld');$('tFrm').classList.remove('open');renderT()};
+  D.tasks.push({id:D.nid++,name:n,project:$('fP').value,person:[],partner:[],priority:+$('fPr').value,due:$('fDu').value||null,done:false,doneDate:null,blocked:!!bl,blockedBy:bl||null,order:mn-1,notes:$('fNo').value.trim(),createdAt:nowI(),completedAt:null,subtasks:[]});
+  ['fN','fBl','fNo'].forEach(i=>$(i).value='');$('fPr').value='3';$('fDu').value='';toast('TASK CREATED','gld');$('tFrm').classList.remove('open');renderT()};
 
 $('cTgl').onclick=()=>{$('cList').classList.toggle('op');document.querySelector('.ctgl .ch').classList.toggle('op')};
+$('clrArchBtn').onclick=()=>{if(!D.completed.length){toast('ARCHIVE IS EMPTY','rd');return}pH('clear archive');D.completed=[];toast('ARCHIVE CLEARED','rd');renderT()};
 function doEndDay(){const d=D.tasks.filter(t=>t.done);if(!d.length)return;pH('end day');D.completed.push(...d);D.tasks=D.tasks.filter(t=>!t.done);D.tasks.forEach((t,i)=>t.order=i);playEndDaySound();toast(`☀ ${d.length} ARCHIVED`);renderT()}
 $('edBtn').onclick=()=>{const d=D.tasks.filter(t=>t.done);if(!d.length){toast('NO TASKS','rd');return}doEndDay()};
 // Auto-collapse completed tasks at 19:00
@@ -1539,16 +1368,11 @@ $('cfBl').onclick=()=>{if(bId===null)return;pH('block');const t=D.tasks.find(x=>
 
 /* ═══════ EDIT TASK ═══════ */
 let eTid=null;
-function openET(id){const t=D.tasks.find(x=>x.id===id)||D.completed.find(x=>x.id===id);if(!t)return;eTid=id;$('eN').value=t.name;$('ePe').value='';$('ePa').value='';
-  const pArr=Array.isArray(t.person)?t.person:t.person?[t.person]:[];
-  const paArr=Array.isArray(t.partner)?t.partner:t.partner?[t.partner]:[];
-  mtagSetVals('ePeW',pArr,PP);mtagSetVals('ePaW',paArr,PA);
+function openET(id){const t=D.tasks.find(x=>x.id===id)||D.completed.find(x=>x.id===id);if(!t)return;eTid=id;$('eN').value=t.name;
   $('ePr').value=t.priority;$('eDu').value=t.due||'';updateCalLabel('eDu');$('eNo').value=t.notes||'';fillDD();if(t.project)$('eP').value=t.project;$('eMdl').classList.add('op');$('eN').focus()}
 $('eTC').onclick=()=>{$('eMdl').classList.remove('op');eTid=null};
 $('eTS').onclick=()=>{if(eTid===null)return;const t=D.tasks.find(x=>x.id===eTid)||D.completed.find(x=>x.id===eTid);if(!t)return;pH('edit task');t.name=$('eN').value.trim().toUpperCase();t.project=$('eP').value;
-  let ep=mtagGetVals('ePeW');const tPe=$('ePe').value.trim().toUpperCase();if(tPe&&!ep.includes(tPe))ep.push(tPe);
-  let epa=mtagGetVals('ePaW');const tPa=$('ePa').value.trim().toUpperCase();if(tPa&&!epa.includes(tPa))epa.push(tPa);
-  t.person=ep;t.partner=epa;t.priority=+$('ePr').value;t.due=$('eDu').value||null;t.notes=$('eNo').value.trim();toast('UPDATED','gld');$('eMdl').classList.remove('op');eTid=null;renderT()};
+  t.priority=+$('ePr').value;t.due=$('eDu').value||null;t.notes=$('eNo').value.trim();toast('UPDATED','gld');$('eMdl').classList.remove('op');eTid=null;renderT()};
 $('eTDel').onclick=()=>{if(eTid===null)return;pH('delete task');D.tasks=D.tasks.filter(t=>t.id!==eTid);D.completed=D.completed.filter(t=>t.id!==eTid);toast('DELETED','rd');$('eMdl').classList.remove('op');eTid=null;renderT()};
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1632,321 +1456,44 @@ $('edDDel').onclick=()=>{if(eDLid===null)return;pH('delete deadline');D.deadline
    ═══════════════════════════════════════════════════════════════ */
 let _projShowAll=false;
 /* ═══════ INVOICES ═══════ */
-let invFilter = 'all';
-
-function calcTTC(ht, tvaRate) {
-  const h = parseFloat(String(ht).replace(/[^\d.,]/g,'').replace(',','.')) || 0;
-  const ttc = h * (1 + (tvaRate || 0) / 100);
-  return ttc.toFixed(2);
-}
-
-function fmtEur(v) {
-  const n = parseFloat(String(v).replace(/[^\d.,]/g,'').replace(',','.')) || 0;
-  return n.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
-}
-
-function nextInvNum() {
-  const yr = new Date().getFullYear();
-  const existing = D.invoices.filter(i => i.invoiceNumber && i.invoiceNumber.startsWith(yr + '-'));
-  const maxSuffix = existing.reduce((mx, i) => {
-    const parts = i.invoiceNumber.split('-');
-    const num = parseInt(parts[1]) || 0;
-    return Math.max(mx, num);
-  }, 0);
-  return yr + '-' + String(maxSuffix + 1).padStart(2, '0');
-}
-
-function renderInv() {
-  const el = $('invList');
-  el.innerHTML = '';
-  let all = [...D.invoices].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-  // Filters
-  if (invFilter === 'draft') all = all.filter(i => i.status === 'draft');
-  else if (invFilter === 'sent') all = all.filter(i => i.status === 'sent');
-  else if (invFilter !== 'all') all = all.filter(i => i.project === invFilter);
-
-  all.forEach(inv => {
-    const pc = gpc(inv.project);
-    const totalHT = (parseFloat(String(inv.montantHT).replace(/[^\d.,]/g,'').replace(',','.')) || 0)
-                  + (parseFloat(String(inv.catchupHT).replace(/[^\d.,]/g,'').replace(',','.')) || 0);
-    const totalTTC = (parseFloat(String(inv.montantTTC).replace(/[^\d.,]/g,'').replace(',','.')) || 0)
-                   + (parseFloat(String(inv.catchupTTC).replace(/[^\d.,]/g,'').replace(',','.')) || 0);
-    const ba = D.bankAccounts.find(b => b.id === inv.bankAccountId);
-
-    el.innerHTML += `<div class="inv-card ${inv.status}" data-invid="${inv.id}">
-      <div class="inv-num">${inv.invoiceNumber}</div>
-      <div class="inv-info">
-        <div class="inv-title">${inv.project ? `<span style="color:${pc.c};opacity:.5;font-size:.85em">${pc.code}</span> ` : ''}${inv.description || inv.client || '—'}</div>
-        <div class="inv-meta">
-          ${inv.client ? tg(inv.client, { c: '#8a8898', b: 'rgba(138,136,152,.10)' }) : ''}
-          ${inv.project ? tg(inv.project, pc) : ''}
-          <span class="inv-status ${inv.status}">${inv.status.toUpperCase()}</span>
-          <span class="inv-date">${inv.date ? new Date(inv.date + 'T00:00:00').toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}).toUpperCase() : '—'}</span>
-          ${ba ? tg(ba.name, { c: '#06b6d4', b: 'rgba(6,182,212,.10)' }) : ''}
-        </div>
-      </div>
-      <div class="inv-amt">${fmtEur(totalTTC)}<div class="inv-amt-sub">HT: ${fmtEur(totalHT)}</div></div>
-      <div class="inv-acts">
-        <button class="inv-edit-btn" data-invid="${inv.id}">✎ Edit</button>
-        ${inv.pdfUrl ? `<a href="${inv.pdfUrl}" target="_blank" style="font-size:.55rem;padding:4px 8px;border-radius:4px;border:1px solid var(--b0);color:var(--blue);text-decoration:none;font-family:'Outfit';font-weight:600;text-transform:uppercase;letter-spacing:.6px">📄 PDF</a>` : `<button class="inv-pdf-btn" data-invid="${inv.id}">📄 Gen PDF</button>`}
-        <button class="inv-email-btn" data-invid="${inv.id}">📧 Email</button>
-        <button class="inv-del-btn" data-invid="${inv.id}">✕</button>
-      </div>
-    </div>`;
-  });
-
-  // Bind events
-  el.querySelectorAll('.inv-edit-btn').forEach(b => b.onclick = () => openEditInv(+b.dataset.invid));
-  el.querySelectorAll('.inv-del-btn').forEach(b => b.onclick = () => { pH('delete invoice'); D.invoices = D.invoices.filter(i => i.id !== +b.dataset.invid); toast('INVOICE DELETED', 'rd'); renderInv(); });
-  // PDF + Email buttons — Phase 2 & 3 stubs
-  el.querySelectorAll('.inv-pdf-btn').forEach(b => b.onclick = () => toast('PDF GENERATION — COMING SOON', 'gld'));
-  el.querySelectorAll('.inv-email-btn').forEach(b => b.onclick = () => toast('EMAIL SENDING — COMING SOON', 'gld'));
-
-  // Stats
-  $('invTotal').textContent = D.invoices.length;
-  $('invDraft').textContent = D.invoices.filter(i => i.status === 'draft').length;
-  $('invSent').textContent = D.invoices.filter(i => i.status === 'sent').length;
-  const yr = String(new Date().getFullYear());
-  $('invYear').textContent = D.invoices.filter(i => (i.invoiceNumber || '').startsWith(yr)).length;
-
-  renderInvFlts();
-}
-
-function renderInvFlts() {
-  const fb = $('invFlts');
-  fb.innerHTML = '';
-  const fs = [
-    { k: 'all', l: 'ALL', n: D.invoices.length },
-    { k: 'draft', l: 'DRAFTS', n: D.invoices.filter(i => i.status === 'draft').length },
-    { k: 'sent', l: 'SENT', n: D.invoices.filter(i => i.status === 'sent').length }
-  ];
-  [...new Set(D.invoices.map(i => i.project).filter(Boolean))].forEach(p => {
-    const pc = gpc(p);
-    fs.push({ k: p, l: pc.code, n: D.invoices.filter(i => i.project === p).length });
-  });
-  fs.forEach(f => {
-    const b = document.createElement('button');
-    b.className = `chip ${invFilter === f.k ? 'active' : ''}`;
-    b.innerHTML = `${f.l}<span class="chip-c">${f.n}</span>`;
-    b.onclick = () => { invFilter = f.k; renderInv(); };
-    fb.appendChild(b);
-  });
-}
-
-function fillInvDD() {
-  ['fiProj', 'eiProj'].forEach(id => {
-    const s = $(id); if (!s) return;
-    s.innerHTML = '<option value="">—</option>';
-    D.projects.forEach(p => s.innerHTML += `<option value="${p.title}">${gpc(p.title).code} — ${p.title}</option>`);
-    if (D.closed.length) {
-      s.innerHTML += '<option disabled>── COMPLETED ──</option>';
-      D.closed.forEach(p => s.innerHTML += `<option value="${p.title}">${gpc(p.title).code} — ${p.title}</option>`);
-    }
-  });
-  ['fiBankAcct', 'eiBankAcct'].forEach(id => {
-    const s = $(id); if (!s) return;
-    s.innerHTML = '<option value="">—</option>';
-    D.bankAccounts.forEach(ba => s.innerHTML += `<option value="${ba.id}">${ba.name}</option>`);
-  });
-}
-
-// Auto-suggest for client field
-function initInvSug() {
-  mkSug('fiClient', 'sugInvCl', () => (D.clients || []).map(c => ({ n: c.name, c: '#8a8898' })));
-}
-
-// Auto-calculate TTC when HT or TVA changes
-['fiDiffHT', 'fiTVA'].forEach(id => {
-  $(id).addEventListener('input', () => {
-    $('fiDiffTTC').value = fmtEur(calcTTC($('fiDiffHT').value, +$('fiTVA').value));
-  });
-});
-['fiCatchHT', 'fiCatchTVA'].forEach(id => {
-  $(id).addEventListener('input', () => {
-    $('fiCatchTTC').value = fmtEur(calcTTC($('fiCatchHT').value, +$('fiCatchTVA').value));
-  });
-});
-
-// Auto-fill client details when client selected
-$('fiClient').addEventListener('blur', () => {
-  const name = $('fiClient').value.trim().toUpperCase();
-  const cl = (D.clients || []).find(c => c.name === name);
-  if (cl) {
-    if (cl.address && !$('fiClAddr').value) $('fiClAddr').value = cl.address;
-    if (cl.siren && !$('fiClSIREN').value) $('fiClSIREN').value = cl.siren;
-    if (cl.defaultCostCenter && !$('fiClCC').value) $('fiClCC').value = cl.defaultCostCenter;
-  }
-});
-
-// New invoice form toggle
-$('niTgl').onclick = () => {
-  const f = $('iFrm');
-  f.classList.toggle('open');
-  if (f.classList.contains('open')) {
-    $('fiNum').value = nextInvNum();
-    $('fiDate').value = td();
-    updateCalLabel('fiDate');
-    fillInvDD();
-    $('fiClient').focus();
-  }
-};
-$('fiDateToday').onclick = () => { $('fiDate').value = td(); updateCalLabel('fiDate'); };
-$('ciInv').onclick = () => $('iFrm').classList.remove('open');
-
-// Create invoice
-$('siInv').onclick = () => {
-  const num = $('fiNum').value.trim();
-  const client = $('fiClient').value.trim().toUpperCase();
-  if (!num) { toast('INVOICE NUMBER REQUIRED', 'rd'); return; }
-  if (!client) { toast('CLIENT REQUIRED', 'rd'); return; }
-
-  pH('create invoice');
-
-  const diffHT = $('fiDiffHT').value.trim();
-  const tvaRate = +$('fiTVA').value;
-  const diffTTC = calcTTC(diffHT, tvaRate);
-  const catchHT = $('fiCatchHT').value.trim();
-  const catchTVA = +$('fiCatchTVA').value;
-  const catchTTC = catchHT ? calcTTC(catchHT, catchTVA) : '';
-
-  D.invoices.push({
-    id: D.invid++,
-    invoiceNumber: num,
-    date: $('fiDate').value || td(),
-    client: client,
-    project: $('fiProj').value,
-    description: $('fiDesc').value.trim(),
-    montantHT: diffHT,
-    tvaRate: tvaRate,
-    montantTTC: diffTTC,
-    catchupHT: catchHT,
-    catchupTVA: catchHT ? catchTVA : 0,
-    catchupTTC: catchTTC,
-    status: 'draft',
-    pdfUrl: '',
-    emailSentDate: '',
-    bankAccountId: +$('fiBankAcct').value || 0,
-    notes: $('fiNotes').value.trim(),
-    clientAddress: $('fiClAddr').value.trim(),
-    clientSIREN: $('fiClSIREN').value.trim(),
-    clientCostCenter: $('fiClCC').value.trim(),
-    clientDealRef: $('fiClDeal').value.trim()
-  });
-
-  // Save client if new
-  if (client && !(D.clients || []).find(c => c.name === client)) {
-    D.clients = D.clients || [];
-    D.clients.push({ name: client, address: $('fiClAddr').value.trim(), siren: $('fiClSIREN').value.trim(), defaultCostCenter: $('fiClCC').value.trim() });
-  }
-
-  // Clear form
-  ['fiNum','fiClient','fiDesc','fiDiffHT','fiCatchHT','fiNotes','fiClAddr','fiClSIREN','fiClCC','fiClDeal'].forEach(i => $(i).value = '');
-  $('fiDiffTTC').value = '';  $('fiCatchTTC').value = '';
-  $('fiDate').value = '';
-  $('iFrm').classList.remove('open');
-  toast('INVOICE CREATED', 'gld');
-  renderInv();
-};
-
-// Edit invoice
-let eiId = null;
-function openEditInv(id) {
-  const inv = D.invoices.find(i => i.id === id);
-  if (!inv) return;
-  eiId = id;
-  fillInvDD();
-  $('eiNum').value = inv.invoiceNumber;
-  $('eiDate').value = inv.date || '';
-  updateCalLabel('eiDate');
-  $('eiProj').value = inv.project || '';
-  $('eiClient').value = inv.client || '';
-  $('eiDesc').value = inv.description || '';
-  $('eiDiffHT').value = inv.montantHT || '';
-  $('eiTVA').value = inv.tvaRate || 10;
-  $('eiDiffTTC').value = inv.montantTTC ? fmtEur(inv.montantTTC) : '';
-  $('eiCatchHT').value = inv.catchupHT || '';
-  $('eiCatchTVA').value = inv.catchupTVA || 10;
-  $('eiCatchTTC').value = inv.catchupTTC ? fmtEur(inv.catchupTTC) : '';
-  $('eiBankAcct').value = inv.bankAccountId || '';
-  $('eiNotes').value = inv.notes || '';
-  $('eiStatus').value = inv.status || 'draft';
-  $('eiClAddr').value = inv.clientAddress || '';
-  $('eiClSIREN').value = inv.clientSIREN || '';
-  $('eiClCC').value = inv.clientCostCenter || '';
-  $('eiClDeal').value = inv.clientDealRef || '';
-  $('eiMdl').classList.add('op');
-}
-
-// Edit invoice TTC auto-calc
-['eiDiffHT','eiTVA'].forEach(id => $(id).addEventListener('input', () => {
-  $('eiDiffTTC').value = fmtEur(calcTTC($('eiDiffHT').value, +$('eiTVA').value));
-}));
-['eiCatchHT','eiCatchTVA'].forEach(id => $(id).addEventListener('input', () => {
-  $('eiCatchTTC').value = fmtEur(calcTTC($('eiCatchHT').value, +$('eiCatchTVA').value));
-}));
-
-$('eiCn').onclick = () => { $('eiMdl').classList.remove('op'); eiId = null; };
-$('eiSv').onclick = () => {
-  if (eiId === null) return;
-  const inv = D.invoices.find(i => i.id === eiId);
-  if (!inv) return;
-  pH('edit invoice');
-  inv.invoiceNumber = $('eiNum').value.trim();
-  inv.date = $('eiDate').value || '';
-  inv.project = $('eiProj').value;
-  inv.client = $('eiClient').value.trim().toUpperCase();
-  inv.description = $('eiDesc').value.trim();
-  inv.montantHT = $('eiDiffHT').value.trim();
-  inv.tvaRate = +$('eiTVA').value;
-  inv.montantTTC = calcTTC($('eiDiffHT').value, +$('eiTVA').value);
-  inv.catchupHT = $('eiCatchHT').value.trim();
-  inv.catchupTVA = +$('eiCatchTVA').value;
-  inv.catchupTTC = $('eiCatchHT').value.trim() ? calcTTC($('eiCatchHT').value, +$('eiCatchTVA').value) : '';
-  inv.bankAccountId = +$('eiBankAcct').value || 0;
-  inv.notes = $('eiNotes').value.trim();
-  inv.status = $('eiStatus').value;
-  inv.clientAddress = $('eiClAddr').value.trim();
-  inv.clientSIREN = $('eiClSIREN').value.trim();
-  inv.clientCostCenter = $('eiClCC').value.trim();
-  inv.clientDealRef = $('eiClDeal').value.trim();
-  toast('INVOICE UPDATED', 'gld');
-  $('eiMdl').classList.remove('op');
-  eiId = null;
-  renderInv();
-};
-$('eiDel').onclick = () => {
-  if (eiId === null) return;
-  pH('delete invoice');
-  D.invoices = D.invoices.filter(i => i.id !== eiId);
-  toast('DELETED', 'rd');
-  $('eiMdl').classList.remove('op');
-  eiId = null;
-  renderInv();
-};
 function renderProj(){
   const el=$('pSecs');el.innerHTML='';
   const filterActive=!_projShowAll;
   const fBtn=$('projFilterTgl');if(fBtn){fBtn.textContent=filterActive?'ACTIVE ONLY':'SHOW ALL';if(filterActive)fBtn.classList.add('active');else fBtn.classList.remove('active')}
   const hasActiveDL=p=>D.deadlines.some(d=>d.project===p.title);
-  const groups={};D.projects.forEach(p=>{(groups[p.status]=groups[p.status]||[]).push(p)});
+  const hasActiveTask=p=>D.tasks.some(t=>t.project===p.title&&!t.done);
+  // Separate personal from film projects
+  const personalProjs=D.projects.filter(p=>p.category==='personal');
+  const filmProjs=D.projects.filter(p=>p.category!=='personal');
+  // ── PERSONAL PROJECTS SECTION ──
+  if(personalProjs.length||(filterActive?false:true)){
+    let pp=personalProjs;
+    if(pp.length){
+      el.innerHTML+=`<div class="psec" style="margin-bottom:24px"><div class="psh" data-s="personal" style="border-left:none"><span class="ch op">▶</span><h3>PERSONAL PROJECTS (${pp.length})</h3></div><div class="psb op" id="ps-personal"><div class="ppillar-grid">${pp.map(p=>{
+        const pc=gpc(p.title);const tc=D.tasks.filter(t=>t.project===p.title&&!t.done).length;
+        return`<div class="ppillar" data-proj="${p.title}" style="border-top:3px solid ${pc.c};background:${pc.b}"><div class="ppillar-code" style="color:${pc.c}">${pc.code}</div><div class="ppillar-name" style="color:${pc.c}">${p.title}</div><div class="ppillar-foot"><span class="ppillar-cnt">${tc?`<span style="background:${pc.c};color:#000;padding:2px 8px;border-radius:20px;font-size:.6rem;font-weight:700">${tc} open</span>`:''}</span><button class="pedb ppillar-edit" data-proj="${p.title}" title="Edit">✎</button></div></div>`;
+      }).join('')}</div></div></div>`;
+    }
+  }
+  // ── FILM PROJECTS by STATUS ──
+  const groups={};filmProjs.forEach(p=>{(groups[p.status]=groups[p.status]||[]).push(p)});
   STATUSES.filter(s=>s!=='closed').forEach(s=>{if(!groups[s])return;
-    let projs=groups[s];if(filterActive)projs=projs.filter(p=>D.tasks.some(t=>t.project===p.title&&!t.done)||hasActiveDL(p));if(!projs.length)return;
-    const hasActive=projs.some(p=>D.tasks.some(t=>t.project===p.title&&!t.done)||hasActiveDL(p));
+    let projs=groups[s];if(filterActive)projs=projs.filter(p=>hasActiveTask(p)||hasActiveDL(p));if(!projs.length)return;
+    const hasActive=projs.some(p=>hasActiveTask(p)||hasActiveDL(p));
     el.innerHTML+=`<div class="psec"><div class="psh" data-s="${s}"><span class="ch${hasActive?' op':''}">▶</span><h3>${SL[s]} (${projs.length})</h3></div><div class="psb${hasActive?' op':''}" id="ps-${s}"><div class="pgrid">${projs.map(p=>{
       const tc=D.tasks.filter(t=>t.project===p.title&&!t.done).length,pc=gpc(p.title);
       const dc=D.deadlines.filter(d=>d.project===p.title).length;
       const posterHtml=`<img src="${getPoster(p.title)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\\'poster-ph\\' style=\\'color:${pc.c}\\'>🎬<br>${pc.code}</div>'">`;
       const tcCircle=tc?`<div class="tc-circle" style="color:${pc.c};background:${pc.b};border:1.5px solid ${pc.c}">${tc}</div>`:'';
       const dcCircle=dc?`<div class="tc-circle" style="top:8px;right:${tc?'42px':'8px'};color:var(--red);background:var(--red-d);border:1.5px solid var(--red)">⏱</div>`:'';
-      return`<div class="pc" data-proj="${p.title}" style="position:relative">${tcCircle}${dcCircle}<div class="poster-w">${posterHtml}</div><div class="pi"><div class="pn" style="color:${pc.c}">${p.title} <span style="font-weight:400;color:var(--t3);font-size:.7rem">${p.year}</span></div><div class="pd">${p.director} · <span style="color:var(--t2)">${p.type}</span></div><div class="pbs"><span class="sb ${p.status}">${SL[p.status]}</span><button class="pst-btn" data-proj="${p.title}" title="Change status">↺</button><button class="pmove" data-proj="${p.title}">→ Complete</button><button class="pedb" data-proj="${p.title}" title="Edit">✎</button></div></div></div>`}).join('')}</div></div></div>`});
-  // Completed section
-  let closedProjs=D.closed;if(filterActive)closedProjs=closedProjs.filter(p=>D.tasks.some(t=>t.project===p.title&&!t.done));
-  if(closedProjs.length){const closedHasActive=closedProjs.some(p=>D.tasks.some(t=>t.project===p.title&&!t.done));
-  el.innerHTML+=`<div class="psec"><div class="psh" data-s="closed"><span class="ch${closedHasActive?' op':''}">▶</span><h3>COMPLETED (${closedProjs.length})</h3></div><div class="psb${closedHasActive?' op':''}" id="ps-closed"><div class="pgrid">${closedProjs.map(p=>{const origIdx=D.closed.indexOf(p);const pc=gpc(p.title);const tc=D.tasks.filter(t=>t.project===p.title&&!t.done).length;const tcCircle=tc?`<div class="tc-circle" style="color:${pc.c};background:${pc.b};border:1.5px solid ${pc.c}">${tc}</div>`:'';const ph=`<img src="${getPoster(p.title)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\\'poster-ph\\' style=\\'color:${pc.c}\\'>🎬<br>${pc.code}</div>'">`; return`<div class="pc arch" style="position:relative">${tcCircle}<div class="poster-w">${ph}</div><div class="pi"><div class="pn" style="color:${pc.c}">${p.title} <span style="font-weight:400;color:var(--t3);font-size:.7rem">${p.year}</span></div><div class="pd">${p.director}${p.type?` · <span style="color:var(--t2)">${p.type}</span>`:''}</div><div class="pbs"><button class="preopen" data-ci="${origIdx}">← Reopen</button><button class="pedb" data-proj="${p.title}" data-ci="${origIdx}" data-isclosed="1" title="Edit">✎</button></div></div></div>`}).join('')}</div></div></div>`;}
-  document.querySelectorAll('.psh').forEach(h=>h.onclick=()=>{const b=$('ps-'+h.dataset.s);b.classList.toggle('op');h.querySelector('.ch').classList.toggle('op')});
-  document.querySelectorAll('.pmove').forEach(b=>b.onclick=e=>{e.stopPropagation();const title=b.dataset.proj,idx=D.projects.findIndex(p=>p.title===title);if(idx<0)return;pH('close project');const proj=D.projects[idx];D.closed.unshift({title:proj.title,year:proj.year,director:proj.director,type:proj.type});D.projects.splice(idx,1);toast(title+' → COMPLETED','gld');renderProj()});
-  document.querySelectorAll('.preopen').forEach(b=>b.onclick=e=>{e.stopPropagation();const ci=+b.dataset.ci;if(ci<0||ci>=D.closed.length)return;pH('reopen project');const proj=D.closed[ci];D.projects.push({title:proj.title,year:proj.year,status:'post',type:proj.type||'Feature Film',director:proj.director});D.closed.splice(ci,1);toast(proj.title+' → REOPENED','gld');renderProj()});
+      return`<div class="pc" data-proj="${p.title}" style="position:relative">${tcCircle}${dcCircle}<div class="poster-w">${posterHtml}</div><div class="pi"><div class="pn" style="color:${pc.c}">${p.title}</div><div class="pd"><span style="color:var(--t2)">${p.type||''}</span></div><div class="pbs"><span class="sb ${p.status}">${SL[p.status]||p.status}</span><button class="pst-btn" data-proj="${p.title}" title="Change status">↺</button><button class="pmove" data-proj="${p.title}">→ Complete</button><button class="pedb" data-proj="${p.title}" title="Edit">✎</button></div></div></div>`}).join('')}</div></div></div>`});
+  // Completed film section
+  let closedProjs=D.closed;if(filterActive)closedProjs=closedProjs.filter(p=>hasActiveTask(p));
+  if(closedProjs.length){const closedHasActive=closedProjs.some(p=>hasActiveTask(p));
+  el.innerHTML+=`<div class="psec"><div class="psh" data-s="closed"><span class="ch${closedHasActive?' op':''}">▶</span><h3>COMPLETED (${closedProjs.length})</h3></div><div class="psb${closedHasActive?' op':''}" id="ps-closed"><div class="pgrid">${closedProjs.map(p=>{const origIdx=D.closed.indexOf(p);const pc=gpc(p.title);const tc=D.tasks.filter(t=>t.project===p.title&&!t.done).length;const tcCircle=tc?`<div class="tc-circle" style="color:${pc.c};background:${pc.b};border:1.5px solid ${pc.c}">${tc}</div>`:'';const ph=`<img src="${getPoster(p.title)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\\'poster-ph\\' style=\\'color:${pc.c}\\'>🎬<br>${pc.code}</div>'">`; return`<div class="pc arch" style="position:relative">${tcCircle}<div class="poster-w">${ph}</div><div class="pi"><div class="pn" style="color:${pc.c}">${p.title}</div><div class="pd">${p.type?`<span style="color:var(--t2)">${p.type}</span>`:''}</div><div class="pbs"><button class="preopen" data-ci="${origIdx}">← Reopen</button><button class="pedb" data-proj="${p.title}" data-ci="${origIdx}" data-isclosed="1" title="Edit">✎</button></div></div></div>`}).join('')}</div></div></div>`;}
+  document.querySelectorAll('.psh').forEach(h=>h.onclick=()=>{const b=document.getElementById('ps-'+h.dataset.s);if(b){b.classList.toggle('op');h.querySelector('.ch').classList.toggle('op')}});
+  document.querySelectorAll('.pmove').forEach(b=>b.onclick=e=>{e.stopPropagation();const title=b.dataset.proj,idx=D.projects.findIndex(p=>p.title===title);if(idx<0)return;pH('close project');const proj=D.projects[idx];D.closed.unshift({title:proj.title,type:proj.type});D.projects.splice(idx,1);toast(title+' → COMPLETED','gld');renderProj()});
+  document.querySelectorAll('.preopen').forEach(b=>b.onclick=e=>{e.stopPropagation();const ci=+b.dataset.ci;if(ci<0||ci>=D.closed.length)return;pH('reopen project');const proj=D.closed[ci];D.projects.push({title:proj.title,status:'post',type:proj.type||'Feature Film',category:'film'});D.closed.splice(ci,1);toast(proj.title+' → REOPENED','gld');renderProj()});
   // Status change icon dropdown
   document.querySelectorAll('.pst-btn').forEach(b=>{b.onclick=e=>{e.stopPropagation();document.querySelectorAll('.pst-dd.open').forEach(d=>d.remove());const proj=D.projects.find(p=>p.title===b.dataset.proj);if(!proj)return;
     const dd=document.createElement('div');dd.className='pst-dd open';
@@ -1966,8 +1513,7 @@ function openEPrj(title,ci,isClosed){
   const pc=gpc(title);
   $('epStat').innerHTML=STATUSES.map(s=>`<option value="${s}">${SL[s]}</option>`).join('');
   $('epN').value=proj.title;$('epCd2').value=pc.code;$('epClr').value=pc.c;
-  $('epDir').value=proj.director||'';$('epYr').value=proj.year||new Date().getFullYear();
-  $('epTyp').value=proj.type||'Feature Film';
+  const cat=proj.category||'film';$('epCat').value=cat;$('epTyp').value=proj.type||'Feature Film';$('epFilmFields').style.display=cat==='personal'?'none':'';
   $('epStat').value=isClosed?'closed':(proj.status||'idea');$('epStat').disabled=!!isClosed;
   const prev=$('epPosterPrev');prev.innerHTML='';
   const currentUrl=getPoster(title);
@@ -1982,6 +1528,7 @@ function openEPrj(title,ci,isClosed){
   $('ePrjMdl').classList.add('op');$('epN').focus()
 }
 $('ePrjCn').onclick=()=>{$('ePrjMdl').classList.remove('op');_ePrjTitle=null;_ePrjCi=null};
+$('epCat').onchange=()=>{const isP=$('epCat').value==='personal';$('epFilmFields').style.display=isP?'none':'';$('epStat').disabled=isP||_ePrjClosed};
 $('epPosterDel').onclick=()=>{
   if(!_ePrjTitle)return;
   if(D.posters&&D.posters[_ePrjTitle])delete D.posters[_ePrjTitle];
@@ -1993,7 +1540,7 @@ $('epPosterDel').onclick=()=>{
 $('ePrjSv').onclick=()=>{
   if(!_ePrjTitle)return;
   const newTitle=$('epN').value.trim().toUpperCase(),newCode=$('epCd2').value.trim().toUpperCase(),newClr=$('epClr').value;
-  const newDir=$('epDir').value.trim(),newYr=+$('epYr').value,newTyp=$('epTyp').value,newStat=$('epStat').value;
+  const newCat=$('epCat').value||'film',newTyp=$('epTyp').value,newStat=$('epStat').value;
   const newUrl=fixPosterUrl($('epPosterUrl').value.trim());
   if(!newTitle||!newCode){toast('TITLE + CODE REQUIRED','rd');return}
   pH('edit project');
@@ -2003,10 +1550,10 @@ $('ePrjSv').onclick=()=>{
   if(newTitle!==_ePrjTitle&&PC[_ePrjTitle]){PC[newTitle]=PC[_ePrjTitle];delete PC[_ePrjTitle]}
   PC[newTitle]={c:newClr,b:hexToRgba(newClr,.12),code:newCode};
   if(_ePrjClosed){
-    D.closed[_ePrjCi]=Object.assign({},D.closed[_ePrjCi],{title:newTitle,year:newYr,director:newDir,type:newTyp});
+    D.closed[_ePrjCi]=Object.assign({},D.closed[_ePrjCi],{title:newTitle,type:newTyp,category:newCat});
   } else {
     const proj=D.projects.find(p=>p.title===_ePrjTitle);
-    if(proj){proj.title=newTitle;proj.year=newYr;proj.director=newDir;proj.type=newTyp;proj.status=newStat}
+    if(proj){proj.title=newTitle;proj.type=newTyp;proj.category=newCat;proj.status=newCat==='personal'?'personal':newStat}
     if(newTitle!==_ePrjTitle){
       D.tasks.forEach(t=>{if(t.project===_ePrjTitle)t.project=newTitle});
       D.completed.forEach(t=>{if(t.project===_ePrjTitle)t.project=newTitle});
@@ -2074,7 +1621,8 @@ $('eprSv').onclick=()=>{if(!eprKey)return;pH('edit partner');const nn=$('eprNm')
 /* Add Project (Projects view) */
 $('npTgl').onclick=()=>{const f=$('npFrm');f.style.display=f.style.display==='none'?'flex':'none'};
 $('npCn').onclick=()=>{$('npFrm').style.display='none'};
-$('aPrj').onclick=()=>{const n=$('nprN').value.trim().toUpperCase(),cd=$('nprCd').value.trim().toUpperCase(),fg=$('nprFg').value,dir=$('nprDir').value.trim()||'TBD',yr=+$('nprYr').value||new Date().getFullYear(),typ=$('nprTyp').value||'Feature Film',st=$('nprSt').value||'idea';const posterUrl=fixPosterUrl($('nprPoster').value.trim());if(!n||!cd){toast('NAME+CODE REQUIRED','rd');return}pH('add project');PC[n]={c:fg,b:hexToRgba(fg,.12),code:cd};D.projects.push({title:n,year:yr,status:st,type:typ,director:dir});if(posterUrl){D.posters=D.posters||{};D.posters[n]=posterUrl}['nprN','nprCd','nprDir','nprPoster'].forEach(i=>$(i).value='');$('nprYr').value='';$('npFrm').style.display='none';fillDD();renderProj();toast('PROJECT ADDED','gld')};
+$('nprCat').onchange=()=>{const isP=$('nprCat').value==='personal';$('nprTyp').style.display=isP?'none':'';$('nprSt').style.display=isP?'none':''};
+$('aPrj').onclick=()=>{const n=$('nprN').value.trim().toUpperCase(),cd=$('nprCd').value.trim().toUpperCase(),fg=$('nprFg').value,cat=$('nprCat').value||'film',typ=$('nprTyp').value||'Feature Film',st=$('nprSt').value||'idea';const posterUrl=fixPosterUrl($('nprPoster').value.trim());if(!n||!cd){toast('NAME+CODE REQUIRED','rd');return}pH('add project');PC[n]={c:fg,b:hexToRgba(fg,.12),code:cd};D.projects.push({title:n,status:cat==='personal'?'personal':st,type:cat==='personal'?'personal':typ,category:cat});if(posterUrl){D.posters=D.posters||{};D.posters[n]=posterUrl}['nprN','nprCd','nprPoster'].forEach(i=>$(i).value='');$('npFrm').style.display='none';fillDD();renderProj();toast('PROJECT ADDED','gld')};
 
 /* ═══════ FULL RENDER ␐══════ */
 function fullR(){
@@ -2082,7 +1630,6 @@ function fullR(){
   renderDL();
   const v=document.querySelector('.nav-tab.active').dataset.v;
   if(v==='projects')renderProj();
-  if(v==='invoices')renderInv();
 }
 	
 /* ═══════ RESIZE ═══════ */
