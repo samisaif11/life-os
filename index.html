@@ -769,6 +769,26 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 <script>
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
 const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbySSe0P1ngMTXeSljLO4-R5F3coJJmdmdk4H05STAefK1LaPat6P0gJtP7zU4tVCjnp4A/exec';
+
+/* ═══════ MAKE.COM WEBHOOK ═══════ */
+const MAKE_WEBHOOK_URL = ''; // Paste your Make.com webhook URL here
+
+function sendToMake(deadline) {
+  if (!MAKE_WEBHOOK_URL) return;
+  fetch(MAKE_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: deadline.title,
+      project: deadline.project,
+      date: deadline.date,
+      allDay: deadline.allDay,
+      type: deadline.type,
+      partner: deadline.partner,
+      notes: deadline.notes || ''
+    })
+  }).catch(err => console.error('Make.com webhook failed:', err));
+}
 let _saving = false, _saveQueue = null, _lastSavedAt = '', _loaded = false, _saveTimer = null;
 const SAVE_DEBOUNCE_MS = 1500;
 
@@ -1400,7 +1420,8 @@ $('sDl').onclick=()=>{const t=$('fdT').value.trim().toUpperCase();if(!t){toast('
   const dateVal=$('fdDate').value||td();
   const timeVal=$('fdTime').value||'12:00';
   const fullDate=dateVal+'T'+timeVal;
-  pH('add deadline');D.deadlines.push({id:D.dlid++,title:t,project:$('fdP').value,partner:$('fdPa').value.trim().toUpperCase(),person:$('fdPe').value.trim().toUpperCase(),date:fullDate,type:$('fdTy').value,allDay:$('fdAD').checked,keepCount:$('fdKC').checked,notes:$('fdNo').value.trim()});['fdT','fdPa','fdPe','fdNo'].forEach(i=>$(i).value='');$('fdDate').value='';updateCalLabel('fdDate');$('fdTime').value='';$('fdAD').checked=false;$('fdKC').checked=false;toast('DEADLINE ADDED','gld');$('dFrm').classList.remove('open');renderDL()};
+  const newDl={id:D.dlid++,title:t,project:$('fdP').value,partner:$('fdPa').value.trim().toUpperCase(),person:$('fdPe').value.trim().toUpperCase(),date:fullDate,type:$('fdTy').value,allDay:$('fdAD').checked,keepCount:$('fdKC').checked,notes:$('fdNo').value.trim()};
+  pH('add deadline');D.deadlines.push(newDl);sendToMake(newDl);['fdT','fdPa','fdPe','fdNo'].forEach(i=>$(i).value='');$('fdDate').value='';updateCalLabel('fdDate');$('fdTime').value='';$('fdAD').checked=false;$('fdKC').checked=false;toast('DEADLINE ADDED','gld');$('dFrm').classList.remove('open');renderDL()};
 
 /* Edit Deadline */
 let eDLid=null;
