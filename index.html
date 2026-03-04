@@ -775,8 +775,12 @@ const MAKE_WEBHOOK_URL = ''; // Paste your Make.com webhook URL here
 
 function sendToMake(deadline) {
   if (!MAKE_WEBHOOK_URL) return;
-  const code = (PC[deadline.project] && PC[deadline.project].code) ? PC[deadline.project].code : deadline.project;
-  const eventTitle = `${code} | ${deadline.title} | ${deadline.project}`;
+  const code = PC[deadline.project] && PC[deadline.project].code ? PC[deadline.project].code : '';
+  const parts = [];
+  if (code) parts.push(code);
+  parts.push(deadline.title);
+  if (deadline.partner) parts.push(deadline.partner);
+  const eventTitle = parts.join(' | ');
   const dt = new Date(deadline.date);
   const isoDate = deadline.allDay
     ? deadline.date.slice(0, 10)
