@@ -852,62 +852,65 @@ const QUOTES = [
 ];
 
 /* ═══════ QUOTE SPLASH LOGIC ═══════ */
+/* ═══════ SPLASH COORDINATION ═══════ */
+window._quoteDone = false;
+window._dataLoaded = false;
+window._tryHide = function(){
+  if(!window._quoteDone || !window._dataLoaded) return;
+  const ov = document.getElementById('loadOv');
+  if(ov){ ov.classList.add('fade-out'); setTimeout(()=>ov.remove(), 500); }
+};
+
 (function(){
-  const WPM = 170; // reading speed
+  const WPM = 170;
   const MIN_MS = 3500, MAX_MS = 14000;
   function readTime(text){ return Math.min(MAX_MS, Math.max(MIN_MS, Math.round((text.split(/\s+/).length / WPM) * 60000))); }
 
   const GREETINGS = {
-    morning: ["Good morning, Sami.", "Morning, Sami.", "Rise and conquer, Sami."],
+    morning:   ["Good morning, Sami.", "Morning, Sami.", "Rise and conquer, Sami."],
     afternoon: ["Good afternoon, Sami.", "Hello again, Sami.", "Ready when you are, Sami.", "Back at it, Sami?"],
-    evening: ["Good evening, Sami.", "Evening, Sami.", "Great to have you back, Sami.", "Hey there, Sami!"]
+    evening:   ["Good evening, Sami.", "Evening, Sami.", "Great to have you back, Sami.", "Hey there, Sami!"]
   };
   function greeting(){ const h=new Date().getHours(),set=h<12?GREETINGS.morning:h<18?GREETINGS.afternoon:GREETINGS.evening; return set[Math.floor(Math.random()*set.length)]; }
 
-  const ov=$('loadOv');
-  if(!ov)return;
-  const qText=$('qText'),qAuthor=$('qAuthor'),qFill=$('qFill'),qSkip=$('qSkip'),qGreeting=$('qGreeting');
-  qGreeting.textContent=greeting();
+  const gi = id => document.getElementById(id);
+  const ov = gi('loadOv');
+  if(!ov) return;
+  const qText=gi('qText'), qAuthor=gi('qAuthor'), qFill=gi('qFill'), qSkip=gi('qSkip'), qGreeting=gi('qGreeting');
 
-  // Pick a random quote
-  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
-  qText.textContent=q.t;
-  qAuthor.textContent='— '+q.a;
-  const dur=readTime(q.t);
+  qGreeting.textContent = greeting();
+  const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  qText.textContent = q.t;
+  qAuthor.textContent = '— ' + q.a;
+  const dur = readTime(q.t);
 
-  // Progress bar
-  let startTime=null,elapsed=0,rafId=null,paused=false,done=false;
+  let startTime=null, elapsed=0, rafId=null, paused=false, done=false;
   function tick(ts){
-    if(done)return;
-    if(!startTime)startTime=ts;
-    elapsed=ts-startTime;
-    const pct=Math.min(100,(elapsed/dur)*100);
-    qFill.style.width=pct+'%';
-    if(pct>=100){finish();return;}
-    rafId=requestAnimationFrame(tick);
+    if(done) return;
+    if(!startTime) startTime=ts;
+    elapsed = ts - startTime;
+    const pct = Math.min(100, (elapsed/dur)*100);
+    qFill.style.width = pct+'%';
+    if(pct >= 100){ finish(); return; }
+    rafId = requestAnimationFrame(tick);
   }
   function finish(){
-    if(done)return;
-    done=true;
+    if(done) return;
+    done = true;
     cancelAnimationFrame(rafId);
-    // hideLoading() will be called by the data load; just ensure overlay fades if data already loaded
-    if(window._dataLoaded) hideLoading();
-    else window._quoteDone=true;
+    window._quoteDone = true;
+    window._tryHide();
   }
-  function pause(){if(paused||done)return;paused=true;cancelAnimationFrame(rafId);ov.classList.add('paused')}
-  function resume(){if(!paused||done)return;paused=false;ov.classList.remove('paused');startTime=performance.now()-elapsed;rafId=requestAnimationFrame(tick)}
+  function pause(){ if(paused||done) return; paused=true; cancelAnimationFrame(rafId); ov.classList.add('paused'); }
+  function resume(){ if(!paused||done) return; paused=false; ov.classList.remove('paused'); startTime=performance.now()-elapsed; rafId=requestAnimationFrame(tick); }
 
-  rafId=requestAnimationFrame(tick);
-
-  // Hold to pause
-  ov.addEventListener('mousedown',pause);
-  ov.addEventListener('mouseup',resume);
-  ov.addEventListener('touchstart',pause,{passive:true});
-  ov.addEventListener('touchend',resume,{passive:true});
-
-  // Skip
-  qSkip.addEventListener('click',e=>{e.stopPropagation();finish()});
-  qSkip.addEventListener('mousedown',e=>e.stopPropagation());
+  rafId = requestAnimationFrame(tick);
+  ov.addEventListener('mousedown', pause);
+  ov.addEventListener('mouseup',   resume);
+  ov.addEventListener('touchstart', pause,  {passive:true});
+  ov.addEventListener('touchend',   resume, {passive:true});
+  qSkip.addEventListener('click',     e=>{e.stopPropagation(); finish();});
+  qSkip.addEventListener('mousedown', e=>e.stopPropagation());
 })();
 
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
@@ -1044,11 +1047,8 @@ async function loadFromSheet(manual = false) {
 }
 
 function hideLoading() {
-  // Wait for both: data loaded AND quote timer done
   window._dataLoaded = true;
-  if (!window._quoteDone) return; // quote will call hideLoading again when it finishes
-  const ov = $('loadOv');
-  if (ov) { ov.classList.add('fade-out'); setTimeout(() => ov.remove(), 500); }
+  window._tryHide();
 }
 /* ═══════════════════════════════════════════════════════════════
    COLOR MAPS
