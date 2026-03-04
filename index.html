@@ -234,7 +234,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .dlc::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px}
 .dlc.urg::before{background:var(--red)}.dlc.soon::before{background:var(--orange)}.dlc.ok::before{background:var(--green)}.dlc.past::before{background:var(--t3);opacity:.4}
 .dlc:hover{border-color:var(--b1)}
-.dlc:nth-child(even){background:var(--bg-3)}
 .dlc.past{padding:18px 28px;opacity:.35;border-color:transparent}
 .dlc.past:hover{opacity:.6}
 .dlc.past .dltags .tag{font-size:.5rem}
@@ -417,13 +416,25 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .sync-btn:hover{border-color:var(--gold);color:var(--gold)}
 .sync-btn.spinning{animation:spin 1s linear infinite}
 @keyframes spin{100%{transform:rotate(360deg)}}
-.loading-overlay{position:fixed;inset:0;z-index:500;background:var(--bg-0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease}
+/* ═══ QUOTE SPLASH ═══ */
+.loading-overlay{position:fixed;inset:0;z-index:500;background:var(--bg-0);display:flex;flex-direction:column;align-items:stretch;justify-content:stretch;transition:opacity .5s ease;cursor:default;user-select:none}
 .loading-overlay.fade-out{opacity:0;pointer-events:none}
-.loading-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--gold);margin-bottom:12px}
-.loading-bar{width:200px;height:3px;background:var(--b1);border-radius:2px;overflow:hidden}
-.loading-fill{width:30%;height:100%;background:var(--gold);border-radius:2px;animation:loadSlide 1.2s ease-in-out infinite}
-@keyframes loadSlide{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
-.loading-msg{font-size:.65rem;color:var(--t3);margin-top:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px}
+.q-progress-bar{position:absolute;top:0;left:0;height:2px;background:rgba(212,175,55,.18);width:100%;z-index:1}
+.q-progress-fill{height:100%;background:var(--gold);width:0%;transition:none}
+.q-progress-fill.animating{transition:width linear}
+.q-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(24px,6vw,80px) clamp(20px,8vw,120px);position:relative;max-width:860px;margin:0 auto;width:100%;box-sizing:border-box}
+.q-deco{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(72px,12vw,140px);line-height:.65;font-weight:700;color:var(--gold);opacity:.1;pointer-events:none;flex-shrink:0;display:block}
+.q-deco.open{align-self:flex-start;margin-bottom:-clamp(16px,2.5vw,32px)}
+.q-deco.close{align-self:flex-end;margin-top:-clamp(16px,2.5vw,32px)}
+.q-text{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(1rem,2.6vw,1.85rem);font-weight:600;line-height:1.5;color:var(--t1);text-align:center;letter-spacing:-.01em}
+.q-author{margin-top:clamp(14px,2.5vw,28px);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(.62rem,1.1vw,.8rem);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.65}
+.q-footer{position:absolute;bottom:clamp(14px,2.5vw,28px);left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,52px)}
+.q-greeting{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);opacity:.55}
+.q-skip{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);opacity:.3;background:none;border:none;cursor:pointer;padding:6px 10px;transition:opacity .2s}
+.q-skip:hover{opacity:.65}
+.q-paused-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:0;transition:opacity .2s;pointer-events:none}
+.loading-overlay.paused .q-paused-hint{opacity:.45}
+.loading-overlay.paused .q-progress-fill{transition:none!important}
 /* Project edit modal poster preview */
 .poster-prev{width:60px;height:90px;border-radius:4px;border:1px solid var(--b1);background:var(--bg-4);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
 .poster-prev img{width:100%;height:100%;object-fit:cover}
@@ -765,11 +776,140 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 <div class="sync-indicator" id="syncInd"><span class="sync-dot"></span><span id="syncTxt">SYNCED</span></div>
 <button class="sync-btn" id="syncBtn" title="Sync from cloud">⟳</button>
 <div class="loading-overlay" id="loadOv">
-  <div class="loading-title">ALI N' · FNM</div>
-  <div class="loading-bar"><div class="loading-fill"></div></div>
-  <div class="loading-msg" id="loadMsg">Connecting to cloud...</div>
+  <div class="q-progress-bar"><div class="q-progress-fill" id="qFill"></div></div>
+  <div class="q-body">
+    <span class="q-deco open">&ldquo;</span>
+    <div class="q-text" id="qText"></div>
+    <span class="q-deco close">&rdquo;</span>
+    <div class="q-author" id="qAuthor"></div>
+    <div class="q-paused-hint">HOLD TO PAUSE · RELEASE TO CONTINUE</div>
+  </div>
+  <div class="q-footer">
+    <div class="q-greeting" id="qGreeting"></div>
+    <button class="q-skip" id="qSkip">SKIP →</button>
+  </div>
 </div>
 <script>
+/* ═══════════════════════════════════════════════════════════════
+   QUOTES — add new entries here anytime, timing is auto-calculated
+   ═══════════════════════════════════════════════════════════════ */
+const QUOTES = [
+  {t:"Will I desperately need this information for something immediate or important? If not, don't consume it.",a:"Tim Ferriss"},
+  {t:"Am I inventing new things to avoid the important?",a:"Tim Ferriss"},
+  {t:"Am I being productive, or just active?",a:"Tim Ferriss"},
+  {t:"Practice the art of non-finishing.",a:"Tim Ferriss"},
+  {t:"Reading a lot cannot produce many creative works.",a:"Albert Einstein"},
+  {t:"Be selectively ignorant.",a:"Tim Ferriss"},
+  {t:"Learn to propose solutions. Be the initiator of solutions.",a:"Tim Ferriss"},
+  {t:"Requiring a lot of time does not make a task important, and doing something unimportant well does not make it important.",a:"Tim Ferriss"},
+  {t:"Strive for excitement. What would excite me?",a:"Tim Ferriss"},
+  {t:"What gets measured, gets managed.",a:"Tim Ferriss"},
+  {t:"Instead of the law of attraction, rely on the law of affection: the more you affect, the richer you get. Impact millions = make millions.",a:"MJ DeMarco"},
+  {t:"Try not to become a man of success, but rather try to become a man of value.",a:"Albert Einstein"},
+  {t:"Eat within 1 hour of waking up. Never go more than 4 hours without eating. Always have dinner. Protein at every meal. Track for the first month — awareness creates results.",a:"James Clear"},
+  {t:"The world seems to be accustomed to delaying gratification less and less, which means the rewards of delaying gratification grow more and more.",a:"James Clear"},
+  {t:"Where I was born and where and how I have lived is unimportant. It is what I have done with where I have been that should be of interest.",a:"Georgia O'Keeffe"},
+  {t:"Which relationship deserves more of my attention this year?",a:"James Clear"},
+  {t:"Trust follows consistency. The pattern is the proof.",a:"James Clear"},
+  {t:"Environment can multiply or divide your effort. Before you plant the garden, study the soil. After you plant the garden, tend the weeds.",a:"James Clear"},
+  {t:"Speed creates opportunity. Patience compounds it. Moving fast will generate more chances. But if you quickly jump from thing to thing, growth will stall.",a:"James Clear"},
+  {t:"You can be authentic and hardworking and still struggle if you're in the wrong environment. Think about your placement as much as your performance.",a:"James Clear"},
+  {t:"I would have written a shorter letter, but I did not have the time.",a:"Blaise Pascal"},
+  {t:"If you wait, will it get easier, or will you just be older?",a:"James Clear"},
+  {t:"Don't ignore the problem, but keep it light. Take action with a smile. Adding tension won't solve your troubles faster. Be happy in the doing.",a:"James Clear"},
+  {t:"To enjoy life, the adventurous state of mind must be grasped and maintained. The essential feature of adventure is that it is a going forward into unknown territory.",a:"Agnes Martin"},
+  {t:"You can't make time go faster or success come sooner. The only thing you can control is the next action.",a:"James Clear"},
+  {t:"There are two ways to grow: by adding or by shedding. Do you need to add something or do you need to shed something?",a:"James Clear"},
+  {t:"Go at it boldly, and you'll find unexpected forces closing round you and coming to your aid.",a:"Basil King"},
+  {t:"Obsessions are the only things that matter.",a:"Patricia Highsmith"},
+  {t:"Are you continuing to do it mostly because it makes you feel interested and alive — or mostly because you know what to expect?",a:"James Clear"},
+  {t:"If you don't design your own life plan, chances are you'll fall into someone else's plan. And guess what they have planned for you? Not much.",a:"Jim Rohn"},
+  {t:"At first people refuse to believe that a strange new thing can be done, then they begin to hope it can be done, then they see it can be done — then it is done and all the world wonders why it was not done centuries ago.",a:"Frances Hodgson Burnett"},
+  {t:"You need focus to become exceptional at anything. You have to be great at saying no. Massive amounts of time and energy are wasted optimizing things that should be left undone.",a:"James Clear"},
+  {t:"Simplicity before understanding complexity is ignorance. Simplicity after understanding complexity is genius.",a:"James Clear"},
+  {t:"A difficult lesson to learn: your most persistent distractions will seem justified to you.",a:"James Clear"},
+  {t:"Your current habits are perfectly designed to deliver your current results.",a:"James Clear"},
+  {t:"How can I make it obvious? How can I make it attractive? How can I make it easy? How can I make it satisfying?",a:"James Clear"},
+  {t:"When you say no, you are only saying no to one option. When you say yes, you are saying no to every other option. No is a choice. Yes is a responsibility.",a:"James Clear"},
+  {t:"People who excel tend to obsess over the details. People who struggle also tend to obsess over the details. The difference is what details they focus on.",a:"James Clear"},
+  {t:"It is better to start as a fool and learn from your mistakes than to fake being a genius and ignore your errors.",a:"James Clear"},
+  {t:"We need to redefine 'hard work' to include 'hard thinking.' The person who outsmarts you is out-working you. Usually, the hardest work is thinking of a better way to do it.",a:"James Clear"},
+  {t:"Unfinished projects can't compound.",a:"James Clear"},
+  {t:"Finishing projects is part of what it means to deliver high quality work. It's not high quality if your perfectionism prevents you from finishing.",a:"James Clear"},
+  {t:"Being yourself is a continuous effort. There is always another expectation placed upon you, another nudge from society. It's a daily battle to be yourself.",a:"James Clear"},
+  {t:"You only need to know the direction, not the destination. The direction is enough to make the next choice.",a:"James Clear"},
+  {t:"If you want to find a better path, you have to be willing to explore a different path.",a:"James Clear"},
+  {t:"How to build a career: do great work, share it publicly, cold email people ahead of you, talk about your work, host events, become friends, rise together.",a:"James Clear"},
+  {t:"What gets rewarded, gets repeated. What gets punished, gets avoided.",a:"James Clear"},
+  {t:"Prime your environment to make the next action easy.",a:"James Clear"},
+  {t:"The will to win is wasted if it is directed towards trivial affairs.",a:"James Clear"},
+  {t:"Highly focused people do not leave their options open. If you commit to nothing, you'll be distracted by everything.",a:"James Clear"},
+  {t:"Success is largely the failures you avoid. Health is the injuries you don't sustain. Wealth is the purchases you don't make. Happiness is the objects you don't desire.",a:"James Clear"},
+  {t:"Strength is not born from strength. Strength can be born only from weakness. So be glad of your weaknesses now, they are the beginnings of your strength.",a:"Claire Weekes"},
+  {t:"Until we see what we are, we cannot take steps to become what we should be.",a:"Charlotte Perkins Gilman"},
+  {t:"Learning more will increase knowledge, but only attempting more will reduce fear. The more you try it, the less you will fear it.",a:"James Clear"},
+  {t:"One of the best positions to be in: young, talented, and the underdog. You're hungry to prove yourself, young enough to not care how it's been done before.",a:"James Clear"}
+];
+
+/* ═══════ QUOTE SPLASH LOGIC ═══════ */
+(function(){
+  const WPM = 170; // reading speed
+  const MIN_MS = 3500, MAX_MS = 14000;
+  function readTime(text){ return Math.min(MAX_MS, Math.max(MIN_MS, Math.round((text.split(/\s+/).length / WPM) * 60000))); }
+
+  const GREETINGS = {
+    morning: ["Good morning, Sami.", "Morning, Sami.", "Rise and conquer, Sami."],
+    afternoon: ["Good afternoon, Sami.", "Hello again, Sami.", "Ready when you are, Sami.", "Back at it, Sami?"],
+    evening: ["Good evening, Sami.", "Evening, Sami.", "Great to have you back, Sami.", "Hey there, Sami!"]
+  };
+  function greeting(){ const h=new Date().getHours(),set=h<12?GREETINGS.morning:h<18?GREETINGS.afternoon:GREETINGS.evening; return set[Math.floor(Math.random()*set.length)]; }
+
+  const ov=$('loadOv');
+  if(!ov)return;
+  const qText=$('qText'),qAuthor=$('qAuthor'),qFill=$('qFill'),qSkip=$('qSkip'),qGreeting=$('qGreeting');
+  qGreeting.textContent=greeting();
+
+  // Pick a random quote
+  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  qText.textContent=q.t;
+  qAuthor.textContent='— '+q.a;
+  const dur=readTime(q.t);
+
+  // Progress bar
+  let startTime=null,elapsed=0,rafId=null,paused=false,done=false;
+  function tick(ts){
+    if(done)return;
+    if(!startTime)startTime=ts;
+    elapsed=ts-startTime;
+    const pct=Math.min(100,(elapsed/dur)*100);
+    qFill.style.width=pct+'%';
+    if(pct>=100){finish();return;}
+    rafId=requestAnimationFrame(tick);
+  }
+  function finish(){
+    if(done)return;
+    done=true;
+    cancelAnimationFrame(rafId);
+    // hideLoading() will be called by the data load; just ensure overlay fades if data already loaded
+    if(window._dataLoaded) hideLoading();
+    else window._quoteDone=true;
+  }
+  function pause(){if(paused||done)return;paused=true;cancelAnimationFrame(rafId);ov.classList.add('paused')}
+  function resume(){if(!paused||done)return;paused=false;ov.classList.remove('paused');startTime=performance.now()-elapsed;rafId=requestAnimationFrame(tick)}
+
+  rafId=requestAnimationFrame(tick);
+
+  // Hold to pause
+  ov.addEventListener('mousedown',pause);
+  ov.addEventListener('mouseup',resume);
+  ov.addEventListener('touchstart',pause,{passive:true});
+  ov.addEventListener('touchend',resume,{passive:true});
+
+  // Skip
+  qSkip.addEventListener('click',e=>{e.stopPropagation();finish()});
+  qSkip.addEventListener('mousedown',e=>e.stopPropagation());
+})();
+
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
 const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbySSe0P1ngMTXeSljLO4-R5F3coJJmdmdk4H05STAefK1LaPat6P0gJtP7zU4tVCjnp4A/exec';
 
@@ -904,6 +1044,9 @@ async function loadFromSheet(manual = false) {
 }
 
 function hideLoading() {
+  // Wait for both: data loaded AND quote timer done
+  window._dataLoaded = true;
+  if (!window._quoteDone) return; // quote will call hideLoading again when it finishes
   const ov = $('loadOv');
   if (ov) { ov.classList.add('fade-out'); setTimeout(() => ov.remove(), 500); }
 }
