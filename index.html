@@ -776,13 +776,21 @@ const MAKE_WEBHOOK_URL = ''; // Paste your Make.com webhook URL here
 function sendToMake(deadline) {
   if (!MAKE_WEBHOOK_URL) return;
   const code = (PC[deadline.project] && PC[deadline.project].code) ? PC[deadline.project].code : deadline.project;
-  const eventTitle = `${code} | ${deadline.title} | ${deadline.type.toUpperCase()}`;
+  const eventTitle = `${code} | ${deadline.title} | ${deadline.project}`;
+  const dt = new Date(deadline.date);
+  const isoDate = deadline.allDay
+    ? deadline.date.slice(0, 10)
+    : dt.getFullYear() + '-' +
+      String(dt.getMonth()+1).padStart(2,'0') + '-' +
+      String(dt.getDate()).padStart(2,'0') + 'T' +
+      String(dt.getHours()).padStart(2,'0') + ':' +
+      String(dt.getMinutes()).padStart(2,'0') + ':00';
   fetch(MAKE_WEBHOOK_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       eventTitle,
-      date: deadline.date,
+      date: isoDate,
       allDay: deadline.allDay,
       notes: deadline.notes || ''
     })
