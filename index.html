@@ -924,17 +924,13 @@ window._tryHide = function(){
   qSkip.addEventListener('click',     e=>{e.stopPropagation(); finish();});
   qSkip.addEventListener('mousedown', e=>e.stopPropagation());
 
-  // Spacebar toggles pause/resume
-  function onKey(e){
-    if(e.code==='Space'&&!e.target.matches('input,textarea,select,button')){
-      e.preventDefault();
-      paused ? resume() : pause();
-    }
-  }
-  document.addEventListener('keydown', onKey);
-  // Clean up listener once quote is done
+  // Hold space to pause, release to resume
+  function onKD(e){if(e.code==='Space'&&!e.repeat&&!e.target.matches('input,textarea,select,button')){e.preventDefault();pause();}}
+  function onKU(e){if(e.code==='Space'&&!e.target.matches('input,textarea,select,button')){e.preventDefault();resume();}}
+  document.addEventListener('keydown', onKD);
+  document.addEventListener('keyup',   onKU);
   const _finish = finish;
-  finish = function(){ document.removeEventListener('keydown', onKey); _finish(); };
+  finish = function(){ document.removeEventListener('keydown', onKD); document.removeEventListener('keyup', onKU); _finish(); };
 })();
 
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
