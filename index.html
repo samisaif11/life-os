@@ -422,12 +422,12 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .q-progress-bar{position:absolute;top:0;left:0;height:2px;background:rgba(212,175,55,.18);width:100%;z-index:1}
 .q-progress-fill{height:100%;background:var(--gold);width:0%;transition:none}
 .q-progress-fill.animating{transition:width linear}
-.q-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(24px,6vw,80px) clamp(20px,8vw,120px);position:relative;max-width:860px;margin:0 auto;width:100%;box-sizing:border-box}
-.q-deco{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(72px,12vw,140px);line-height:.65;font-weight:700;color:var(--gold);opacity:.1;pointer-events:none;flex-shrink:0;display:block}
-.q-deco.open{align-self:flex-start;margin-bottom:-clamp(16px,2.5vw,32px)}
-.q-deco.close{align-self:flex-end;margin-top:-clamp(16px,2.5vw,32px)}
-.q-text{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(1rem,2.6vw,1.85rem);font-weight:600;line-height:1.5;color:var(--t1);text-align:center;letter-spacing:-.01em}
-.q-author{margin-top:clamp(14px,2.5vw,28px);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(.62rem,1.1vw,.8rem);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.65}
+.q-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(20px,5vw,60px) clamp(32px,10vw,160px);position:relative;max-width:1100px;margin:0 auto;width:100%;box-sizing:border-box}
+.q-deco{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(80px,14vw,200px);line-height:.6;font-weight:700;color:var(--gold);opacity:.09;pointer-events:none;flex-shrink:0;display:block}
+.q-deco.open{align-self:flex-start;margin-bottom:-clamp(22px,3.5vw,56px)}
+.q-deco.close{align-self:flex-end;margin-top:-clamp(22px,3.5vw,56px)}
+.q-text{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;line-height:1.4;color:var(--t1);text-align:center;letter-spacing:-.02em}
+.q-author{margin-top:clamp(16px,3vw,36px);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(.62rem,1.1vw,.8rem);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.65}
 .q-footer{position:absolute;bottom:clamp(14px,2.5vw,28px);left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,52px)}
 .q-greeting{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);opacity:.55}
 .q-skip{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);opacity:.3;background:none;border:none;cursor:pointer;padding:6px 10px;transition:opacity .2s}
@@ -882,6 +882,18 @@ window._tryHide = function(){
   const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
   qText.textContent = q.t;
   qAuthor.textContent = '— ' + q.a;
+
+  // Dynamic font size: short quotes go big, long quotes shrink to stay readable
+  (function(){
+    const w = q.t.split(/\s+/).length;
+    // Desktop size (clamped by CSS on mobile via min)
+    const desk = w<=8?'clamp(1.6rem,5.5vw,4.2rem)'
+                :w<=15?'clamp(1.4rem,4.5vw,3.4rem)'
+                :w<=28?'clamp(1.2rem,3.5vw,2.7rem)'
+                :w<=45?'clamp(1.1rem,2.8vw,2.1rem)'
+                      :'clamp(1rem,2.2vw,1.65rem)';
+    qText.style.fontSize = desk;
+  })();
   const dur = readTime(q.t);
 
   let startTime=null, elapsed=0, rafId=null, paused=false, done=false;
