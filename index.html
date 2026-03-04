@@ -1462,9 +1462,10 @@ function renderProj(){
   const fBtn=$('projFilterTgl');if(fBtn){fBtn.textContent=filterActive?'ACTIVE ONLY':'SHOW ALL';if(filterActive)fBtn.classList.add('active');else fBtn.classList.remove('active')}
   const hasActiveDL=p=>D.deadlines.some(d=>d.project===p.title);
   const hasActiveTask=p=>D.tasks.some(t=>t.project===p.title&&!t.done);
-  // Separate personal from film projects
-  const personalProjs=D.projects.filter(p=>p.category==='personal');
-  const filmProjs=D.projects.filter(p=>p.category!=='personal');
+  // Separate personal from film projects (check both category and status for robustness)
+  const isPersonal=p=>p.category==='personal'||p.status==='personal';
+  const personalProjs=D.projects.filter(p=>isPersonal(p));
+  const filmProjs=D.projects.filter(p=>!isPersonal(p));
   // ── PERSONAL PROJECTS SECTION ──
   if(personalProjs.length||(filterActive?false:true)){
     let pp=personalProjs;
@@ -1482,11 +1483,9 @@ function renderProj(){
     const hasActive=projs.some(p=>hasActiveTask(p)||hasActiveDL(p));
     el.innerHTML+=`<div class="psec"><div class="psh" data-s="${s}"><span class="ch${hasActive?' op':''}">▶</span><h3>${SL[s]} (${projs.length})</h3></div><div class="psb${hasActive?' op':''}" id="ps-${s}"><div class="pgrid">${projs.map(p=>{
       const tc=D.tasks.filter(t=>t.project===p.title&&!t.done).length,pc=gpc(p.title);
-      const dc=D.deadlines.filter(d=>d.project===p.title).length;
       const posterHtml=`<img src="${getPoster(p.title)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\\'poster-ph\\' style=\\'color:${pc.c}\\'>🎬<br>${pc.code}</div>'">`;
       const tcCircle=tc?`<div class="tc-circle" style="color:${pc.c};background:${pc.b};border:1.5px solid ${pc.c}">${tc}</div>`:'';
-      const dcCircle=dc?`<div class="tc-circle" style="top:8px;right:${tc?'42px':'8px'};color:var(--red);background:var(--red-d);border:1.5px solid var(--red)">⏱</div>`:'';
-      return`<div class="pc" data-proj="${p.title}" style="position:relative">${tcCircle}${dcCircle}<div class="poster-w">${posterHtml}</div><div class="pi"><div class="pn" style="color:${pc.c}">${p.title}</div><div class="pd"><span style="color:var(--t2)">${p.type||''}</span></div><div class="pbs"><span class="sb ${p.status}">${SL[p.status]||p.status}</span><button class="pst-btn" data-proj="${p.title}" title="Change status">↺</button><button class="pmove" data-proj="${p.title}">→ Complete</button><button class="pedb" data-proj="${p.title}" title="Edit">✎</button></div></div></div>`}).join('')}</div></div></div>`});
+      return`<div class="pc" data-proj="${p.title}" style="position:relative">${tcCircle}<div class="poster-w">${posterHtml}</div><div class="pi"><div class="pn" style="color:${pc.c}">${p.title}</div><div class="pd"><span style="color:var(--t2)">${p.type||''}</span></div><div class="pbs"><span class="sb ${p.status}">${SL[p.status]||p.status}</span><button class="pst-btn" data-proj="${p.title}" title="Change status">↺</button><button class="pmove" data-proj="${p.title}">→ Complete</button><button class="pedb" data-proj="${p.title}" title="Edit">✎</button></div></div></div>`}).join('')}</div></div></div>`});
   // Completed film section
   let closedProjs=D.closed;if(filterActive)closedProjs=closedProjs.filter(p=>hasActiveTask(p));
   if(closedProjs.length){const closedHasActive=closedProjs.some(p=>hasActiveTask(p));
@@ -1622,7 +1621,7 @@ $('eprSv').onclick=()=>{if(!eprKey)return;pH('edit partner');const nn=$('eprNm')
 $('npTgl').onclick=()=>{const f=$('npFrm');f.style.display=f.style.display==='none'?'flex':'none'};
 $('npCn').onclick=()=>{$('npFrm').style.display='none'};
 $('nprCat').onchange=()=>{const isP=$('nprCat').value==='personal';$('nprTyp').style.display=isP?'none':'';$('nprSt').style.display=isP?'none':''};
-$('aPrj').onclick=()=>{const n=$('nprN').value.trim().toUpperCase(),cd=$('nprCd').value.trim().toUpperCase(),fg=$('nprFg').value,cat=$('nprCat').value||'film',typ=$('nprTyp').value||'Feature Film',st=$('nprSt').value||'idea';const posterUrl=fixPosterUrl($('nprPoster').value.trim());if(!n||!cd){toast('NAME+CODE REQUIRED','rd');return}pH('add project');PC[n]={c:fg,b:hexToRgba(fg,.12),code:cd};D.projects.push({title:n,status:cat==='personal'?'personal':st,type:cat==='personal'?'personal':typ,category:cat});if(posterUrl){D.posters=D.posters||{};D.posters[n]=posterUrl}['nprN','nprCd','nprPoster'].forEach(i=>$(i).value='');$('npFrm').style.display='none';fillDD();renderProj();toast('PROJECT ADDED','gld')};
+$('aPrj').onclick=()=>{const n=$('nprN').value.trim().toUpperCase(),cd=$('nprCd').value.trim().toUpperCase(),fg=$('nprFg').value,cat=$('nprCat').value||'film',typ=$('nprTyp').value||'Feature Film',st=$('nprSt').value||'idea';const posterUrl=fixPosterUrl($('nprPoster').value.trim());if(!n||!cd){toast('NAME+CODE REQUIRED','rd');return}if(D.projects.some(p=>p.title===n)||D.closed.some(p=>p.title===n)){toast('PROJECT NAME ALREADY EXISTS','rd');return}pH('add project');PC[n]={c:fg,b:hexToRgba(fg,.12),code:cd};D.projects.push({title:n,status:cat==='personal'?'personal':st,type:cat==='personal'?'personal':typ,category:cat});if(posterUrl){D.posters=D.posters||{};D.posters[n]=posterUrl}['nprN','nprCd','nprPoster'].forEach(i=>$(i).value='');$('npFrm').style.display='none';fillDD();renderProj();toast('PROJECT ADDED','gld')};
 
 /* ═══════ FULL RENDER ␐══════ */
 function fullR(){
