@@ -502,7 +502,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   <div class="ntbar">
     <button class="nbtn" id="ntTgl">+ NEW TASK</button>
     <div class="tfrm" id="tFrm">
-      <div class="fr" style="grid-template-columns:1fr"><div><label class="fl">Task Name</label><input type="text" class="fi" id="fN" placeholder="E.G., SEND DCP SPECS TO FILMS BOUTIQUE"></div></div>
+      <div class="fr" style="grid-template-columns:1fr"><div><label class="fl">Task Name</label><input type="text" class="fi" id="fN" placeholder="E.G., SEND DCP SPECS TO FILMS BOUTIQUE" style="text-transform:uppercase"></div></div>
       <div class="fr fr4">
         <div><label class="fl">Project</label><select class="fs" id="fP"></select></div>
         <div class="sug-w"><label class="fl">Assignees</label><div class="mtag-w" id="fPeW"><input type="text" class="mtag-inp" id="fPe" placeholder="Type..." autocomplete="off"></div><div class="sug-l" id="sugPe"></div></div>
@@ -669,7 +669,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
 <!-- Edit Task Modal -->
 <div class="mbg" id="eMdl"><div class="mdl"><h3>✎ Edit Task</h3>
-  <div class="fg"><label class="fl">Task Name</label><input type="text" class="fi" id="eN"></div>
+  <div class="fg"><label class="fl">Task Name</label><input type="text" class="fi" id="eN" style="text-transform:uppercase"></div>
   <div class="fr fr4"><div class="fg"><label class="fl">Project</label><select class="fs" id="eP"></select></div><div class="fg sug-w"><label class="fl">Assignees</label><div class="mtag-w" id="ePeW"><input type="text" class="mtag-inp" id="ePe" autocomplete="off" placeholder="Type..."></div><div class="sug-l" id="sugEPe"></div></div><div class="fg sug-w"><label class="fl">Partners</label><div class="mtag-w" id="ePaW"><input type="text" class="mtag-inp" id="ePa" autocomplete="off" placeholder="Type..."></div><div class="sug-l" id="sugEPa"></div></div><div class="fg"><label class="fl">Priority</label><select class="fs" id="ePr"><option value="1">1-URGENT</option><option value="2">2-HIGH</option><option value="3">3-NORMAL</option><option value="4">4-LOW</option><option value="5">5-MINIMAL</option></select></div></div>
   <div class="fr fr2"><div class="fg"><label class="fl">Due Date</label><div style="display:flex;gap:4px;align-items:center"><input type="hidden" id="eDu"><div class="cal-wrap" style="flex:1"><button type="button" class="fi" id="eDuCal" style="text-align:left;cursor:pointer;display:flex;align-items:center;gap:6px;width:100%"><span style="opacity:.5">📅</span><span id="eDuLabel" style="flex:1">—</span></button><div class="cal-pop" id="eDuCalPop"></div></div><button type="button" class="setnow-b" id="eDuToday" style="white-space:nowrap;padding:8px 10px">TODAY</button><button type="button" class="setnow-b" id="eDuClear" style="white-space:nowrap;padding:8px 10px;color:var(--t3)">✕</button></div></div><div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="eNo"></div></div>
   <div class="mdla"><button class="btn btn-r" id="eTDel" style="margin-right:auto">DELETE</button><button class="btn btn-gh" id="eTC">CANCEL</button><button class="btn btn-g" id="eTS">SAVE</button></div></div></div>
@@ -924,17 +924,13 @@ window._tryHide = function(){
   qSkip.addEventListener('click',     e=>{e.stopPropagation(); finish();});
   qSkip.addEventListener('mousedown', e=>e.stopPropagation());
 
-  // Spacebar toggles pause/resume
-  function onKey(e){
-    if(e.code==='Space'&&!e.target.matches('input,textarea,select,button')){
-      e.preventDefault();
-      paused ? resume() : pause();
-    }
-  }
-  document.addEventListener('keydown', onKey);
-  // Clean up listener once quote is done
+  // Hold space to pause, release to resume
+  function onKD(e){if(e.code==='Space'&&!e.repeat&&!e.target.matches('input,textarea,select,button')){e.preventDefault();pause();}}
+  function onKU(e){if(e.code==='Space'&&!e.target.matches('input,textarea,select,button')){e.preventDefault();resume();}}
+  document.addEventListener('keydown', onKD);
+  document.addEventListener('keyup',   onKU);
   const _finish = finish;
-  finish = function(){ document.removeEventListener('keydown', onKey); _finish(); };
+  finish = function(){ document.removeEventListener('keydown', onKD); document.removeEventListener('keyup', onKU); _finish(); };
 })();
 
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
