@@ -13,21 +13,25 @@
 
 // ═══════ SHEET NAMES ═══════
 const SHEETS = {
-  TASKS:      'Tasks',
-  COMPLETED:  'Completed',
-  DEADLINES:  'Deadlines',
-  PROJECTS:   'Projects',
-  CLOSED:     'Closed',
-  PEOPLE:     'People',
-  PARTNERS:   'Partners',
-  MONTHLY:    'Monthly',
-  PROJDONE:   'ProjDone',
-  META:       'Meta',
-  PROJCOLORS: 'ProjectColors',
-  PPLCOLORS:  'PeopleColors',
-  INVOICES:   'Invoices',
-  BANKACCTS:  'BankAccounts',
-  CLIENTS:    'Clients'
+  TASKS:         'Tasks',
+  COMPLETED:     'Completed',
+  DEADLINES:     'Deadlines',
+  PROJECTS:      'Projects',
+  CLOSED:        'Closed',
+  PEOPLE:        'People',
+  PARTNERS:      'Partners',
+  MONTHLY:       'Monthly',
+  PROJDONE:      'ProjDone',
+  META:          'Meta',
+  PROJCOLORS:    'ProjectColors',
+  PPLCOLORS:     'PeopleColors',
+  INVOICES:      'Invoices',
+  BANKACCTS:     'BankAccounts',
+  CLIENTS:       'Clients',
+  BOOKS:         'Books',
+  BOOKS_QUEUE:   'BooksQueue',
+  GROCERIES:     'Groceries',
+  HEALTH_LOGS:   'HealthLogs'
 };
 
 // ═══════ COLUMN DEFINITIONS ═══════
@@ -42,9 +46,13 @@ const PROJDONE_COLS = ['project','count'];
 const META_COLS     = ['key','value'];
 const PROJCOLOR_COLS = ['name','color','bgColor','code'];
 const PPLCOLOR_COLS  = ['code','color','bgColor'];
-const INVOICE_COLS   = ['id','invoiceNumber','date','client','project','description','montantHT','tvaRate','montantTTC','catchupHT','catchupTVA','catchupTTC','status','pdfUrl','emailSentDate','bankAccountId','notes','clientAddress','clientSIREN','clientCostCenter','clientDealRef'];
-const BANKACCT_COLS  = ['id','name','ribImageFileId'];
-const CLIENT_COLS    = ['name','address','siren','defaultCostCenter'];
+const INVOICE_COLS    = ['id','invoiceNumber','date','client','project','description','montantHT','tvaRate','montantTTC','catchupHT','catchupTVA','catchupTTC','status','pdfUrl','emailSentDate','bankAccountId','notes','clientAddress','clientSIREN','clientCostCenter','clientDealRef'];
+const BANKACCT_COLS   = ['id','name','ribImageFileId'];
+const CLIENT_COLS     = ['name','address','siren','defaultCostCenter'];
+const BOOK_COLS       = ['id','title','author','cover','progress','rating','status','genre','createdAt','updatedAt','notes','imageUrl'];
+const BOOK_QUEUE_COLS = ['id','title','author','genre','priority','addedAt','notes'];
+const GROCERY_COLS    = ['id','item','location','category','quantity','unit','priority','purchased','createdAt','updatedAt','notes'];
+const HEALTH_LOG_COLS = ['id','date','metric','value','unit','category','notes','createdAt'];
 
 // ═══════════════════════════════════════════════════════════════
 //  doGet — READ all data from sheets, return as JSON
@@ -165,6 +173,68 @@ function doGet(e) {
 
     data.invid = toNum(meta.invid) || 1;
 
+    // --- Books ---
+    data.books = readSheet(ss, SHEETS.BOOKS, BOOK_COLS).map(row => ({
+      id: toNum(row.id),
+      title: str(row.title),
+      author: str(row.author),
+      cover: str(row.cover),
+      progress: toNum(row.progress),
+      rating: toNum(row.rating),
+      status: str(row.status),
+      genre: str(row.genre),
+      createdAt: str(row.createdAt),
+      updatedAt: str(row.updatedAt),
+      notes: str(row.notes),
+      imageUrl: str(row.imageUrl)
+    }));
+
+    // --- Books Queue ---
+    data.booksQueue = readSheet(ss, SHEETS.BOOKS_QUEUE, BOOK_QUEUE_COLS).map(row => ({
+      id: toNum(row.id),
+      title: str(row.title),
+      author: str(row.author),
+      genre: str(row.genre),
+      priority: toNum(row.priority),
+      addedAt: str(row.addedAt),
+      notes: str(row.notes)
+    }));
+
+    data.bkid = toNum(meta.bkid) || 1;
+    data.booksGoal = toNum(meta.booksGoal) || 30;
+
+    // --- Groceries ---
+    data.groceries = readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS).map(row => ({
+      id: toNum(row.id),
+      item: str(row.item),
+      location: str(row.location),
+      category: str(row.category),
+      quantity: str(row.quantity),
+      unit: str(row.unit),
+      priority: toNum(row.priority),
+      purchased: toBool(row.purchased),
+      createdAt: str(row.createdAt),
+      updatedAt: str(row.updatedAt),
+      notes: str(row.notes)
+    }));
+
+    data.gid = toNum(meta.gid) || 1;
+    data.groceryLocations = [];
+
+    // --- Health Logs ---
+    data.healthLogs = readSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS).map(row => ({
+      id: toNum(row.id),
+      date: str(row.date),
+      metric: str(row.metric),
+      value: str(row.value),
+      unit: str(row.unit),
+      category: str(row.category),
+      notes: str(row.notes),
+      createdAt: str(row.createdAt)
+    }));
+
+    data.hid = toNum(meta.hid) || 1;
+
     return jsonResponse(data);
   } catch (err) {
     return jsonResponse({ error: err.message, stack: err.stack }, 500);
@@ -257,12 +327,45 @@ function doPost(e) {
     writeSheet(ss, SHEETS.CLIENTS, CLIENT_COLS,
       (D.clients || []).map(cl => [cl.name, cl.address, cl.siren, cl.defaultCostCenter]));
 
+    // --- Books ---
+    writeSheet(ss, SHEETS.BOOKS, BOOK_COLS,
+      (D.books || []).map(b => [
+        b.id, b.title, b.author, b.cover, b.progress || 0, b.rating || 0,
+        b.status || '', b.genre || '', b.createdAt || '', b.updatedAt || '',
+        b.notes || '', b.imageUrl || ''
+      ]));
+
+    // --- Books Queue ---
+    writeSheet(ss, SHEETS.BOOKS_QUEUE, BOOK_QUEUE_COLS,
+      (D.booksQueue || []).map(bq => [
+        bq.id, bq.title, bq.author, bq.genre || '', bq.priority || 0, bq.addedAt || '', bq.notes || ''
+      ]));
+
+    // --- Groceries ---
+    writeSheet(ss, SHEETS.GROCERIES, GROCERY_COLS,
+      (D.groceries || []).map(g => [
+        g.id, g.item, g.location || '', g.category || '', g.quantity || '',
+        g.unit || '', g.priority || 0, g.purchased ? 'TRUE' : 'FALSE',
+        g.createdAt || '', g.updatedAt || '', g.notes || ''
+      ]));
+
+    // --- Health Logs ---
+    writeSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS,
+      (D.healthLogs || []).map(h => [
+        h.id, h.date, h.metric, h.value, h.unit || '', h.category || '',
+        h.notes || '', h.createdAt || ''
+      ]));
+
     // --- Meta ---
     writeSheet(ss, SHEETS.META, META_COLS, [
-      ['nid',     D.nid || 1],
-      ['dlid',    D.dlid || 1],
-      ['invid',   D.invid || 1],
-      ['savedAt', now]
+      ['nid',        D.nid || 1],
+      ['dlid',       D.dlid || 1],
+      ['invid',      D.invid || 1],
+      ['bkid',       D.bkid || 1],
+      ['booksGoal',  D.booksGoal || 30],
+      ['gid',        D.gid || 1],
+      ['hid',        D.hid || 1],
+      ['savedAt',    now]
     ]);
 
     // --- Project Colors ---
@@ -390,21 +493,25 @@ function setupSheets() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
   const sheetsConfig = [
-    { name: SHEETS.TASKS,      cols: TASK_COLS },
-    { name: SHEETS.COMPLETED,  cols: TASK_COLS },
-    { name: SHEETS.DEADLINES,  cols: DEADLINE_COLS },
-    { name: SHEETS.PROJECTS,   cols: PROJECT_COLS },
-    { name: SHEETS.CLOSED,     cols: CLOSED_COLS },
-    { name: SHEETS.PEOPLE,     cols: PEOPLE_COLS },
-    { name: SHEETS.PARTNERS,   cols: PARTNER_COLS },
-    { name: SHEETS.MONTHLY,    cols: MONTHLY_COLS },
-    { name: SHEETS.PROJDONE,   cols: PROJDONE_COLS },
-    { name: SHEETS.META,       cols: META_COLS },
-    { name: SHEETS.PROJCOLORS, cols: PROJCOLOR_COLS },
-    { name: SHEETS.PPLCOLORS,  cols: PPLCOLOR_COLS },
-    { name: SHEETS.INVOICES,   cols: INVOICE_COLS },
-    { name: SHEETS.BANKACCTS,  cols: BANKACCT_COLS },
-    { name: SHEETS.CLIENTS,    cols: CLIENT_COLS },
+    { name: SHEETS.TASKS,         cols: TASK_COLS },
+    { name: SHEETS.COMPLETED,     cols: TASK_COLS },
+    { name: SHEETS.DEADLINES,     cols: DEADLINE_COLS },
+    { name: SHEETS.PROJECTS,      cols: PROJECT_COLS },
+    { name: SHEETS.CLOSED,        cols: CLOSED_COLS },
+    { name: SHEETS.PEOPLE,        cols: PEOPLE_COLS },
+    { name: SHEETS.PARTNERS,      cols: PARTNER_COLS },
+    { name: SHEETS.MONTHLY,       cols: MONTHLY_COLS },
+    { name: SHEETS.PROJDONE,      cols: PROJDONE_COLS },
+    { name: SHEETS.META,          cols: META_COLS },
+    { name: SHEETS.PROJCOLORS,    cols: PROJCOLOR_COLS },
+    { name: SHEETS.PPLCOLORS,     cols: PPLCOLOR_COLS },
+    { name: SHEETS.INVOICES,      cols: INVOICE_COLS },
+    { name: SHEETS.BANKACCTS,     cols: BANKACCT_COLS },
+    { name: SHEETS.CLIENTS,       cols: CLIENT_COLS },
+    { name: SHEETS.BOOKS,         cols: BOOK_COLS },
+    { name: SHEETS.BOOKS_QUEUE,   cols: BOOK_QUEUE_COLS },
+    { name: SHEETS.GROCERIES,     cols: GROCERY_COLS },
+    { name: SHEETS.HEALTH_LOGS,   cols: HEALTH_LOG_COLS }
   ];
 
   sheetsConfig.forEach(cfg => {
@@ -434,4 +541,97 @@ function setupSheets() {
   }
 
   SpreadsheetApp.getUi().alert('✅ All sheets created successfully!\n\nYou can now deploy this as a Web App.');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DIAGNOSTIC — Check for items needing persistence
+// ═══════════════════════════════════════════════════════════════
+/**
+ * Scans the dashboard data and identifies items without persistent storage.
+ * Run this function from the Apps Script editor to get a report.
+ *
+ * Usage: In Apps Script editor, click Run > scanMissingData()
+ *
+ * Checks for:
+ * - Books without stored metadata (title, author, cover missing)
+ * - Groceries without location/category
+ * - Health logs without proper date/metric
+ * - Any items with temporary data (in-memory only)
+ */
+function scanMissingData() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  const issues = [];
+
+  // Check Books sheet
+  const books = readSheet(ss, SHEETS.BOOKS, BOOK_COLS);
+  books.forEach(b => {
+    if (!str(b.title)) issues.push('📚 Book missing title');
+    if (!str(b.author)) issues.push('📚 Book missing author');
+    if (!str(b.cover)) issues.push('📚 Book missing cover image');
+    if (!b.createdAt) issues.push('📚 Book missing createdAt timestamp');
+  });
+
+  // Check Books Queue
+  const queue = readSheet(ss, SHEETS.BOOKS_QUEUE, BOOK_QUEUE_COLS);
+  queue.forEach(q => {
+    if (!str(q.title)) issues.push('📥 Queue item missing title');
+    if (!str(q.author)) issues.push('📥 Queue item missing author');
+  });
+
+  // Check Groceries
+  const groceries = readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS);
+  groceries.forEach(g => {
+    if (!str(g.item)) issues.push('🛒 Grocery missing item name');
+    if (!str(g.location)) issues.push('🛒 Grocery missing location: ' + str(g.item));
+    if (!str(g.category)) issues.push('🛒 Grocery missing category: ' + str(g.item));
+    if (!g.createdAt) issues.push('🛒 Grocery missing createdAt: ' + str(g.item));
+  });
+
+  // Check Health Logs
+  const healthLogs = readSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS);
+  healthLogs.forEach(h => {
+    if (!str(h.date)) issues.push('❤️ Health log missing date');
+    if (!str(h.metric)) issues.push('❤️ Health log missing metric name');
+    if (!str(h.value)) issues.push('❤️ Health log missing value');
+  });
+
+  // Report results
+  if (issues.length === 0) {
+    ui.alert('✅ All data is properly persisted!\n\nNo missing fields detected.');
+    return;
+  }
+
+  const report = '⚠️ MISSING DATA REPORT\n\n' +
+    issues.slice(0, 20).join('\n') +
+    (issues.length > 20 ? '\n\n... and ' + (issues.length - 20) + ' more issues' : '');
+
+  ui.alert(report);
+}
+
+/**
+ * Helper: Get the count of items that need attention
+ * Call from frontend or dashboard to show notification badge
+ */
+function countMissingData() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let count = 0;
+
+  // Books without all required fields
+  readSheet(ss, SHEETS.BOOKS, BOOK_COLS).forEach(b => {
+    if (!str(b.title) || !str(b.author) || !str(b.cover)) count++;
+  });
+
+  // Groceries without location
+  readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS).forEach(g => {
+    if (str(g.item) && !str(g.location)) count++;
+  });
+
+  // Health logs without date
+  readSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS).forEach(h => {
+    if (str(h.metric) && !str(h.date)) count++;
+  });
+
+  return count;
 }
