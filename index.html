@@ -41,7 +41,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .gear{width:36px;height:36px;border-radius:6px;border:1px solid var(--b1);background:var(--bg-2);color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--tr);font-size:16px}
 .gear:hover{border-color:var(--gold);color:var(--gold)}
 
-.main{max-width:1440px;margin:0 auto;padding:18px 24px;position:relative;z-index:1}
+.main{max-width:1800px;margin:0 auto;padding:18px 24px;position:relative;z-index:1}
 @media(min-width:1200px){.main{padding:24px 32px}}
 .vw{display:none}.vw.active{display:block}
 
@@ -63,90 +63,136 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .sort-tgl{margin-left:auto;padding:4px 10px;border-radius:4px;font-size:.58rem;font-weight:700;color:var(--t3);background:var(--bg-2);border:1px solid var(--b0);cursor:pointer;text-transform:uppercase;letter-spacing:.8px;font-family:'Outfit';transition:var(--tr)}
 .sort-tgl:hover{border-color:var(--gold);color:var(--gold)}
 
-.tsk{display:flex;align-items:flex-start;gap:14px;padding:18px 20px;background:var(--bg-2);border:1px solid var(--b0);border-radius:var(--r);margin-bottom:6px;transition:all .3s cubic-bezier(.4,0,.2,1);cursor:grab;user-select:none;position:relative;overflow:hidden}
-@media(min-width:1200px){.tsk{padding:22px 26px;gap:16px;margin-bottom:8px}}
-.tsk:hover{border-color:var(--b1);background:var(--bg-3)}
-.tsk-swipe-wrap:nth-child(even) .tsk{background:var(--bg-3)}
+/* ═══════ KANBAN BOARD ═══════ */
+.kb-board{display:flex;flex-direction:column;gap:24px}
+.kb-tier{position:relative;border-radius:16px;padding:20px;min-height:120px;transition:all .3s ease}
+.kb-tier.tier-critical{background:linear-gradient(135deg,rgba(239,68,68,.06) 0%,rgba(245,158,11,.04) 100%);border:1px solid rgba(239,68,68,.12)}
+.kb-tier.tier-medium{background:linear-gradient(135deg,rgba(212,175,55,.05) 0%,rgba(59,130,246,.04) 100%);border:1px solid rgba(212,175,55,.10)}
+.kb-tier.tier-minimal{background:linear-gradient(135deg,rgba(59,130,246,.04) 0%,rgba(138,136,152,.04) 100%);border:1px solid rgba(59,130,246,.08)}
+.kb-tier.drag-tier-over{box-shadow:0 0 24px rgba(212,175,55,.15);border-color:var(--gold)}
+.kb-tier-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.kb-tier-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tier-critical .kb-tier-dot{background:var(--red);box-shadow:0 0 10px rgba(239,68,68,.4)}
+.tier-medium .kb-tier-dot{background:var(--gold);box-shadow:0 0 10px rgba(212,175,55,.3)}
+.tier-minimal .kb-tier-dot{background:var(--blue);box-shadow:0 0 10px rgba(59,130,246,.3)}
+.kb-tier-label{font-family:'Outfit';font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--t3)}
+.tier-critical .kb-tier-label{color:var(--red)}
+.tier-medium .kb-tier-label{color:var(--gold)}
+.tier-minimal .kb-tier-label{color:var(--blue)}
+.kb-tier-count{font-family:'JetBrains Mono';font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:10px;opacity:.6}
+.tier-critical .kb-tier-count{background:var(--red-d);color:var(--red)}
+.tier-medium .kb-tier-count{background:var(--gold-d);color:var(--gold)}
+.tier-minimal .kb-tier-count{background:var(--blue-d);color:var(--blue)}
+.kb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;min-height:60px}
+@media(min-width:1400px){.kb-grid{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}}
+.kb-empty{grid-column:1/-1;display:flex;align-items:center;justify-content:center;padding:20px;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);opacity:.4;border:1px dashed var(--b1);border-radius:12px}
+
+/* Task Card */
+.tsk{position:relative;border-radius:14px;padding:18px 20px;background:rgba(18,18,22,.7);backdrop-filter:blur(16px);border:1px solid var(--b0);cursor:grab;user-select:none;transition:all .25s cubic-bezier(.4,0,.2,1);overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.tsk::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:.7;border-radius:14px 14px 0 0}
+.tsk.p1::before,.tsk.p2::before{background:linear-gradient(90deg,var(--red),var(--orange))}
+.tsk.p3::before{background:linear-gradient(90deg,var(--gold),rgba(212,175,55,.4))}
+.tsk.p4::before,.tsk.p5::before{background:linear-gradient(90deg,var(--blue),rgba(59,130,246,.3))}
+.tsk:hover{border-color:var(--b2);background:rgba(24,24,30,.85);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.03)}
 .tsk.struck .tsk-txt{text-decoration:line-through;text-decoration-color:var(--green);text-decoration-thickness:2.5px;opacity:.45}
 .tsk.struck .tc{border-color:var(--green);background:var(--green);color:#fff}
 .tsk.blk{border-left:3px solid var(--orange);background:rgba(245,158,11,.06)}
-.tsk .drag-h{display:flex;flex-direction:column;gap:2px;opacity:0;transition:var(--tr);cursor:grab;padding:2px 0;align-self:center;flex-shrink:0}
-.tsk:hover .drag-h{opacity:.4}.tsk .drag-h:hover{opacity:.8}
-.tsk .drag-h span{display:block;width:12px;height:2px;background:var(--t3);border-radius:1px}
-.tsk.dragging{opacity:.35;border:1px dashed var(--gold);transform:scale(.98)}
-.tsk.drag-over{border-top:2px solid var(--gold);margin-top:-2px}
+.tsk.dragging{opacity:.3;border:1.5px dashed var(--gold);transform:scale(.96) rotate(-1deg);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.tsk.drag-over{box-shadow:0 0 0 2px var(--gold),0 8px 24px rgba(212,175,55,.15)}
+.tsk.pinned{border-left:2px solid var(--gold)}
 @keyframes shimmer{0%{left:-100%}100%{left:200%}}
 .tsk.shimmer::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(34,197,94,.15),transparent);animation:shimmer .6s ease-out;pointer-events:none}
 /* Swipe gestures */
-.tsk-swipe-wrap{position:relative;overflow:hidden;border-radius:var(--r);margin-bottom:6px}
-.tsk-swipe-wrap .tsk{margin-bottom:0;transition:transform .2s ease;will-change:transform;touch-action:pan-y}
+.tsk-swipe-wrap{position:relative;overflow:hidden;border-radius:14px}
+.tsk-swipe-wrap .tsk{transition:transform .2s ease;will-change:transform;touch-action:pan-y}
 .swipe-bg{position:absolute;top:0;bottom:0;display:flex;align-items:center;padding:0 20px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:0;transition:opacity .15s ease}
-.swipe-bg-right{left:0;right:50%;background:var(--green);color:#fff;justify-content:flex-start}
-.swipe-bg-left{right:0;left:50%;background:var(--red);color:#fff;justify-content:flex-end}
+.swipe-bg-right{left:0;right:50%;background:var(--green);color:#fff;justify-content:flex-start;border-radius:14px 0 0 14px}
+.swipe-bg-left{right:0;left:50%;background:var(--red);color:#fff;justify-content:flex-end;border-radius:0 14px 14px 0}
 @keyframes swipeOutRight{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}
 @keyframes swipeOutLeft{from{transform:translateX(0);opacity:1}to{transform:translateX(-100%);opacity:0}}
 .tsk-swipe-wrap.swiping-out-right{animation:swipeOutRight .3s ease forwards}
 .tsk-swipe-wrap.swiping-out-left{animation:swipeOutLeft .3s ease forwards}
-.tc{width:28px;height:28px;min-width:28px;border-radius:50%;border:2px solid var(--b2);cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;font-size:15px;color:transparent;font-weight:800;margin-top:4px}
-.tc:hover{border-color:var(--green);background:rgba(34,197,94,.06)}
-.tp{width:4px;min-width:4px;height:40px;border-radius:2px;margin-top:4px}
-.tp.p1{background:var(--red);box-shadow:0 0 8px rgba(239,68,68,.3)}.tp.p2{background:var(--orange)}.tp.p3{background:var(--gold)}.tp.p4{background:var(--blue)}.tp.p5{background:var(--t3)}
+
+/* Card header row */
+.tsk-top{display:flex;align-items:flex-start;gap:10px}
+.tc{width:24px;height:24px;min-width:24px;border-radius:50%;border:2px solid var(--b2);cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;font-weight:800;flex-shrink:0;margin-top:2px}
+.tc:hover{border-color:var(--green);background:rgba(34,197,94,.1)}
 .tb{flex:1;min-width:0}
-.tsk-txt{font-size:var(--tf);font-weight:400;text-transform:uppercase;letter-spacing:.3px;line-height:1.3;margin-bottom:8px;white-space:normal;word-break:break-word}
-.tm{display:flex;gap:5px;flex-wrap:wrap;align-items:center;opacity:.5}
+.tsk-txt{font-size:1rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px;line-height:1.3;word-break:break-word;color:var(--t0)}
+@media(min-width:1200px){.tsk-txt{font-size:1.1rem}}
+.tsk-proj{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.tm{display:flex;gap:5px;flex-wrap:wrap;align-items:center;opacity:.6}
 .tag{font-size:var(--tg);padding:2px 8px;border-radius:4px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
 .bbadge{display:inline-flex;align-items:center;gap:3px;font-size:var(--tg);padding:2px 8px;border-radius:4px;font-weight:700;background:var(--red-d);color:var(--red);text-transform:uppercase;cursor:pointer}
 .note-ic{font-size:13px;cursor:pointer;opacity:.6;transition:var(--tr);color:var(--t2);padding:0 3px}
 .note-ic:hover{opacity:1;color:var(--gold)}
-.tr{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;min-width:80px}
-.td{font-family:'JetBrains Mono';font-size:var(--df);font-weight:600;color:var(--t3)}
-.td.ov{color:var(--red)}.td.tod{color:var(--gold)}.td.tmr{color:var(--orange)}
-.tact{display:flex;gap:2px;align-items:center}
-.tbb,.tedb{font-size:13px;cursor:pointer;background:none;border:none;color:var(--t3);transition:var(--tr);padding:2px;opacity:0}
-.tsk:hover .tbb,.tsk:hover .tedb{opacity:1}
-.tbb:hover{color:var(--red)}.tedb:hover{color:var(--gold)}
 
-/* Subtasks */
-.st-bar-w{height:3px;background:var(--b1);border-radius:2px;margin:6px 0 4px;overflow:hidden}
+/* Card footer */
+.tsk-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.td{font-family:'JetBrains Mono';font-size:.62rem;font-weight:600;color:var(--t3);padding:3px 8px;border-radius:4px;background:rgba(138,136,152,.06)}
+.td.ov{color:var(--red);background:var(--red-d)}.td.tod{color:var(--gold);background:var(--gold-d)}.td.tmr{color:var(--orange);background:var(--orange-d)}
+.tact{display:flex;gap:3px;align-items:center;margin-left:auto}
+.tbb,.tedb{font-size:12px;cursor:pointer;background:none;border:none;color:var(--t3);transition:var(--tr);padding:3px;opacity:0;border-radius:4px}
+.tsk:hover .tbb,.tsk:hover .tedb{opacity:1}
+.tbb:hover{color:var(--red);background:var(--red-d)}.tedb:hover{color:var(--gold);background:var(--gold-d)}
+
+/* Subtask preview (visible) + full list on hover */
+.st-bar-w{height:3px;background:var(--b1);border-radius:2px;overflow:hidden}
 .st-bar-f{height:100%;background:var(--green);border-radius:2px;transition:width .3s ease}
-.sub-list{margin:8px 0 2px 0;padding-left:42px}
-.sub-list.collapsed{display:none}
+.sub-preview{position:relative}
+.sub-preview-items{display:flex;flex-direction:column;gap:3px;max-height:52px;overflow:hidden;position:relative}
+.sub-preview-items::after{content:'';position:absolute;bottom:0;left:0;right:0;height:20px;background:linear-gradient(transparent,rgba(18,18,22,.9));pointer-events:none;opacity:1;transition:opacity .3s ease}
+.tsk:hover .sub-preview-items{display:none}
+.tsk:hover .sub-preview-items::after{opacity:0}
+.sub-prev-row{display:flex;align-items:center;gap:6px;padding:2px 0;transition:var(--tr)}
+.sub-prev-cb{width:14px;height:14px;min-width:14px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;font-weight:800;flex-shrink:0;cursor:pointer;transition:var(--tr)}
+.sub-prev-cb:hover{border-color:var(--green);background:rgba(34,197,94,.1)}
+.sub-prev-cb.done{border-color:var(--green);background:var(--green);color:#fff}
+.sub-prev-nm{font-size:.68rem;font-weight:400;text-transform:uppercase;letter-spacing:.2px;color:var(--t2);line-height:1.3}
+.sub-prev-row.done .sub-prev-nm{text-decoration:line-through;text-decoration-color:var(--green);opacity:.4}
+.sub-more{font-size:.55rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--t3);opacity:.5;padding:2px 0;display:none}
+.tsk:hover .sub-more{display:none}
+.sub-count{font-size:.58rem;font-weight:700;color:var(--t3);display:flex;align-items:center;gap:6px}
+
+/* Full subtask list (expanded on hover) */
+.sub-list{margin:4px 0 0 0;display:none}
+.tsk:hover .sub-list{display:block}
+.sub-list.collapsed{display:none!important}
 .sub-toggle{background:none;border:none;color:var(--t3);cursor:pointer;font-size:10px;padding:0 4px;transition:var(--tr);line-height:1}
 .sub-toggle:hover{color:var(--t1)}
-.sub-row{display:flex;align-items:center;gap:8px;padding:4px 0;transition:var(--tr);position:relative}
+.sub-row{display:flex;align-items:center;gap:8px;padding:3px 0;transition:var(--tr);position:relative}
 .sub-row.sub-dragging{opacity:.4}
 .sub-row.sub-drag-over{border-top:2px solid var(--gold)}
 .sub-row:hover .sub-del{opacity:1}
 .sub-row .sub-grip{cursor:grab;color:var(--t3);opacity:0;font-size:10px;user-select:none;transition:var(--tr);padding:0 2px;letter-spacing:-1px}
 .sub-row:hover .sub-grip{opacity:.5}
 .sub-row .sub-grip:active{cursor:grabbing}
-.sub-cb{width:18px;height:18px;min-width:18px;border-radius:50%;border:2px solid var(--b2);cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;font-weight:800;flex-shrink:0}
+.sub-cb{width:16px;height:16px;min-width:16px;border-radius:50%;border:1.5px solid var(--b2);cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;font-weight:800;flex-shrink:0}
 .sub-cb:hover{border-color:var(--green);background:rgba(34,197,94,.06)}
 .sub-cb.done{border-color:var(--green);background:var(--green);color:#fff}
-.sub-nm{font-size:.85rem;font-weight:400;text-transform:uppercase;letter-spacing:.2px;color:var(--t1);line-height:1.3}
+.sub-nm{font-size:.72rem;font-weight:400;text-transform:uppercase;letter-spacing:.2px;color:var(--t1);line-height:1.3}
 .sub-row.done .sub-nm{text-decoration:line-through;text-decoration-color:var(--green);opacity:.45}
-.sub-del{font-size:11px;cursor:pointer;background:none;border:none;color:var(--t3);opacity:0;transition:var(--tr);padding:2px;margin-left:auto;flex-shrink:0}
+.sub-del{font-size:10px;cursor:pointer;background:none;border:none;color:var(--t3);opacity:0;transition:var(--tr);padding:2px;margin-left:auto;flex-shrink:0}
 .sub-del:hover{color:var(--red)}
-.sub-add{display:flex;align-items:center;gap:6px;padding:4px 0 0;padding-left:42px}
-.sub-add-inp{flex:1;padding:5px 8px;background:var(--bg-1);border:1px solid var(--b1);border-radius:4px;color:var(--t0);font-family:'Outfit';font-size:.78rem;outline:none;text-transform:uppercase;letter-spacing:.3px}
+.sub-add{display:flex;align-items:center;gap:6px;padding:4px 0 0}
+.sub-add-inp{flex:1;padding:5px 8px;background:var(--bg-1);border:1px solid var(--b1);border-radius:4px;color:var(--t0);font-family:'Outfit';font-size:.72rem;outline:none;text-transform:uppercase;letter-spacing:.3px}
 .sub-add-inp:focus{border-color:var(--gold)}
 .sub-add-inp::placeholder{color:var(--t3);text-transform:uppercase}
 .sub-add-ok{background:none;border:none;color:var(--green);cursor:pointer;font-size:14px;transition:var(--tr);padding:2px}
 .sub-add-ok:hover{color:#4ade80}
 .sub-add-x{background:none;border:none;color:var(--t3);cursor:pointer;font-size:12px;transition:var(--tr);padding:2px}
 .sub-add-x:hover{color:var(--red)}
-.st-add-btn{font-size:12px;cursor:pointer;background:none;border:none;color:var(--t3);transition:var(--tr);padding:2px;opacity:0}
+.st-add-btn{font-size:11px;cursor:pointer;background:none;border:none;color:var(--t3);transition:var(--tr);padding:3px;opacity:0;border-radius:4px}
 .tsk:hover .st-add-btn{opacity:1}
-.st-add-btn:hover{color:var(--gold)}
-.pin-btn{font-size:12px;cursor:pointer;background:none;border:none;color:var(--t3);transition:var(--tr);padding:2px;opacity:0}
+.st-add-btn:hover{color:var(--gold);background:var(--gold-d)}
+.pin-btn{font-size:11px;cursor:pointer;background:none;border:none;color:var(--t3);transition:var(--tr);padding:3px;opacity:0;border-radius:4px}
 .tsk:hover .pin-btn{opacity:1}
 .pin-btn:hover{color:var(--gold)}
 .pin-btn.pinned{color:var(--gold);opacity:1}
-.tsk.pinned{border-left:2px solid var(--gold)}
 
-/* Task/Deadline notes */
-.tsk-note{font-size:.65rem;color:var(--t3);font-style:italic;margin-top:4px;line-height:1.4;opacity:.6;letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.tsk-note:hover{opacity:.9;white-space:normal}
+/* Task notes */
+.tsk-note{font-size:.6rem;color:var(--t3);font-style:italic;line-height:1.4;opacity:.5;letter-spacing:.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.tsk-note:hover{opacity:.8;white-space:normal}
 .dl-note{font-size:.62rem;color:var(--t3);font-style:italic;margin-top:6px;line-height:1.4;opacity:.5;letter-spacing:.2px}
 .dl-note:hover{opacity:.8}
 
@@ -225,8 +271,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .ctgl .ch{font-size:.6rem;color:var(--t3);transition:var(--tr)}.ctgl .ch.op{transform:rotate(90deg)}
 .edb{padding:8px 18px;border-radius:6px;background:var(--green-d);color:var(--green);border:1px solid rgba(34,197,94,.25);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:'Outfit';transition:var(--tr)}
 .edb:hover{background:rgba(34,197,94,.2)}
-.clist{display:none}.clist.op{display:block}
-.clist .tsk{opacity:.3;border-color:transparent;cursor:default;transition:opacity .2s}.clist .tsk:hover{opacity:.5}.clist .tc{cursor:pointer}.clist .tsk-txt{text-decoration:line-through;text-decoration-color:var(--green)}
+.clist{display:none}.clist.op{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.clist .tsk{opacity:.3;border-color:transparent;cursor:default;transition:opacity .2s}.clist .tsk:hover{opacity:.5;transform:none;box-shadow:none}.clist .tc{cursor:pointer}.clist .tsk-txt{text-decoration:line-through;text-decoration-color:var(--green)}
 
 /* Deadlines: full-width stacked cards */
 .dl-stack{display:flex;flex-direction:column;gap:10px}
@@ -375,14 +421,12 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .fr2{grid-template-columns:1fr}
 .fr6{grid-template-columns:1fr 1fr!important}
 .tfrm{padding:14px}
-.tsk{padding:14px 12px;gap:10px}
-.tb{min-width:0}
-.tsk-txt{font-size:1rem;margin-bottom:6px}
-.tr{min-width:auto;align-items:flex-end;gap:3px}
+.kb-grid{grid-template-columns:1fr}
+.tsk{padding:14px 12px}
+.tsk-txt{font-size:.9rem}
 .tact{gap:4px}
 .tbb,.tedb{opacity:.6;font-size:14px;padding:4px}
 .sub-row .sub-grip{opacity:.4}
-.sub-list{padding-left:28px}
 .pin-btn{opacity:.7}
 .nbtn{padding:10px 14px}
 .cal-pop{left:0;transform:none;right:auto;max-width:calc(100vw - 40px)}
@@ -501,7 +545,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
       <div class="fac"><button class="btn btn-gh" id="cTask">CANCEL</button><button class="btn btn-g" id="sTask">CREATE TASK</button></div>
     </div>
   </div>
-  <div id="tList"></div>
+  <div id="tList" class="kb-board"></div>
   <div class="csec">
     <div class="chdr"><div class="ctgl" id="cTgl"><span class="ch">▶</span><h3>COMPLETED (<span id="cCnt">0</span>)</h3></div><div style="display:flex;gap:6px"><button class="edb" id="edBtn">☀ END DAY</button><button class="edb" id="clrArchBtn" style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:var(--red)">✕ CLEAR ALL</button></div></div>
     <div class="clist" id="cList"></div>
@@ -1093,29 +1137,45 @@ try{const sp=localStorage.getItem('sortPref');if(sp==='due'){skipSort=false;sort
 function renderT(){
   const el=$('tList'),cl=$('cList');el.innerHTML='';cl.innerHTML='';
   let all=[...D.tasks];
-  // Pinned tasks stay locked at their order position; unpinned tasks sort around them
-  if(skipSort) {
-    all.sort((a,b)=>a.order-b.order);
-  } else {
-    const pinned=all.filter(t=>t.pinned).sort((a,b)=>a.order-b.order);
-    let unpinned=all.filter(t=>!t.pinned);
-    if(sortDue){unpinned.sort((a,b)=>{if(!a.due&&!b.due)return a.order-b.order;if(!a.due)return 1;if(!b.due)return-1;return a.due.localeCompare(b.due)||a.order-b.order})}
-    else{unpinned.sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''))}
-    // Merge: insert pinned tasks at their order-based positions
-    all=[];let pi=0,ui=0;
-    const total=pinned.length+unpinned.length;
-    // Assign slots: pinned tasks claim their order rank among all tasks
-    const pinnedSlots=new Map();pinned.forEach((t,i)=>pinnedSlots.set(t.order,t));
-    const sortedOrders=[...D.tasks].sort((a,b)=>a.order-b.order);
-    let uIdx=0;
-    for(const t of sortedOrders){if(t.pinned){all.push(t)}else{if(uIdx<unpinned.length)all.push(unpinned[uIdx++])}}
-    while(uIdx<unpinned.length)all.push(unpinned[uIdx++]);
-  }
+  // Sort within tiers
+  if(skipSort){all.sort((a,b)=>a.order-b.order)}
+  else if(sortDue){all.sort((a,b)=>{if(!a.due&&!b.due)return a.order-b.order;if(!a.due)return 1;if(!b.due)return-1;return a.due.localeCompare(b.due)||a.order-b.order})}
+  else{all.sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''))}
+
   const ff=t=>{if(tF==='all')return true;if(tF==='today')return t.due&&dB(t.due)<=0;if(tF==='blocked')return t.blocked;return t.project===tF};
-  all.filter(ff).forEach(t=>el.innerHTML+=tkEl(t,t.done));
+  const visible=all.filter(ff);
+
+  // Group by importance tiers
+  const tiers=[
+    {key:'critical',label:'CRITICAL',priorities:[1,2],tasks:visible.filter(t=>t.priority<=2)},
+    {key:'medium',label:'MEDIUM',priorities:[3],tasks:visible.filter(t=>t.priority===3)},
+    {key:'minimal',label:'MINIMAL',priorities:[4,5],tasks:visible.filter(t=>t.priority>=4)}
+  ];
+
+  tiers.forEach(tier=>{
+    const tierEl=document.createElement('div');
+    tierEl.className=`kb-tier tier-${tier.key}`;
+    tierEl.dataset.tier=tier.key;
+    // Tier header
+    tierEl.innerHTML=`<div class="kb-tier-hdr"><div class="kb-tier-dot"></div><span class="kb-tier-label">${tier.label}</span><span class="kb-tier-count">${tier.tasks.length}</span></div>`;
+    // Grid of cards
+    const grid=document.createElement('div');
+    grid.className='kb-grid';
+    grid.dataset.tier=tier.key;
+    if(tier.tasks.length===0){
+      grid.innerHTML=`<div class="kb-empty">DROP TASKS HERE</div>`;
+    } else {
+      tier.tasks.forEach(t=>grid.innerHTML+=tkEl(t,t.done));
+    }
+    tierEl.appendChild(grid);
+    el.appendChild(tierEl);
+  });
+
+  // Completed list
   const cF=D.completed.filter(ff).sort((a,b)=>(b.doneDate||'').localeCompare(a.doneDate||''));
   $('cCnt').textContent=cF.length;cF.forEach(t=>cl.innerHTML+=tkEl(t,false,true));
-  // Bind
+
+  // Bind events
   el.querySelectorAll('.tc').forEach(x=>x.onclick=()=>tglD(+x.dataset.id));
   cl.querySelectorAll('.tc').forEach(x=>x.onclick=()=>tglD(+x.dataset.id));
   cl.querySelectorAll('.arch-del-btn').forEach(b=>b.onclick=e=>{e.stopPropagation();pH('delete archived');D.completed=D.completed.filter(t=>t.id!==+b.dataset.id);renderT()});
@@ -1123,16 +1183,14 @@ function renderT(){
   el.querySelectorAll('.tedb').forEach(x=>x.onclick=()=>openET(+x.dataset.id));
   // Subtask: "+" button toggles inline input
   el.querySelectorAll('.st-add-btn').forEach(b=>b.onclick=e=>{e.stopPropagation();const tid=+b.dataset.id;const row=el.querySelector(`.sub-add[data-tid="${tid}"]`);if(!row)return;const vis=row.style.display!=='none';row.style.display=vis?'none':'flex';if(!vis){const inp=row.querySelector('.sub-add-inp');inp.value='';inp.focus()}});
-  // Subtask: submit new subtask
+  // Subtask: submit & cancel
   el.querySelectorAll('.sub-add-inp').forEach(inp=>{inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addSub(+inp.dataset.tid,inp.value)}else if(e.key==='Escape'){inp.closest('.sub-add').style.display='none'}}});
-  el.querySelectorAll('.sub-add-ok').forEach(b=>b.onclick=e=>{e.stopPropagation();const tid=+b.dataset.tid;const inp=b.parentElement.querySelector('.sub-add-inp');addSub(tid,inp.value)});
+  el.querySelectorAll('.sub-add-ok').forEach(b=>b.onclick=e=>{e.stopPropagation();addSub(+b.dataset.tid,b.parentElement.querySelector('.sub-add-inp').value)});
   el.querySelectorAll('.sub-add-x').forEach(b=>b.onclick=e=>{e.stopPropagation();b.closest('.sub-add').style.display='none'});
-  // Subtask: toggle completion
+  // Subtask: toggle, delete
   el.querySelectorAll('.sub-cb').forEach(cb=>cb.onclick=e=>{e.stopPropagation();tglSub(+cb.dataset.tid,+cb.dataset.si)});
-  // Subtask: delete
+  el.querySelectorAll('.sub-prev-cb').forEach(cb=>cb.onclick=e=>{e.stopPropagation();tglSub(+cb.dataset.tid,+cb.dataset.si)});
   el.querySelectorAll('.sub-del').forEach(b=>b.onclick=e=>{e.stopPropagation();delSub(+b.dataset.tid,+b.dataset.si)});
-  // Subtask: collapse/expand toggle
-  el.querySelectorAll('.sub-toggle').forEach(b=>b.onclick=e=>{e.stopPropagation();const tid=+b.dataset.tid;if(_collapsedSubs.has(tid))_collapsedSubs.delete(tid);else _collapsedSubs.add(tid);renderT()});
   // Subtask: drag reorder
   let subDragTid=null,subDragSi=null;
   el.querySelectorAll('.sub-grip').forEach(g=>{
@@ -1144,13 +1202,69 @@ function renderT(){
     row.addEventListener('drop',e=>{if(subDragTid===null)return;e.preventDefault();e.stopPropagation();row.classList.remove('sub-drag-over');const tid=+row.dataset.tid,si=+row.dataset.si;if(tid!==subDragTid||si===subDragSi)return;const t=D.tasks.find(x=>x.id===tid);if(!t||!t.subtasks)return;pH('reorder subtask');const[item]=t.subtasks.splice(subDragSi,1);t.subtasks.splice(si,0,item);subDragTid=null;subDragSi=null;renderT()})});
   // Pin button
   el.querySelectorAll('.pin-btn').forEach(b=>b.onclick=e=>{e.stopPropagation();const t=D.tasks.find(x=>x.id===+b.dataset.id);if(!t)return;pH(t.pinned?'unpin':'pin');t.pinned=!t.pinned;renderT()});
-  // Drag
-  el.querySelectorAll('.tsk').forEach(node=>{node.setAttribute('draggable','true');
-    node.addEventListener('dragstart',e=>{dragId=+node.dataset.id;node.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
-    node.addEventListener('dragend',()=>{node.classList.remove('dragging');const hadDrag=dragId!==null;dragId=null;document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'))});
-    node.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'));node.classList.add('drag-over')});
+
+  // ═══ DRAG AND DROP: cards within and between tiers ═══
+  el.querySelectorAll('.tsk').forEach(node=>{
+    node.setAttribute('draggable','true');
+    node.addEventListener('dragstart',e=>{
+      dragId=+node.dataset.id;node.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',dragId);
+    });
+    node.addEventListener('dragend',()=>{
+      node.classList.remove('dragging');dragId=null;
+      document.querySelectorAll('.drag-over,.drag-tier-over').forEach(x=>x.classList.remove('drag-over','drag-tier-over'));
+    });
+    node.addEventListener('dragover',e=>{
+      if(dragId===null)return;e.preventDefault();e.dataTransfer.dropEffect='move';
+      document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'));
+      node.classList.add('drag-over');
+    });
     node.addEventListener('dragleave',()=>node.classList.remove('drag-over'));
-    node.addEventListener('drop',e=>{e.preventDefault();node.classList.remove('drag-over');const did=+node.dataset.id;if(dragId===null||dragId===did)return;pH('reorder');const di=D.tasks.findIndex(t=>t.id===dragId),ri=D.tasks.findIndex(t=>t.id===did);if(di<0||ri<0)return;const[item]=D.tasks.splice(di,1);D.tasks.splice(ri,0,item);D.tasks.forEach((t,i)=>t.order=i);skipSort=true;dragId=null;renderT()})});
+    node.addEventListener('drop',e=>{
+      e.preventDefault();e.stopPropagation();node.classList.remove('drag-over');
+      const did=+node.dataset.id;if(dragId===null||dragId===did)return;
+      const dragTask=D.tasks.find(t=>t.id===dragId);
+      const dropTask=D.tasks.find(t=>t.id===did);
+      if(!dragTask||!dropTask)return;
+      // If dropping onto a card in a different tier, change priority
+      const dropTier=node.closest('.kb-tier')?.dataset.tier;
+      if(dropTier){
+        const newP=dropTier==='critical'?2:dropTier==='medium'?3:4;
+        if(dragTask.priority!==newP){pH('move tier');dragTask.priority=newP}
+        else{pH('reorder')}
+      } else {pH('reorder')}
+      const di=D.tasks.findIndex(t=>t.id===dragId),ri=D.tasks.findIndex(t=>t.id===did);
+      if(di<0||ri<0)return;
+      const[item]=D.tasks.splice(di,1);D.tasks.splice(ri,0,item);
+      D.tasks.forEach((t,i)=>t.order=i);skipSort=true;dragId=null;renderT();
+    });
+  });
+
+  // Tier-level drop (for dropping into empty tiers or at end of tier)
+  el.querySelectorAll('.kb-grid').forEach(grid=>{
+    grid.addEventListener('dragover',e=>{
+      if(dragId===null)return;e.preventDefault();e.dataTransfer.dropEffect='move';
+      grid.closest('.kb-tier').classList.add('drag-tier-over');
+    });
+    grid.addEventListener('dragleave',e=>{
+      if(!grid.contains(e.relatedTarget))grid.closest('.kb-tier').classList.remove('drag-tier-over');
+    });
+    grid.addEventListener('drop',e=>{
+      e.preventDefault();
+      grid.closest('.kb-tier').classList.remove('drag-tier-over');
+      if(dragId===null)return;
+      // Don't handle if already handled by a card drop
+      if(e.target.closest&&e.target.closest('.tsk'))return;
+      const tier=grid.dataset.tier;
+      const dragTask=D.tasks.find(t=>t.id===dragId);
+      if(!dragTask)return;
+      const newP=tier==='critical'?2:tier==='medium'?3:4;
+      pH('move tier');dragTask.priority=newP;
+      dragId=null;skipSort=true;renderT();
+    });
+  });
+
   // Swipe gestures (touch)
   el.querySelectorAll('.tsk-swipe-wrap').forEach(wrap=>{
     const tsk=wrap.querySelector('.tsk');if(!tsk)return;
@@ -1158,15 +1272,11 @@ function renderT(){
     const bgR=wrap.querySelector('.swipe-bg-right'),bgL=wrap.querySelector('.swipe-bg-left');
     let sx=0,sy=0,dx=0,locked=false,swiping=false;
     const THRESH=80,MAXX=150;
-    tsk.addEventListener('touchstart',e=>{
-      const tc=e.touches[0];sx=tc.clientX;sy=tc.clientY;dx=0;locked=false;swiping=false;
-    },{passive:true});
+    tsk.addEventListener('touchstart',e=>{const tc=e.touches[0];sx=tc.clientX;sy=tc.clientY;dx=0;locked=false;swiping=false},{passive:true});
     tsk.addEventListener('touchmove',e=>{
-      const tc=e.touches[0];
-      const mx=tc.clientX-sx,my=tc.clientY-sy;
+      const tc=e.touches[0],mx=tc.clientX-sx,my=tc.clientY-sy;
       if(!locked){if(Math.abs(my)>Math.abs(mx)){locked=true;return}if(Math.abs(mx)>8)swiping=true}
-      if(!swiping||locked)return;
-      e.preventDefault();
+      if(!swiping||locked)return;e.preventDefault();
       dx=Math.max(-MAXX,Math.min(MAXX,mx));
       tsk.style.transform=`translateX(${dx}px)`;
       if(dx>0){bgR.style.opacity=Math.min(1,dx/THRESH);bgL.style.opacity=0}
@@ -1174,24 +1284,17 @@ function renderT(){
     },{passive:false});
     tsk.addEventListener('touchend',()=>{
       if(!swiping){tsk.style.transform='';bgR.style.opacity=0;bgL.style.opacity=0;return}
-      if(dx>=THRESH){
-        wrap.classList.add('swiping-out-right');
-        setTimeout(()=>{tglD(id)},300);
-      }else if(dx<=-THRESH){
-        wrap.classList.add('swiping-out-left');
-        setTimeout(()=>{
-          const t=D.tasks.find(x=>x.id===id);
-          if(t){pH('delete task');D.tasks=D.tasks.filter(x=>x.id!==id);D.tasks.forEach((x,i)=>x.order=i);toast('TASK DELETED','rd');renderT()}
-        },300);
-      }else{tsk.style.transform='';bgR.style.opacity=0;bgL.style.opacity=0}
+      if(dx>=THRESH){wrap.classList.add('swiping-out-right');setTimeout(()=>tglD(id),300)}
+      else if(dx<=-THRESH){wrap.classList.add('swiping-out-left');setTimeout(()=>{const t=D.tasks.find(x=>x.id===id);if(t){pH('delete task');D.tasks=D.tasks.filter(x=>x.id!==id);D.tasks.forEach((x,i)=>x.order=i);toast('TASK DELETED','rd');renderT()}},300)}
+      else{tsk.style.transform='';bgR.style.opacity=0;bgL.style.opacity=0}
       dx=0;swiping=false;locked=false;
     },{passive:true});
   });
-  // Double-click to inline edit task name (desktop)
+
+  // Double-click inline edit (desktop)
   if(!('ontouchstart'in window)){
     el.querySelectorAll('.tsk-txt').forEach(txt=>{txt.style.cursor='text';txt.ondblclick=e=>{e.stopPropagation();const id=+txt.closest('.tsk').dataset.id;const t=D.tasks.find(x=>x.id===id);if(!t)return;const inp=document.createElement('input');inp.className='inline-edit';inp.value=t.name;txt.innerHTML='';txt.appendChild(inp);inp.focus();inp.select();const save=()=>{const v=inp.value.trim().toUpperCase();if(v&&v!==t.name){pH('edit task');t.name=v}renderT()};inp.onblur=save;inp.onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();save()}else if(ev.key==='Escape'){renderT()}}}});
-    // Double-click to inline edit subtask name
-    el.querySelectorAll('.sub-nm').forEach(nm=>{nm.style.cursor='text';nm.ondblclick=e=>{e.stopPropagation();const row=nm.closest('.sub-row');const tid=+row.dataset.tid,si=+row.dataset.si;const t=D.tasks.find(x=>x.id===tid);if(!t||!t.subtasks||!t.subtasks[si])return;const inp=document.createElement('input');inp.className='inline-edit';inp.style.fontSize='.85rem';inp.value=t.subtasks[si].name;nm.innerHTML='';nm.appendChild(inp);inp.focus();inp.select();const save=()=>{const v=inp.value.trim().toUpperCase();if(v&&v!==t.subtasks[si].name){pH('edit subtask');t.subtasks[si].name=v}renderT()};inp.onblur=save;inp.onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();save()}else if(ev.key==='Escape'){renderT()}}}});
+    el.querySelectorAll('.sub-nm').forEach(nm=>{nm.style.cursor='text';nm.ondblclick=e=>{e.stopPropagation();const row=nm.closest('.sub-row');const tid=+row.dataset.tid,si=+row.dataset.si;const t=D.tasks.find(x=>x.id===tid);if(!t||!t.subtasks||!t.subtasks[si])return;const inp=document.createElement('input');inp.className='inline-edit';inp.style.fontSize='.72rem';inp.value=t.subtasks[si].name;nm.innerHTML='';nm.appendChild(inp);inp.focus();inp.select();const save=()=>{const v=inp.value.trim().toUpperCase();if(v&&v!==t.subtasks[si].name){pH('edit subtask');t.subtasks[si].name=v}renderT()};inp.onblur=save;inp.onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();save()}else if(ev.key==='Escape'){renderT()}}}});
   }
   renderFlts();updateSts();fillDD()
 }
@@ -1199,35 +1302,56 @@ function renderT(){
 function tkEl(t,isDT=false,isArch=false){
   const days=t.due?dB(t.due):null;let dc='',dt='';
   if(t.due&&!t.done){if(days<0){dc='ov';dt=Math.abs(days)+'D OVERDUE'}else if(days===0){dc='tod';dt='TODAY'}else if(days===1){dc='tmr';dt='TOMORROW'}else dt=fD(t.due)}else if(t.due)dt=fD(t.due);
-  const pc=gpc(t.project),prc=t.person?gc(PP,t.person):null,pac=t.partner?gc(PA,t.partner):null;
+  const pc=gpc(t.project);
   const subs=t.subtasks||[];
   const sDone=subs.filter(s=>s.completed).length,sTotal=subs.length;
   const hasSubs=sTotal>0;
-  const allSubsDone=hasSubs&&sDone===sTotal;
-  const tcCls='tc';
-  const cls=['tsk',isDT?'struck':'',t.blocked?'blk':'',t.pinned?'pinned':''].filter(Boolean).join(' ');
-  // Progress bar with collapse toggle
-  const subCollapsed=_collapsedSubs.has(t.id);
-  const collapseBtn=hasSubs?`<button class="sub-toggle" data-tid="${t.id}" title="${subCollapsed?'Expand':'Collapse'} subtasks">${subCollapsed?'▶':'▼'} ${sDone}/${sTotal}</button>`:'';
-  const pBar=hasSubs?`<div style="display:flex;align-items:center;gap:6px"><div class="st-bar-w" style="flex:1"><div class="st-bar-f" style="width:${Math.round(sDone/sTotal*100)}%"></div></div>${collapseBtn}</div>`:'';
-  // Subtask list
-  let subHtml='';
-  if(hasSubs){
-    subHtml=`<div class="sub-list${subCollapsed?' collapsed':''}">`;
-    subs.forEach((s,i)=>{subHtml+=`<div class="sub-row${s.completed?' done':''}" data-tid="${t.id}" data-si="${i}"><span class="sub-grip" draggable="true" data-tid="${t.id}" data-si="${i}">⠿</span><div class="sub-cb${s.completed?' done':''}" data-tid="${t.id}" data-si="${i}">${s.completed?'✓':''}</div><span class="sub-nm">${s.name}</span><button class="sub-del" data-tid="${t.id}" data-si="${i}">✕</button></div>`});
-    subHtml+='</div>';
-  }
-  // Add subtask inline input area (hidden by default, toggled by JS)
-  const subAddHtml=!isArch?`<div class="sub-add" data-tid="${t.id}" style="display:none"><input class="sub-add-inp" data-tid="${t.id}" placeholder="Add subtask..." maxlength="100"><button class="sub-add-ok" data-tid="${t.id}">✓</button><button class="sub-add-x" data-tid="${t.id}">✕</button></div>`:'';
-  const noteHtml=t.notes?`<div class="tsk-note">${t.notes}</div>`:'';
-  // Build people/partner tags — support arrays
+  const cls=['tsk',`p${t.priority}`,isDT?'struck':'',t.blocked?'blk':'',t.pinned?'pinned':''].filter(Boolean).join(' ');
+
+  // Project label
+  const projHtml=t.project?`<span class="tsk-proj" style="background:${pc.b};color:${pc.c}">${pc.code}</span>`:'';
+
+  // People/partner tags
   const persons=Array.isArray(t.person)?t.person:t.person?[t.person]:[];
   const partners=Array.isArray(t.partner)?t.partner:t.partner?[t.partner]:[];
   const personTags=persons.map(p=>tg(p,gc(PP,p))).join('');
   const partnerTags=partners.map(p=>tg(p,gc(PA,p))).join('');
-  const inner=`<div class="${cls}" data-id="${t.id}">${!isArch?'<div class="drag-h"><span></span><span></span><span></span></div>':''}<div class="${tcCls}" data-id="${t.id}">${t.done?'✓':''}</div><div class="tp p${t.priority}"></div><div class="tb"><div class="tsk-txt">${t.project?`<span style="color:${pc.c};opacity:.5;font-size:0.85em">${pc.code}</span> `:''}${t.name}</div>${pBar}<div class="tm">${personTags}${partnerTags}${t.blocked?`<span class="bbadge">🔒 ${t.blockedBy||'?'}</span>`:''}</div>${noteHtml}${subHtml}${subAddHtml}</div><div class="tr">${t.due&&dt?`<div class="td ${dc}">${dt}</div>`:''}<div class="tact">${!isArch?`<button class="pin-btn${t.pinned?' pinned':''}" data-id="${t.id}" title="${t.pinned?'Unpin':'Pin'} task">📌</button><button class="st-add-btn" data-id="${t.id}" title="Add subtask">+</button><button class="tedb" data-id="${t.id}">✎</button><button class="tbb" data-id="${t.id}">${t.blocked?'🔓':'🔒'}</button>`:`<button class="arch-del-btn" data-id="${t.id}" title="Delete">✕</button>`}</div></div></div>`;
+  const tagsHtml=(personTags||partnerTags||t.blocked)?`<div class="tm">${personTags}${partnerTags}${t.blocked?`<span class="bbadge">🔒 ${t.blockedBy||'?'}</span>`:''}</div>`:'';
+
+  // Notes
+  const noteHtml=t.notes?`<div class="tsk-note">${t.notes}</div>`:'';
+
+  // Subtask preview: show first 2 subtasks with fade, rest on hover
+  let subPreviewHtml='';
+  if(hasSubs&&!isArch){
+    const pct=Math.round(sDone/sTotal*100);
+    subPreviewHtml=`<div class="sub-preview"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div class="st-bar-w" style="flex:1"><div class="st-bar-f" style="width:${pct}%"></div></div><span class="sub-count">${sDone}/${sTotal}</span></div>`;
+    // Preview items (first 2)
+    subPreviewHtml+=`<div class="sub-preview-items">`;
+    subs.slice(0,2).forEach((s,i)=>{
+      subPreviewHtml+=`<div class="sub-prev-row${s.completed?' done':''}"><div class="sub-prev-cb${s.completed?' done':''}" data-tid="${t.id}" data-si="${i}">${s.completed?'✓':''}</div><span class="sub-prev-nm">${s.name}</span></div>`;
+    });
+    if(sTotal>2){subPreviewHtml+=`<div class="sub-more">+${sTotal-2} MORE</div>`}
+    subPreviewHtml+=`</div>`;
+    // Full subtask list (visible on hover via CSS)
+    subPreviewHtml+=`<div class="sub-list">`;
+    subs.forEach((s,i)=>{
+      subPreviewHtml+=`<div class="sub-row${s.completed?' done':''}" data-tid="${t.id}" data-si="${i}"><span class="sub-grip" draggable="true" data-tid="${t.id}" data-si="${i}">⠿</span><div class="sub-cb${s.completed?' done':''}" data-tid="${t.id}" data-si="${i}">${s.completed?'✓':''}</div><span class="sub-nm">${s.name}</span><button class="sub-del" data-tid="${t.id}" data-si="${i}">✕</button></div>`;
+    });
+    subPreviewHtml+=`</div>`;
+    subPreviewHtml+=`</div>`;
+  }
+
+  // Add subtask input
+  const subAddHtml=!isArch?`<div class="sub-add" data-tid="${t.id}" style="display:none"><input class="sub-add-inp" data-tid="${t.id}" placeholder="Add subtask..." maxlength="100"><button class="sub-add-ok" data-tid="${t.id}">✓</button><button class="sub-add-x" data-tid="${t.id}">✕</button></div>`:'';
+
+  // Footer: due date + actions
+  const footHtml=`<div class="tsk-foot">${t.due&&dt?`<div class="td ${dc}">${dt}</div>`:'<div></div>'}<div class="tact">${!isArch?`<button class="pin-btn${t.pinned?' pinned':''}" data-id="${t.id}" title="${t.pinned?'Unpin':'Pin'}">📌</button><button class="st-add-btn" data-id="${t.id}" title="Add subtask">+</button><button class="tedb" data-id="${t.id}">✎</button><button class="tbb" data-id="${t.id}">${t.blocked?'🔓':'🔒'}</button>`:`<button class="arch-del-btn" data-id="${t.id}" title="Delete">✕</button>`}</div></div>`;
+
+  const inner=`<div class="${cls}" data-id="${t.id}"><div class="tsk-top"><div class="tc" data-id="${t.id}">${t.done?'✓':''}</div><div class="tb">${projHtml}<div class="tsk-txt">${t.name}</div>${tagsHtml}${noteHtml}</div></div>${subPreviewHtml}${subAddHtml}${footHtml}</div>`;
+
   if(isArch)return inner;
-  return`<div class="tsk-swipe-wrap" data-swipe-id="${t.id}"><div class="swipe-bg swipe-bg-right">✓ DONE</div><div class="swipe-bg swipe-bg-left">✕ DELETE</div>${inner}</div>`
+  return`<div class="tsk-swipe-wrap" data-swipe-id="${t.id}"><div class="swipe-bg swipe-bg-right">✓ DONE</div><div class="swipe-bg swipe-bg-left">✕ DELETE</div>${inner}</div>`;
 }
 
 /* ═══════ SUBTASK HELPERS ═══════ */
