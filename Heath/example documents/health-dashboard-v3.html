@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Log — Crohn's Tracker v3</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --g: #39FF14;
+    --g08: #39ff1414;
+    --g15: #39ff1426;
+    --g25: #39ff1440;
+    --g40: #39ff1466;
+    --g60: #39ff1499;
+    --up: #39FF14;
+    --down: #FF3864;
+    --down15: #FF386426;
+    --flat: #666;
+    --warn: #FF9F1C;
+    --warn15: #FF9F1C26;
+    --bg: #050505;
+    --c1: #0a0a0a;
+    --c2: #0e0e0e;
+    --brd: #151515;
+    --brd2: #1c1c1c;
+    --t0: #fff;
+    --t1: #ccc;
+    --t2: #777;
+    --t3: #444;
+    --t4: #222;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--t1);
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .mono { font-family: 'Geist Mono', monospace; }
+
+  /* ═══ NAV ═══ */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #050505ee;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--brd);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+  }
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--g);
+    box-shadow: 0 0 12px var(--g40);
+    animation: ndPulse 3s ease-in-out infinite;
+  }
+  @keyframes ndPulse {
+    0%,100% { box-shadow: 0 0 12px var(--g40); }
+    50% { box-shadow: 0 0 24px var(--g60); }
+  }
+  .nav-title {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--t2);
+  }
+  .nav-right {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--t3);
+    letter-spacing: 1px;
+  }
+
+  /* ═══ CONTAINER ═══ */
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* ═══ TRACK CARD ═══ */
+  .track {
+    background: var(--c1);
+    border: 1px solid var(--brd);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .track:hover { border-color: var(--brd2); }
+
+  .track-top {
+    padding: 24px 28px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .track-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 4px;
+  }
+  .track-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--t0);
+  }
+  .track-right {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .track-current {
+    font-family: 'Geist Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .track-unit {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--t3);
+    margin-top: 2px;
+    letter-spacing: 1px;
+  }
+
+  /* Direction chip */
+  .dir {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+  }
+  .dir-good {
+    background: var(--g08);
+    color: var(--g);
+    border: 1px solid var(--g15);
+  }
+  .dir-bad {
+    background: var(--down15);
+    color: var(--down);
+    border: 1px solid var(--down15);
+  }
+  .dir-warn {
+    background: var(--warn15);
+    color: var(--warn);
+    border: 1px solid var(--warn15);
+  }
+  .dir-flat {
+    background: #ffffff08;
+    color: var(--t2);
+    border: 1px solid #ffffff10;
+  }
+
+  /* ═══ CHART AREA ═══ */
+  .chart-area {
+    padding: 16px 28px 20px;
+    position: relative;
+  }
+  .chart-svg {
+    width: 100%;
+    height: 140px;
+    display: block;
+  }
+
+  /* Chart elements */
+  .ch-grid { stroke: var(--brd); stroke-width: 0.5; }
+  .ch-grid-dash { stroke: var(--t4); stroke-width: 0.5; stroke-dasharray: 3 6; }
+  .ch-ref { stroke: var(--g25); stroke-width: 1; stroke-dasharray: 4 4; }
+  .ch-ref-bad { stroke: #FF386430; stroke-width: 1; stroke-dasharray: 4 4; }
+  .ch-ref-zone {
+    opacity: 0.04;
+  }
+
+  .ch-area {
+    opacity: 0;
+    animation: aIn 1.5s ease-out 0.6s forwards;
+  }
+  @keyframes aIn { to { opacity: 1; } }
+
+  .ch-line {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    animation: lDraw 2.5s ease-out forwards;
+  }
+  @keyframes lDraw { to { stroke-dashoffset: 0; } }
+
+  .ch-dot {
+    opacity: 0;
+    animation: dIn 0.3s ease-out forwards;
+    cursor: crosshair;
+  }
+  @keyframes dIn { to { opacity: 1; } }
+
+  .ch-dot-ring {
+    fill: none;
+    stroke-width: 2;
+    opacity: 0;
+    animation: dIn 0.3s ease-out forwards;
+  }
+  .ch-current-dot {
+    opacity: 0;
+    animation: cDot 0.4s ease-out forwards;
+  }
+  @keyframes cDot { to { opacity: 1; } }
+  .ch-current-glow {
+    opacity: 0;
+    animation: cGlow 2.5s ease-in-out infinite 1.5s;
+  }
+  @keyframes cGlow {
+    0%,100% { opacity: 0.3; r: 10; }
+    50% { opacity: 0.6; r: 16; }
+  }
+
+  .ch-y-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 7px;
+    fill: var(--t3);
+    letter-spacing: 0.5px;
+  }
+  .ch-x-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 7px;
+    fill: var(--t3);
+    letter-spacing: 0.5px;
+  }
+  .ch-ref-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* ═══ LOG ENTRIES (mini data table) ═══ */
+  .log-strip {
+    border-top: 1px solid var(--brd);
+    padding: 14px 28px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .log-strip::-webkit-scrollbar { display: none; }
+  .log-entry {
+    flex-shrink: 0;
+    padding: 0 16px;
+    border-right: 1px solid var(--brd);
+    text-align: center;
+    min-width: 72px;
+  }
+  .log-entry:last-child { border-right: none; }
+  .log-entry .le-date {
+    font-family: 'Geist Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: var(--t3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .log-entry .le-val {
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .log-entry .le-delta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 8px;
+    margin-top: 2px;
+  }
+
+  /* ═══ RANGE CONTEXT ═══ */
+  .range-ctx {
+    padding: 0 28px 18px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .range-item {
+    font-family: 'Geist Mono', monospace;
+    font-size: 8px;
+    color: var(--t3);
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .range-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  /* ═══ SECTION DIVIDER ═══ */
+  .divider {
+    padding: 28px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--brd);
+  }
+  .divider-text {
+    font-family: 'Geist Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--t3);
+    flex-shrink: 0;
+  }
+
+  /* ═══ BODY COMP SPECIAL ═══ */
+  .body-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 700px) {
+    .body-row { grid-template-columns: 1fr; }
+  }
+
+  .body-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  .bv-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bv-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--t2);
+    width: 70px;
+    flex-shrink: 0;
+    text-align: right;
+    letter-spacing: 0.5px;
+  }
+  .bv-bar {
+    flex: 1;
+    height: 20px;
+    background: var(--brd);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bv-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: #000;
+    animation: bvGrow 1.5s ease-out forwards;
+    width: 0;
+  }
+  @keyframes bvGrow { to { width: var(--w); } }
+  .bv-fill-ghost {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    border-radius: 4px;
+    opacity: 0.2;
+    border-right: 2px dashed;
+  }
+
+  /* Footer */
+  .foot {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 7px;
+    color: var(--t4);
+    letter-spacing: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-left">
+    <div class="nav-dot"></div>
+    <div class="nav-title">Health Log — Crohn's Tracker</div>
+  </div>
+  <div class="nav-right">181 cm · 29y · Last entry 28 Feb 2026</div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-text">Inflammation</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ══ FECAL CALPROTECTIN ══ -->
+<div class="track">
+  <div class="track-top">
+    <div>
+      <div class="track-label">Fecal Calprotectin</div>
+      <div class="track-name">Gut Inflammation</div>
+    </div>
+    <div class="track-right">
+      <div class="track-current" style="color: var(--warn);">186</div>
+      <div class="track-unit">µg/g</div>
+      <div class="dir dir-good">↓ 22% from peak</div>
+    </div>
+  </div>
+
+  <div class="range-ctx" style="margin-top:12px;">
+    <div class="range-item"><div class="range-dot" style="background:var(--g);"></div> &lt;50 Remission</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--warn);"></div> 50–250 Mild inflammation</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--down);"></div> &gt;250 Active disease</div>
+  </div>
+
+  <div class="chart-area">
+    <svg class="chart-svg" viewBox="0 0 800 140" preserveAspectRatio="none">
+      <!-- Normal zone -->
+      <rect class="ch-ref-zone" x="0" y="118" width="800" height="22" fill="var(--g)"/>
+      <!-- Grid -->
+      <line class="ch-grid" x1="0" y1="35" x2="800" y2="35"/>
+      <line class="ch-grid" x1="0" y1="70" x2="800" y2="70"/>
+      <line class="ch-grid" x1="0" y1="105" x2="800" y2="105"/>
+      <!-- Ref: remission line at 50 -->
+      <line class="ch-ref" x1="0" y1="126" x2="800" y2="126"/>
+      <text class="ch-ref-label" x="804" y="128" fill="var(--g40)">50 TARGET</text>
+      <!-- Ref: active disease at 250 -->
+      <line class="ch-ref-bad" x1="0" y1="70" x2="800" y2="70"/>
+      <text class="ch-ref-label" x="804" y="72" fill="#FF386440">250 ACTIVE</text>
+      <!-- Y axis -->
+      <text class="ch-y-label" x="4" y="10">500</text>
+      <text class="ch-y-label" x="4" y="72">250</text>
+      <text class="ch-y-label" x="4" y="128">50</text>
+      <!-- Area -->
+      <path class="ch-area" fill="url(#calpGrad)" d="M80,14 L180,21 L280,35 L380,49 L480,56 L580,63 L680,68 L750,74 L750,140 L80,140Z" opacity="0.12"/>
+      <defs>
+        <linearGradient id="calpGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--warn)"/>
+          <stop offset="100%" stop-color="var(--warn)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- Line -->
+      <path class="ch-line" stroke="var(--warn)" d="M80,14 L180,21 L280,35 L380,49 L480,56 L580,63 L680,68 L750,74"/>
+      <!-- Dots -->
+      <circle class="ch-dot" cx="80" cy="14" r="3" fill="var(--down)" style="animation-delay:0.4s"/>
+      <circle class="ch-dot" cx="180" cy="21" r="3" fill="var(--down)" style="animation-delay:0.6s"/>
+      <circle class="ch-dot" cx="280" cy="35" r="3" fill="var(--warn)" style="animation-delay:0.8s"/>
+      <circle class="ch-dot" cx="380" cy="49" r="3" fill="var(--warn)" style="animation-delay:1.0s"/>
+      <circle class="ch-dot" cx="480" cy="56" r="3" fill="var(--warn)" style="animation-delay:1.2s"/>
+      <circle class="ch-dot" cx="580" cy="63" r="3" fill="var(--warn)" style="animation-delay:1.4s"/>
+      <circle class="ch-dot" cx="680" cy="68" r="3" fill="var(--warn)" style="animation-delay:1.6s"/>
+      <!-- Current -->
+      <circle class="ch-current-glow" cx="750" cy="74" r="10" fill="var(--warn)"/>
+      <circle class="ch-current-dot" cx="750" cy="74" r="4" fill="var(--warn)" stroke="var(--bg)" stroke-width="2" style="animation-delay:1.8s"/>
+      <!-- X axis -->
+      <text class="ch-x-label" x="80" y="138">Apr</text>
+      <text class="ch-x-label" x="215" y="138">Jun</text>
+      <text class="ch-x-label" x="350" y="138">Aug</text>
+      <text class="ch-x-label" x="485" y="138">Oct</text>
+      <text class="ch-x-label" x="615" y="138">Dec</text>
+      <text class="ch-x-label" x="730" y="138">Feb</text>
+    </svg>
+  </div>
+
+  <div class="log-strip">
+    <div class="log-entry"><div class="le-date">Apr '25</div><div class="le-val" style="color:var(--down);">420</div><div class="le-delta" style="color:var(--down);">▲ peak</div></div>
+    <div class="log-entry"><div class="le-date">Jun</div><div class="le-val" style="color:var(--down);">380</div><div class="le-delta" style="color:var(--g);">↓ 40</div></div>
+    <div class="log-entry"><div class="le-date">Aug</div><div class="le-val" style="color:var(--warn);">290</div><div class="le-delta" style="color:var(--g);">↓ 90</div></div>
+    <div class="log-entry"><div class="le-date">Oct</div><div class="le-val" style="color:var(--warn);">240</div><div class="le-delta" style="color:var(--g);">↓ 50</div></div>
+    <div class="log-entry"><div class="le-date">Nov</div><div class="le-val" style="color:var(--warn);">220</div><div class="le-delta" style="color:var(--g);">↓ 20</div></div>
+    <div class="log-entry"><div class="le-date">Dec</div><div class="le-val" style="color:var(--warn);">205</div><div class="le-delta" style="color:var(--g);">↓ 15</div></div>
+    <div class="log-entry"><div class="le-date">Jan '26</div><div class="le-val" style="color:var(--warn);">195</div><div class="le-delta" style="color:var(--g);">↓ 10</div></div>
+    <div class="log-entry"><div class="le-date">Feb</div><div class="le-val" style="color:var(--warn);">186</div><div class="le-delta" style="color:var(--g);">↓ 9</div></div>
+  </div>
+</div>
+
+<!-- ══ CRP ══ -->
+<div class="track">
+  <div class="track-top">
+    <div>
+      <div class="track-label">C-Reactive Protein</div>
+      <div class="track-name">Systemic Inflammation</div>
+    </div>
+    <div class="track-right">
+      <div class="track-current" style="color: var(--g);">2.1</div>
+      <div class="track-unit">mg/L</div>
+      <div class="dir dir-good">↓ 75% from 8.4</div>
+    </div>
+  </div>
+
+  <div class="range-ctx" style="margin-top:12px;">
+    <div class="range-item"><div class="range-dot" style="background:var(--g);"></div> &lt;5 Normal</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--warn);"></div> 5–10 Mild</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--down);"></div> &gt;10 High</div>
+  </div>
+
+  <div class="chart-area">
+    <svg class="chart-svg" viewBox="0 0 800 140" preserveAspectRatio="none">
+      <rect class="ch-ref-zone" x="0" y="90" width="800" height="50" fill="var(--g)"/>
+      <line class="ch-grid" x1="0" y1="35" x2="800" y2="35"/>
+      <line class="ch-grid" x1="0" y1="70" x2="800" y2="70"/>
+      <line class="ch-ref" x1="0" y1="90" x2="800" y2="90"/>
+      <text class="ch-ref-label" x="804" y="92" fill="var(--g40)">5 NORMAL</text>
+      <text class="ch-y-label" x="4" y="10">15</text>
+      <text class="ch-y-label" x="4" y="55">10</text>
+      <text class="ch-y-label" x="4" y="92">5</text>
+      <text class="ch-y-label" x="4" y="138">0</text>
+      <path class="ch-area" fill="url(#crpGrad)" d="M80,34 L180,42 L280,56 L380,72 L480,85 L580,100 L680,110 L750,115 L750,140 L80,140Z" opacity="0.15"/>
+      <defs><linearGradient id="crpGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--g)"/><stop offset="100%" stop-color="var(--g)" stop-opacity="0"/></linearGradient></defs>
+      <path class="ch-line" stroke="var(--g)" d="M80,34 L180,42 L280,56 L380,72 L480,85 L580,100 L680,110 L750,115"/>
+      <circle class="ch-dot" cx="80" cy="34" r="3" fill="var(--warn)" style="animation-delay:0.4s"/>
+      <circle class="ch-dot" cx="180" cy="42" r="3" fill="var(--warn)" style="animation-delay:0.6s"/>
+      <circle class="ch-dot" cx="280" cy="56" r="3" fill="var(--warn)" style="animation-delay:0.8s"/>
+      <circle class="ch-dot" cx="380" cy="72" r="3" fill="var(--g)" style="animation-delay:1.0s"/>
+      <circle class="ch-dot" cx="480" cy="85" r="3" fill="var(--g)" style="animation-delay:1.2s"/>
+      <circle class="ch-dot" cx="580" cy="100" r="3" fill="var(--g)" style="animation-delay:1.4s"/>
+      <circle class="ch-dot" cx="680" cy="110" r="3" fill="var(--g)" style="animation-delay:1.6s"/>
+      <circle class="ch-current-glow" cx="750" cy="115" r="10" fill="var(--g)"/>
+      <circle class="ch-current-dot" cx="750" cy="115" r="4" fill="var(--g)" stroke="var(--bg)" stroke-width="2" style="animation-delay:1.8s"/>
+      <text class="ch-x-label" x="80" y="138">Apr</text>
+      <text class="ch-x-label" x="215" y="138">Jun</text>
+      <text class="ch-x-label" x="350" y="138">Aug</text>
+      <text class="ch-x-label" x="485" y="138">Oct</text>
+      <text class="ch-x-label" x="615" y="138">Dec</text>
+      <text class="ch-x-label" x="730" y="138">Feb</text>
+    </svg>
+  </div>
+
+  <div class="log-strip">
+    <div class="log-entry"><div class="le-date">Apr '25</div><div class="le-val" style="color:var(--warn);">8.4</div><div class="le-delta" style="color:var(--down);">▲ high</div></div>
+    <div class="log-entry"><div class="le-date">Jun</div><div class="le-val" style="color:var(--warn);">7.2</div><div class="le-delta" style="color:var(--g);">↓ 1.2</div></div>
+    <div class="log-entry"><div class="le-date">Aug</div><div class="le-val" style="color:var(--warn);">5.8</div><div class="le-delta" style="color:var(--g);">↓ 1.4</div></div>
+    <div class="log-entry"><div class="le-date">Oct</div><div class="le-val" style="color:var(--g);">4.1</div><div class="le-delta" style="color:var(--g);">↓ 1.7</div></div>
+    <div class="log-entry"><div class="le-date">Nov</div><div class="le-val" style="color:var(--g);">3.4</div><div class="le-delta" style="color:var(--g);">↓ 0.7</div></div>
+    <div class="log-entry"><div class="le-date">Dec</div><div class="le-val" style="color:var(--g);">2.9</div><div class="le-delta" style="color:var(--g);">↓ 0.5</div></div>
+    <div class="log-entry"><div class="le-date">Jan '26</div><div class="le-val" style="color:var(--g);">2.4</div><div class="le-delta" style="color:var(--g);">↓ 0.5</div></div>
+    <div class="log-entry"><div class="le-date">Feb</div><div class="le-val" style="color:var(--g);">2.1</div><div class="le-delta" style="color:var(--g);">↓ 0.3</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-text">Blood</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ══ HEMOGLOBIN & HEMATOCRIT ══ -->
+<div class="track">
+  <div class="track-top">
+    <div>
+      <div class="track-label">Hemoglobin & Hematocrit</div>
+      <div class="track-name">Oxygen Capacity</div>
+    </div>
+    <div class="track-right">
+      <div class="track-current" style="color: var(--warn);">12.8 <span style="font-size:14px;color:var(--t3);">/ 38.2%</span></div>
+      <div class="track-unit">g/dL · Hematocrit %</div>
+      <div class="dir dir-good">↑ recovering from 11.4</div>
+    </div>
+  </div>
+
+  <div class="range-ctx" style="margin-top:12px;">
+    <div class="range-item"><div class="range-dot" style="background:var(--g);"></div> Hb 13.5–17.5 Normal</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--warn);"></div> Hb 11–13.5 Low</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--down);"></div> Hb &lt;11 Anemia</div>
+  </div>
+
+  <div class="chart-area">
+    <svg class="chart-svg" viewBox="0 0 800 140" preserveAspectRatio="none">
+      <!-- Normal zone for Hb -->
+      <rect class="ch-ref-zone" x="0" y="10" width="800" height="36" fill="var(--g)"/>
+      <line class="ch-ref" x1="0" y1="46" x2="800" y2="46"/>
+      <text class="ch-ref-label" x="804" y="48" fill="var(--g40)">13.5 NORMAL</text>
+      <line class="ch-ref-bad" x1="0" y1="95" x2="800" y2="95"/>
+      <text class="ch-ref-label" x="804" y="97" fill="#FF386440">11.0 ANEMIA</text>
+      <text class="ch-y-label" x="4" y="22">16</text>
+      <text class="ch-y-label" x="4" y="48">13.5</text>
+      <text class="ch-y-label" x="4" y="97">11</text>
+      <text class="ch-y-label" x="4" y="132">9</text>
+      <!-- Hb Line -->
+      <path class="ch-area" fill="url(#hbGrad)" d="M80,100 L180,92 L280,82 L380,74 L480,68 L580,62 L680,58 L750,56 L750,140 L80,140Z" opacity="0.12"/>
+      <defs><linearGradient id="hbGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--warn)"/><stop offset="100%" stop-color="var(--warn)" stop-opacity="0"/></linearGradient></defs>
+      <path class="ch-line" stroke="var(--warn)" d="M80,100 L180,92 L280,82 L380,74 L480,68 L580,62 L680,58 L750,56"/>
+      <circle class="ch-dot" cx="80" cy="100" r="3" fill="var(--down)" style="animation-delay:0.4s"/>
+      <circle class="ch-dot" cx="280" cy="82" r="3" fill="var(--warn)" style="animation-delay:0.8s"/>
+      <circle class="ch-dot" cx="480" cy="68" r="3" fill="var(--warn)" style="animation-delay:1.2s"/>
+      <circle class="ch-dot" cx="680" cy="58" r="3" fill="var(--warn)" style="animation-delay:1.6s"/>
+      <circle class="ch-current-glow" cx="750" cy="56" r="10" fill="var(--warn)"/>
+      <circle class="ch-current-dot" cx="750" cy="56" r="4" fill="var(--warn)" stroke="var(--bg)" stroke-width="2" style="animation-delay:1.8s"/>
+      <!-- Hematocrit line (secondary, thinner) -->
+      <path class="ch-line" stroke="var(--t3)" stroke-width="1" stroke-dasharray="4 3"
+        d="M80,108 L180,100 L280,90 L380,82 L480,76 L580,72 L680,68 L750,66"/>
+      <text class="ch-x-label" x="80" y="138">Apr</text>
+      <text class="ch-x-label" x="280" y="138">Aug</text>
+      <text class="ch-x-label" x="480" y="138">Nov</text>
+      <text class="ch-x-label" x="680" y="138">Jan</text>
+      <text class="ch-x-label" x="730" y="138">Feb</text>
+    </svg>
+  </div>
+
+  <div class="log-strip">
+    <div class="log-entry"><div class="le-date">Apr '25</div><div class="le-val" style="color:var(--down);">11.4</div><div class="le-delta" style="color:var(--down);">Hct 34%</div></div>
+    <div class="log-entry"><div class="le-date">Jun</div><div class="le-val" style="color:var(--warn);">11.8</div><div class="le-delta" style="color:var(--g);">↑ 0.4</div></div>
+    <div class="log-entry"><div class="le-date">Aug</div><div class="le-val" style="color:var(--warn);">12.1</div><div class="le-delta" style="color:var(--g);">↑ 0.3</div></div>
+    <div class="log-entry"><div class="le-date">Oct</div><div class="le-val" style="color:var(--warn);">12.3</div><div class="le-delta" style="color:var(--g);">↑ 0.2</div></div>
+    <div class="log-entry"><div class="le-date">Nov</div><div class="le-val" style="color:var(--warn);">12.5</div><div class="le-delta" style="color:var(--g);">↑ 0.2</div></div>
+    <div class="log-entry"><div class="le-date">Dec</div><div class="le-val" style="color:var(--warn);">12.6</div><div class="le-delta" style="color:var(--g);">↑ 0.1</div></div>
+    <div class="log-entry"><div class="le-date">Jan '26</div><div class="le-val" style="color:var(--warn);">12.7</div><div class="le-delta" style="color:var(--g);">↑ 0.1</div></div>
+    <div class="log-entry"><div class="le-date">Feb</div><div class="le-val" style="color:var(--warn);">12.8</div><div class="le-delta" style="color:var(--g);">↑ 0.1</div></div>
+  </div>
+</div>
+
+<!-- ══ VITAMIN D ══ -->
+<div class="track">
+  <div class="track-top">
+    <div>
+      <div class="track-label">25-Hydroxy Vitamin D</div>
+      <div class="track-name">Immune & Bone Health</div>
+    </div>
+    <div class="track-right">
+      <div class="track-current" style="color: var(--down);">18</div>
+      <div class="track-unit">ng/mL</div>
+      <div class="dir dir-bad">→ Flat — still deficient</div>
+    </div>
+  </div>
+
+  <div class="range-ctx" style="margin-top:12px;">
+    <div class="range-item"><div class="range-dot" style="background:var(--g);"></div> 30–50 Sufficient</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--warn);"></div> 20–30 Insufficient</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--down);"></div> &lt;20 Deficient</div>
+  </div>
+
+  <div class="chart-area">
+    <svg class="chart-svg" viewBox="0 0 800 140" preserveAspectRatio="none">
+      <rect class="ch-ref-zone" x="0" y="10" width="800" height="40" fill="var(--g)"/>
+      <line class="ch-ref" x1="0" y1="50" x2="800" y2="50"/>
+      <text class="ch-ref-label" x="804" y="52" fill="var(--g40)">30 SUFFICIENT</text>
+      <line class="ch-ref-bad" x1="0" y1="76" x2="800" y2="76"/>
+      <text class="ch-ref-label" x="804" y="78" fill="#FF386440">20 DEFICIENT</text>
+      <text class="ch-y-label" x="4" y="14">50</text>
+      <text class="ch-y-label" x="4" y="52">30</text>
+      <text class="ch-y-label" x="4" y="78">20</text>
+      <text class="ch-y-label" x="4" y="132">5</text>
+      <!-- Flat-ish line hovering in deficient zone -->
+      <path class="ch-area" fill="url(#vdGrad)" d="M80,88 L180,92 L280,86 L380,90 L480,84 L580,82 L680,82 L750,82 L750,140 L80,140Z" opacity="0.1"/>
+      <defs><linearGradient id="vdGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--down)"/><stop offset="100%" stop-color="var(--down)" stop-opacity="0"/></linearGradient></defs>
+      <path class="ch-line" stroke="var(--down)" d="M80,88 L180,92 L280,86 L380,90 L480,84 L580,82 L680,82 L750,82"/>
+      <circle class="ch-dot" cx="80" cy="88" r="3" fill="var(--down)" style="animation-delay:0.4s"/>
+      <circle class="ch-dot" cx="280" cy="86" r="3" fill="var(--down)" style="animation-delay:0.8s"/>
+      <circle class="ch-dot" cx="480" cy="84" r="3" fill="var(--down)" style="animation-delay:1.2s"/>
+      <circle class="ch-dot" cx="680" cy="82" r="3" fill="var(--down)" style="animation-delay:1.6s"/>
+      <circle class="ch-current-glow" cx="750" cy="82" r="10" fill="var(--down)"/>
+      <circle class="ch-current-dot" cx="750" cy="82" r="4" fill="var(--down)" stroke="var(--bg)" stroke-width="2" style="animation-delay:1.8s"/>
+      <text class="ch-x-label" x="80" y="138">Apr</text>
+      <text class="ch-x-label" x="280" y="138">Aug</text>
+      <text class="ch-x-label" x="480" y="138">Nov</text>
+      <text class="ch-x-label" x="680" y="138">Jan</text>
+      <text class="ch-x-label" x="730" y="138">Feb</text>
+    </svg>
+  </div>
+
+  <div class="log-strip">
+    <div class="log-entry"><div class="le-date">Apr '25</div><div class="le-val" style="color:var(--down);">15</div><div class="le-delta" style="color:var(--down);">▼ low</div></div>
+    <div class="log-entry"><div class="le-date">Jul</div><div class="le-val" style="color:var(--down);">14</div><div class="le-delta" style="color:var(--down);">↓ 1</div></div>
+    <div class="log-entry"><div class="le-date">Sep</div><div class="le-val" style="color:var(--down);">16</div><div class="le-delta" style="color:var(--g);">↑ 2</div></div>
+    <div class="log-entry"><div class="le-date">Nov</div><div class="le-val" style="color:var(--down);">17</div><div class="le-delta" style="color:var(--g);">↑ 1</div></div>
+    <div class="log-entry"><div class="le-date">Jan '26</div><div class="le-val" style="color:var(--down);">17</div><div class="le-delta" style="color:var(--flat);">→ 0</div></div>
+    <div class="log-entry"><div class="le-date">Feb</div><div class="le-val" style="color:var(--down);">18</div><div class="le-delta" style="color:var(--g);">↑ 1</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-text">Body</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ══ WEIGHT ══ -->
+<div class="track">
+  <div class="track-top">
+    <div>
+      <div class="track-label">Weight</div>
+      <div class="track-name">Mass Tracking</div>
+    </div>
+    <div class="track-right">
+      <div class="track-current" style="color: var(--g);">72.4</div>
+      <div class="track-unit">kg · BMI 22.1</div>
+      <div class="dir dir-good">↑ +7.3 kg recovery</div>
+    </div>
+  </div>
+
+  <div class="range-ctx" style="margin-top:12px;">
+    <div class="range-item"><div class="range-dot" style="background:var(--down);"></div> &lt;60 Underweight risk</div>
+    <div class="range-item"><div class="range-dot" style="background:var(--g);"></div> 60–80 Healthy for 181cm</div>
+  </div>
+
+  <div class="chart-area">
+    <svg class="chart-svg" viewBox="0 0 800 140" preserveAspectRatio="none">
+      <rect class="ch-ref-zone" x="0" y="10" width="800" height="80" fill="var(--g)"/>
+      <line class="ch-ref" x1="0" y1="90" x2="800" y2="90"/>
+      <text class="ch-ref-label" x="804" y="92" fill="var(--g40)">60 KG MIN</text>
+      <text class="ch-y-label" x="4" y="14">80</text>
+      <text class="ch-y-label" x="4" y="52">72</text>
+      <text class="ch-y-label" x="4" y="92">60</text>
+      <text class="ch-y-label" x="4" y="130">50</text>
+      <path class="ch-area" fill="url(#wGrad)" d="M80,108 L140,100 L220,90 L300,80 L380,68 L460,56 L540,50 L620,48 L680,46 L750,44 L750,140 L80,140Z" opacity="0.15"/>
+      <defs><linearGradient id="wGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--g)"/><stop offset="100%" stop-color="var(--g)" stop-opacity="0"/></linearGradient></defs>
+      <path class="ch-line" stroke="var(--g)" d="M80,108 L140,100 L220,90 L300,80 L380,68 L460,56 L540,50 L620,48 L680,46 L750,44"/>
+      <circle class="ch-dot" cx="80" cy="108" r="3" fill="var(--down)" style="animation-delay:0.4s"/>
+      <circle class="ch-dot" cx="220" cy="90" r="3" fill="var(--warn)" style="animation-delay:0.7s"/>
+      <circle class="ch-dot" cx="380" cy="68" r="3" fill="var(--g)" style="animation-delay:1.0s"/>
+      <circle class="ch-dot" cx="540" cy="50" r="3" fill="var(--g)" style="animation-delay:1.3s"/>
+      <circle class="ch-dot" cx="680" cy="46" r="3" fill="var(--g)" style="animation-delay:1.6s"/>
+      <circle class="ch-current-glow" cx="750" cy="44" r="10" fill="var(--g)"/>
+      <circle class="ch-current-dot" cx="750" cy="44" r="4" fill="var(--g)" stroke="var(--bg)" stroke-width="2" style="animation-delay:1.8s"/>
+      <text class="ch-x-label" x="80" y="138">Mar</text>
+      <text class="ch-x-label" x="220" y="138">Jun</text>
+      <text class="ch-x-label" x="380" y="138">Sep</text>
+      <text class="ch-x-label" x="540" y="138">Nov</text>
+      <text class="ch-x-label" x="680" y="138">Jan</text>
+      <text class="ch-x-label" x="730" y="138">Feb</text>
+    </svg>
+  </div>
+
+  <div class="log-strip">
+    <div class="log-entry"><div class="le-date">Mar '25</div><div class="le-val" style="color:var(--down);">65.1</div><div class="le-delta" style="color:var(--down);">▼ flare</div></div>
+    <div class="log-entry"><div class="le-date">May</div><div class="le-val" style="color:var(--warn);">66.8</div><div class="le-delta" style="color:var(--g);">↑ 1.7</div></div>
+    <div class="log-entry"><div class="le-date">Jul</div><div class="le-val" style="color:var(--warn);">68.5</div><div class="le-delta" style="color:var(--g);">↑ 1.7</div></div>
+    <div class="log-entry"><div class="le-date">Sep</div><div class="le-val" style="color:var(--g);">70.2</div><div class="le-delta" style="color:var(--g);">↑ 1.7</div></div>
+    <div class="log-entry"><div class="le-date">Nov</div><div class="le-val" style="color:var(--g);">71.4</div><div class="le-delta" style="color:var(--g);">↑ 1.2</div></div>
+    <div class="log-entry"><div class="le-date">Dec</div><div class="le-val" style="color:var(--g);">71.8</div><div class="le-delta" style="color:var(--g);">↑ 0.4</div></div>
+    <div class="log-entry"><div class="le-date">Jan '26</div><div class="le-val" style="color:var(--g);">72.1</div><div class="le-delta" style="color:var(--g);">↑ 0.3</div></div>
+    <div class="log-entry"><div class="le-date">Feb</div><div class="le-val" style="color:var(--g);">72.4</div><div class="le-delta" style="color:var(--g);">↑ 0.3</div></div>
+  </div>
+</div>
+
+<!-- ══ BODY FAT & SIZE ══ -->
+<div class="track">
+  <div class="track-top">
+    <div>
+      <div class="track-label">Body Fat · Lean Mass · Dimensions</div>
+      <div class="track-name">Body Composition</div>
+    </div>
+    <div class="track-right">
+      <div class="track-current" style="color: var(--g);">16.2<span style="font-size:14px;color:var(--t3);">%</span></div>
+      <div class="track-unit">Body fat percentage</div>
+      <div class="dir dir-good">Within healthy range</div>
+    </div>
+  </div>
+
+  <div class="chart-area">
+    <svg class="chart-svg" viewBox="0 0 800 140" preserveAspectRatio="none">
+      <rect class="ch-ref-zone" x="0" y="50" width="800" height="40" fill="var(--g)"/>
+      <line class="ch-ref" x1="0" y1="50" x2="800" y2="50"/>
+      <text class="ch-ref-label" x="804" y="52" fill="var(--g40)">10% LOW</text>
+      <line class="ch-ref" x1="0" y1="90" x2="800" y2="90"/>
+      <text class="ch-ref-label" x="804" y="92" fill="var(--g40)">20% HIGH</text>
+      <line class="ch-ref-bad" x1="0" y1="110" x2="800" y2="110"/>
+      <text class="ch-ref-label" x="804" y="112" fill="#FF386440">25% EXCESS</text>
+      <text class="ch-y-label" x="4" y="14">5%</text>
+      <text class="ch-y-label" x="4" y="52">10%</text>
+      <text class="ch-y-label" x="4" y="92">20%</text>
+      <text class="ch-y-label" x="4" y="130">30%</text>
+      <!-- Body fat line -->
+      <path class="ch-area" fill="url(#bfGrad)" d="M80,94 L180,88 L280,82 L380,78 L480,74 L580,72 L680,70 L750,70 L750,140 L80,140Z" opacity="0.12"/>
+      <defs><linearGradient id="bfGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--g)"/><stop offset="100%" stop-color="var(--g)" stop-opacity="0"/></linearGradient></defs>
+      <path class="ch-line" stroke="var(--g)" d="M80,94 L180,88 L280,82 L380,78 L480,74 L580,72 L680,70 L750,70"/>
+      <circle class="ch-dot" cx="80" cy="94" r="3" fill="var(--warn)" style="animation-delay:0.4s"/>
+      <circle class="ch-dot" cx="280" cy="82" r="3" fill="var(--g)" style="animation-delay:0.8s"/>
+      <circle class="ch-dot" cx="480" cy="74" r="3" fill="var(--g)" style="animation-delay:1.2s"/>
+      <circle class="ch-dot" cx="680" cy="70" r="3" fill="var(--g)" style="animation-delay:1.6s"/>
+      <circle class="ch-current-glow" cx="750" cy="70" r="10" fill="var(--g)"/>
+      <circle class="ch-current-dot" cx="750" cy="70" r="4" fill="var(--g)" stroke="var(--bg)" stroke-width="2" style="animation-delay:1.8s"/>
+      <text class="ch-x-label" x="80" y="138">Apr</text>
+      <text class="ch-x-label" x="280" y="138">Aug</text>
+      <text class="ch-x-label" x="480" y="138">Nov</text>
+      <text class="ch-x-label" x="680" y="138">Jan</text>
+      <text class="ch-x-label" x="730" y="138">Feb</text>
+    </svg>
+  </div>
+
+  <!-- Composition breakdown bars -->
+  <div style="padding: 0 28px 20px;">
+    <div class="body-visual">
+      <div class="bv-bar-row">
+        <div class="bv-label">Lean Mass</div>
+        <div class="bv-bar">
+          <div class="bv-fill" style="--w:83.8%; background: var(--g);">60.7 kg</div>
+        </div>
+      </div>
+      <div class="bv-bar-row">
+        <div class="bv-label">Body Fat</div>
+        <div class="bv-bar">
+          <div class="bv-fill-ghost" style="width:25%; border-color: var(--down); background: var(--down);">
+          </div>
+          <div class="bv-fill" style="--w:16.2%; background: var(--warn); animation-delay:0.2s;">11.7 kg</div>
+        </div>
+      </div>
+      <div class="bv-bar-row">
+        <div class="bv-label">Height</div>
+        <div class="bv-bar">
+          <div class="bv-fill" style="--w:90.5%; background: var(--t3); color: var(--t1); animation-delay:0.3s;">181 cm</div>
+        </div>
+      </div>
+      <div class="bv-bar-row">
+        <div class="bv-label">BMI</div>
+        <div class="bv-bar">
+          <div class="bv-fill" style="--w:58%; background: var(--g); animation-delay:0.4s;">22.1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="log-strip">
+    <div class="log-entry"><div class="le-date">Apr '25</div><div class="le-val" style="color:var(--warn);">19.8%</div><div class="le-delta" style="color:var(--t2);">post-flare</div></div>
+    <div class="log-entry"><div class="le-date">Jul</div><div class="le-val" style="color:var(--g);">18.4%</div><div class="le-delta" style="color:var(--g);">↓ 1.4</div></div>
+    <div class="log-entry"><div class="le-date">Sep</div><div class="le-val" style="color:var(--g);">17.6%</div><div class="le-delta" style="color:var(--g);">↓ 0.8</div></div>
+    <div class="log-entry"><div class="le-date">Nov</div><div class="le-val" style="color:var(--g);">17.0%</div><div class="le-delta" style="color:var(--g);">↓ 0.6</div></div>
+    <div class="log-entry"><div class="le-date">Jan '26</div><div class="le-val" style="color:var(--g);">16.5%</div><div class="le-delta" style="color:var(--g);">↓ 0.5</div></div>
+    <div class="log-entry"><div class="le-date">Feb</div><div class="le-val" style="color:var(--g);">16.2%</div><div class="le-delta" style="color:var(--g);">↓ 0.3</div></div>
+  </div>
+</div>
+
+</div>
+
+<div class="foot">All values illustrative — always consult your gastroenterologist</div>
+
+</body>
+</html>

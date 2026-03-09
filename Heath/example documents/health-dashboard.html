@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Dashboard — Crohn's Monitor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --neon: #39FF14;
+    --neon-20: #39ff1433;
+    --neon-40: #39ff1466;
+    --neon-60: #39ff1499;
+    --neon-bright: #7fff5e;
+    --amber: #FFB800;
+    --amber-20: #FFB80033;
+    --red: #FF3864;
+    --red-20: #FF386433;
+    --cyan: #00E5FF;
+    --cyan-20: #00E5FF33;
+    --bg: #060606;
+    --card: #0c0c0c;
+    --card-border: #161616;
+    --card-hover: #111;
+    --text: #e8e8e8;
+    --text-dim: #666;
+    --text-muted: #444;
+    --track: #141414;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue', Helvetica, 'DM Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ═══ HEADER ═══ */
+  .header {
+    padding: 48px 32px 12px;
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--neon);
+    text-shadow: 0 0 30px var(--neon-20);
+    animation: hPulse 4s ease-in-out infinite;
+  }
+  .header-left .subtitle {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+  }
+  .header-right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-align: right;
+  }
+  .header-right .status-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--neon);
+    box-shadow: 0 0 8px var(--neon-40);
+    margin-right: 6px;
+    animation: dotBlink 3s ease-in-out infinite;
+  }
+  @keyframes hPulse {
+    0%,100% { opacity: 0.8; } 50% { opacity: 1; }
+  }
+  @keyframes dotBlink {
+    0%,100% { opacity: 0.5; } 50% { opacity: 1; }
+  }
+
+  /* ═══ SECTION LABELS ═══ */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 32px 32px 12px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .section-label span {
+    color: var(--neon);
+    margin-right: 8px;
+  }
+
+  /* ═══ GRID ═══ */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 12px;
+    padding: 0 32px 12px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .grid-wide {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 32px 12px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  /* ═══ CARDS ═══ */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.4s, box-shadow 0.4s;
+  }
+  .card:hover {
+    border-color: #222;
+    box-shadow: 0 0 50px #39ff1406;
+  }
+  .card.span-2 { grid-column: span 2; }
+  .card.span-3 { grid-column: span 3; }
+  @media (max-width: 1000px) {
+    .card.span-2, .card.span-3 { grid-column: span 1; }
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .card-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .status-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .badge-good {
+    background: var(--neon-20);
+    color: var(--neon);
+    border: 1px solid var(--neon-20);
+  }
+  .badge-warn {
+    background: var(--amber-20);
+    color: var(--amber);
+    border: 1px solid var(--amber-20);
+  }
+  .badge-alert {
+    background: var(--red-20);
+    color: var(--red);
+    border: 1px solid var(--red-20);
+  }
+  .badge-info {
+    background: var(--cyan-20);
+    color: var(--cyan);
+    border: 1px solid var(--cyan-20);
+  }
+
+  /* ═══ BIG NUMBER ═══ */
+  .big-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .big-num.neon { color: var(--neon); text-shadow: 0 0 24px var(--neon-20); }
+  .big-num.amber { color: var(--amber); text-shadow: 0 0 24px var(--amber-20); }
+  .big-num.red { color: var(--red); text-shadow: 0 0 24px var(--red-20); }
+  .big-num.cyan { color: var(--cyan); text-shadow: 0 0 24px var(--cyan-20); }
+  .big-num.white { color: var(--text); }
+
+  .unit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-left: 4px;
+  }
+
+  .meta-line {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  .meta-line .neon-accent { color: var(--neon); }
+  .meta-line .amber-accent { color: var(--amber); }
+  .meta-line .red-accent { color: var(--red); }
+
+  /* ═══ RANGE BAR (horizontal gauge) ═══ */
+  .range-bar {
+    margin-top: 20px;
+  }
+  .range-track {
+    width: 100%;
+    height: 6px;
+    background: var(--track);
+    border-radius: 3px;
+    position: relative;
+    overflow: visible;
+  }
+  .range-fill {
+    height: 100%;
+    border-radius: 3px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    animation: rangeFill 1.5s ease-out forwards;
+    width: 0;
+  }
+  .range-fill.neon { background: var(--neon); box-shadow: 0 0 12px var(--neon-20); }
+  .range-fill.amber { background: var(--amber); box-shadow: 0 0 12px var(--amber-20); }
+  .range-fill.red { background: var(--red); box-shadow: 0 0 12px var(--red-20); }
+  .range-fill.cyan { background: var(--cyan); box-shadow: 0 0 12px var(--cyan-20); }
+
+  @keyframes rangeFill { to { width: var(--w); } }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+  /* Normal range zone indicator */
+  .range-zone {
+    position: absolute;
+    height: 100%;
+    border-left: 1px dashed #333;
+    border-right: 1px dashed #333;
+    background: #ffffff06;
+    top: 0;
+  }
+  .range-zone-label {
+    position: absolute;
+    top: -14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  /* Marker dot on range */
+  .range-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    z-index: 2;
+    animation: markerAppear 1.8s ease-out forwards;
+    opacity: 0;
+  }
+  .range-marker.neon { background: var(--neon); box-shadow: 0 0 10px var(--neon-40); }
+  .range-marker.amber { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+  .range-marker.red { background: var(--red); box-shadow: 0 0 10px var(--red); }
+  @keyframes markerAppear { to { opacity: 1; } }
+
+  /* ═══ MINI SPARKLINE ═══ */
+  .spark { margin-top: 16px; }
+  .spark svg { width: 100%; height: 50px; }
+  .spark-line {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 500;
+    stroke-dashoffset: 500;
+    animation: drawSpark 2s ease-out forwards;
+  }
+  .spark-line.neon { stroke: var(--neon); filter: drop-shadow(0 0 4px var(--neon-20)); }
+  .spark-line.amber { stroke: var(--amber); filter: drop-shadow(0 0 4px var(--amber-20)); }
+  .spark-line.red { stroke: var(--red); filter: drop-shadow(0 0 4px var(--red-20)); }
+  .spark-line.cyan { stroke: var(--cyan); filter: drop-shadow(0 0 4px var(--cyan-20)); }
+  .spark-area {
+    opacity: 0.15;
+    animation: areaFade 2s ease-out forwards;
+  }
+  @keyframes drawSpark { to { stroke-dashoffset: 0; } }
+  @keyframes areaFade { from { opacity: 0; } to { opacity: 0.15; } }
+
+  .spark-ref {
+    stroke: #ffffff15;
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+
+  /* ═══ BODY SILHOUETTE ═══ */
+  .body-card {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .silhouette-wrap {
+    width: 120px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .silhouette-wrap svg {
+    width: 80px;
+    height: 200px;
+  }
+  .body-stats {
+    flex: 1;
+    min-width: 200px;
+  }
+  .body-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #141414;
+  }
+  .body-stat-row:last-child { border: none; }
+  .body-stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .body-stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .body-stat-val.neon { color: var(--neon); }
+  .body-stat-val.white { color: var(--text); }
+
+  /* ═══ CALPROTECTIN GAUGE (half donut) ═══ */
+  .calp-gauge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .calp-gauge svg { width: 200px; height: 110px; }
+  .calp-bg { fill: none; stroke: var(--track); stroke-width: 14; stroke-linecap: round; }
+  .calp-fill {
+    fill: none;
+    stroke-width: 14;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    animation: calpFill 2.2s ease-out forwards;
+  }
+  @keyframes calpFill { to { stroke-dashoffset: var(--offset); } }
+  .calp-zones {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .calp-zone {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-dim);
+  }
+  .calp-zone-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  /* ═══ CRP TRAFFIC LIGHT ═══ */
+  .crp-lights {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .crp-light {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #1a1a1a;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.5px;
+    color: #333;
+  }
+  .crp-light.active-green {
+    background: var(--neon);
+    border-color: var(--neon-40);
+    box-shadow: 0 0 20px var(--neon-40), 0 0 40px var(--neon-20);
+    color: #000;
+    animation: lightPulse 3s ease-in-out infinite;
+  }
+  .crp-light.active-amber {
+    background: var(--amber);
+    border-color: #FFB80066;
+    box-shadow: 0 0 20px #FFB80044, 0 0 40px #FFB80022;
+    color: #000;
+    animation: lightPulse 3s ease-in-out infinite;
+  }
+  .crp-light.active-red {
+    background: var(--red);
+    border-color: #FF386466;
+    box-shadow: 0 0 20px #FF386444, 0 0 40px #FF386422;
+    color: #fff;
+    animation: lightPulse 3s ease-in-out infinite;
+  }
+  @keyframes lightPulse {
+    0%,100% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+  }
+
+  /* ═══ VITAMIN D SUN ═══ */
+  .vd-sun-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 140px;
+    position: relative;
+  }
+  .vd-sun {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: relative;
+  }
+  .vd-sun-core {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #FFE066, var(--amber), #996600);
+    box-shadow: 0 0 30px var(--amber-20), 0 0 60px #FFB80015;
+    animation: sunPulse 4s ease-in-out infinite;
+  }
+  @keyframes sunPulse {
+    0%,100% { box-shadow: 0 0 30px var(--amber-20), 0 0 60px #FFB80015; transform: scale(1); }
+    50% { box-shadow: 0 0 50px #FFB80044, 0 0 90px #FFB80022; transform: scale(1.04); }
+  }
+  .vd-ray {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 2px;
+    height: 16px;
+    background: var(--amber);
+    opacity: 0.3;
+    transform-origin: 0 0;
+    border-radius: 1px;
+  }
+  .vd-center-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    z-index: 2;
+  }
+  .vd-center-text .num {
+    font-size: 22px;
+    font-weight: 700;
+    color: #000;
+    display: block;
+  }
+  .vd-center-text .lbl {
+    font-size: 7px;
+    letter-spacing: 2px;
+    color: #00000088;
+    text-transform: uppercase;
+  }
+
+  /* ═══ HEMOGLOBIN BLOOD DROP ═══ */
+  .hemo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    padding: 10px 0;
+  }
+  .blood-drop-vis {
+    position: relative;
+    width: 60px;
+    height: 80px;
+  }
+  .blood-drop-vis svg {
+    width: 60px;
+    height: 80px;
+  }
+  .blood-drop-path {
+    fill: var(--red);
+    opacity: 0.8;
+    filter: drop-shadow(0 0 10px var(--red-20));
+  }
+  .blood-drop-fill {
+    fill: var(--red);
+    animation: dropFill 2s ease-out forwards;
+    clip-path: inset(var(--clip) 0 0 0);
+  }
+  @keyframes dropFill {
+    from { clip-path: inset(100% 0 0 0); }
+    to { clip-path: inset(var(--clip) 0 0 0); }
+  }
+  .hemo-data {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .hemo-item {}
+  .hemo-item .label {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .hemo-item .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  /* ═══ TREND TABLE (wide) ═══ */
+  .trend-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .trend-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid #1a1a1a;
+    font-weight: 400;
+  }
+  .trend-table td {
+    font-size: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #0f0f0f;
+    vertical-align: middle;
+  }
+  .trend-table tr:last-child td { border: none; }
+  .trend-table .marker-name {
+    font-weight: 500;
+    color: var(--text);
+  }
+  .trend-table .marker-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .trend-table .marker-range {
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .trend-mini-bar {
+    width: 80px;
+    height: 4px;
+    background: var(--track);
+    border-radius: 2px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .trend-mini-fill {
+    height: 100%;
+    border-radius: 2px;
+    animation: rangeFill 1.5s ease-out forwards;
+    width: 0;
+  }
+  .arrow-up { color: var(--neon); }
+  .arrow-down { color: var(--red); }
+  .arrow-flat { color: var(--text-dim); }
+  .trend-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  /* ═══ FLARE TIMELINE ═══ */
+  .timeline {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 80px;
+    padding: 0;
+  }
+  .timeline-bar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    min-width: 4px;
+    animation: tBarGrow 1.2s ease-out forwards;
+    transform-origin: bottom;
+    transform: scaleY(0);
+  }
+  @keyframes tBarGrow { to { transform: scaleY(1); } }
+  .timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* ═══ FOOTER ═══ */
+  .footer {
+    text-align: center;
+    padding: 40px 20px 30px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: #1a1a1a;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  /* Noise overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+
+  /* Scanline effect */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      #00000008 2px,
+      #00000008 4px
+    );
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="header-left">
+    <h1>Health Monitor</h1>
+    <div class="subtitle">Crohn's Disease — Active Tracking Dashboard</div>
+  </div>
+  <div class="header-right">
+    <div><span class="status-dot"></span>Last updated · 28 Feb 2026</div>
+    <div style="margin-top:4px;">Height 181 cm · Age 29 · Male</div>
+  </div>
+</div>
+
+<!-- ═══ SECTION: INFLAMMATION MARKERS ═══ -->
+<div class="section-label"><span>01</span> Inflammation Markers — Crohn's Core</div>
+
+<div class="grid">
+
+  <!-- FECAL CALPROTECTIN — Half Donut Gauge -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-tag">Fecal Calprotectin</div>
+        <div class="card-title">Gut Inflammation</div>
+      </div>
+      <div class="status-badge badge-warn">Elevated</div>
+    </div>
+
+    <div class="calp-gauge">
+      <svg viewBox="0 0 200 110">
+        <defs>
+          <linearGradient id="calpGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="var(--neon)"/>
+            <stop offset="40%" stop-color="var(--amber)"/>
+            <stop offset="100%" stop-color="var(--red)"/>
+          </linearGradient>
+        </defs>
+        <path class="calp-bg" d="M 20 100 A 80 80 0 0 1 180 100"/>
+        <path class="calp-fill" d="M 20 100 A 80 80 0 0 1 180 100"
+              stroke="url(#calpGrad)" style="--offset: 155;"/>
+      </svg>
+      <div style="margin-top: -30px; text-align: center;">
+        <span class="big-num amber" style="font-size: 36px;">186</span>
+        <span class="unit">µg/g</span>
+      </div>
+    </div>
+
+    <div class="calp-zones">
+      <div class="calp-zone"><div class="calp-zone-dot" style="background:var(--neon)"></div> &lt;50 Normal</div>
+      <div class="calp-zone"><div class="calp-zone-dot" style="background:var(--amber)"></div> 50–250 Mild</div>
+      <div class="calp-zone"><div class="calp-zone-dot" style="background:var(--red)"></div> &gt;250 Active</div>
+    </div>
+
+    <div class="spark">
+      <svg viewBox="0 0 300 50" preserveAspectRatio="none">
+        <line class="spark-ref" x1="0" y1="38" x2="300" y2="38"/>
+        <text x="302" y="40" fill="#333" font-size="6" font-family="JetBrains Mono">50</text>
+        <path class="spark-line amber" d="M0,10 L50,15 L100,20 L150,28 L200,22 L250,30 L300,26"/>
+        <path class="spark-area" fill="var(--amber)" d="M0,10 L50,15 L100,20 L150,28 L200,22 L250,30 L300,26 L300,50 L0,50 Z"/>
+      </svg>
+    </div>
+    <div class="meta-line">6-month trend — trending down ↓ from 240. <span class="amber-accent">Target: &lt;50</span></div>
+  </div>
+
+  <!-- CRP — Traffic Light -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-tag">C-Reactive Protein</div>
+        <div class="card-title">Systemic Inflammation</div>
+      </div>
+      <div class="status-badge badge-good">Normal</div>
+    </div>
+
+    <div style="text-align: center; padding: 16px 0;">
+      <span class="big-num neon" style="font-size: 44px;">2.1</span>
+      <span class="unit">mg/L</span>
+    </div>
+
+    <div class="crp-lights">
+      <div class="crp-light active-green">&lt;5</div>
+      <div class="crp-light">5–10</div>
+      <div class="crp-light">&gt;10</div>
+    </div>
+
+    <div class="range-bar" style="margin-top: 20px;">
+      <div class="range-track">
+        <div class="range-zone" style="left: 0; width: 50%;"></div>
+        <div class="range-fill neon" style="--w: 21%;"></div>
+        <div class="range-marker neon" style="left: 21%;"></div>
+      </div>
+      <div class="range-labels">
+        <span>0</span>
+        <span>5 mg/L</span>
+        <span>10+</span>
+      </div>
+    </div>
+
+    <div class="spark" style="margin-top: 14px;">
+      <svg viewBox="0 0 300 50" preserveAspectRatio="none">
+        <line class="spark-ref" x1="0" y1="25" x2="300" y2="25"/>
+        <path class="spark-line neon" d="M0,8 L50,20 L100,35 L150,28 L200,32 L250,38 L300,40"/>
+      </svg>
+    </div>
+    <div class="meta-line">Dropping steadily — was <span class="red-accent">8.4</span> six months ago. <span class="neon-accent">Well within range.</span></div>
+  </div>
+
+</div>
+
+<!-- ═══ SECTION: BLOOD & NUTRITION ═══ -->
+<div class="section-label"><span>02</span> Blood & Nutrition</div>
+
+<div class="grid">
+
+  <!-- HEMOGLOBIN & HEMATOCRIT — Blood Drop -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-tag">Hemoglobin & Hematocrit</div>
+        <div class="card-title">Oxygen Capacity</div>
+      </div>
+      <div class="status-badge badge-warn">Low-normal</div>
+    </div>
+
+    <div class="hemo-wrap">
+      <div class="blood-drop-vis">
+        <svg viewBox="0 0 60 80">
+          <defs>
+            <clipPath id="dropClip">
+              <path d="M30,5 C30,5 5,40 5,55 C5,68 16,78 30,78 C44,78 55,68 55,55 C55,40 30,5 30,5 Z"/>
+            </clipPath>
+          </defs>
+          <path class="blood-drop-path" d="M30,5 C30,5 5,40 5,55 C5,68 16,78 30,78 C44,78 55,68 55,55 C55,40 30,5 30,5 Z" fill="#1a1a1a" stroke="var(--red)" stroke-width="1.5" opacity="0.4"/>
+          <rect x="0" y="0" width="60" height="80" fill="var(--red)" clip-path="url(#dropClip)" opacity="0.7" style="animation: hemoFill 2s ease-out forwards; transform-origin: bottom;">
+            <animate attributeName="y" from="80" to="15" dur="2s" fill="freeze"/>
+          </rect>
+        </svg>
+      </div>
+      <div class="hemo-data">
+        <div class="hemo-item">
+          <div class="label">Hemoglobin</div>
+          <div class="val big-num amber" style="font-size: 26px;">12.8<span class="unit">g/dL</span></div>
+        </div>
+        <div class="hemo-item">
+          <div class="label">Hematocrit</div>
+          <div class="val big-num amber" style="font-size: 26px;">38.2<span class="unit">%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="range-bar" style="margin-top: 14px;">
+      <div class="range-track">
+        <div class="range-zone" style="left: 36%; width: 40%;"><div class="range-zone-label" style="left:0;">Normal 13.5–17.5</div></div>
+        <div class="range-fill amber" style="--w: 34%;"></div>
+        <div class="range-marker amber" style="left: 34%;"></div>
+      </div>
+      <div class="range-labels"><span>10</span><span>13.5</span><span>17.5</span><span>20</span></div>
+    </div>
+    <div class="meta-line" style="margin-top: 10px;">Slightly below range — common with Crohn's. <span class="amber-accent">Monitor iron absorption.</span></div>
+  </div>
+
+  <!-- VITAMIN D — Sun Orb -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-tag">25-Hydroxy Vitamin D</div>
+        <div class="card-title">Bone & Immune Health</div>
+      </div>
+      <div class="status-badge badge-alert">Deficient</div>
+    </div>
+
+    <div class="vd-sun-wrap">
+      <div class="vd-sun" id="vdSun">
+        <div class="vd-sun-core"></div>
+        <div class="vd-center-text">
+          <span class="num">18</span>
+          <span class="lbl">ng/mL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="range-bar" style="margin-top: 20px;">
+      <div class="range-track">
+        <div class="range-zone" style="left: 40%; width: 33%;"><div class="range-zone-label" style="left:0;">Sufficient 30–50</div></div>
+        <div class="range-fill red" style="--w: 24%;"></div>
+        <div class="range-marker red" style="left: 24%;"></div>
+      </div>
+      <div class="range-labels"><span>0</span><span>20 Deficient</span><span>30</span><span>50</span><span>75+</span></div>
+    </div>
+    <div class="meta-line" style="margin-top: 10px;">
+      <span class="red-accent">Below 20 ng/mL — malabsorption likely.</span> Crohn's patients often need 2000–4000 IU/day supplementation.
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ SECTION: BODY COMPOSITION ═══ -->
+<div class="section-label"><span>03</span> Body Composition</div>
+
+<div class="grid">
+
+  <!-- WEIGHT — Main Card -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-tag">Weight</div>
+        <div class="card-title">Mass Tracking</div>
+      </div>
+      <div class="status-badge badge-info">Stable</div>
+    </div>
+
+    <div style="text-align:center; padding: 8px 0;">
+      <span class="big-num cyan" style="font-size: 52px;">72.4</span>
+      <span class="unit">kg</span>
+    </div>
+    <div style="text-align:center;">
+      <span class="unit" style="color: var(--text-dim);">BMI</span>
+      <span class="big-num white" style="font-size: 20px; margin-left: 4px;">22.1</span>
+      <span class="unit" style="color: var(--neon);">Normal</span>
+    </div>
+
+    <div class="spark" style="margin-top: 16px;">
+      <svg viewBox="0 0 300 50" preserveAspectRatio="none">
+        <line class="spark-ref" x1="0" y1="25" x2="300" y2="25"/>
+        <text x="302" y="27" fill="#333" font-size="6" font-family="JetBrains Mono">72</text>
+        <path class="spark-line cyan" d="M0,38 L37,35 L75,30 L112,28 L150,22 L187,25 L225,24 L262,26 L300,24"/>
+        <path class="spark-area" fill="var(--cyan)" d="M0,38 L37,35 L75,30 L112,28 L150,22 L187,25 L225,24 L262,26 L300,24 L300,50 L0,50 Z"/>
+      </svg>
+    </div>
+    <div class="meta-line">12-month trend — recovered from <span class="red-accent">65.1 kg</span> flare low. Currently stable.</div>
+  </div>
+
+  <!-- BODY FAT + SILHOUETTE -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-tag">Body Composition</div>
+        <div class="card-title">Fat, Muscle & Metrics</div>
+      </div>
+      <div class="status-badge badge-good">Healthy</div>
+    </div>
+
+    <div class="body-card">
+      <div class="silhouette-wrap">
+        <svg viewBox="0 0 80 200" fill="none">
+          <!-- Simplified body silhouette -->
+          <ellipse cx="40" cy="22" rx="14" ry="16" fill="#1a1a1a" stroke="var(--neon)" stroke-width="1" opacity="0.6"/>
+          <!-- Torso -->
+          <path d="M26,38 L22,90 L28,92 L32,130 L26,160 L30,195 L36,195 L40,145 L44,195 L50,195 L48,160 L48,130 L52,92 L58,90 L54,38 Z"
+                fill="#1a1a1a" stroke="var(--neon)" stroke-width="1" opacity="0.6"/>
+          <!-- Fat zone overlay -->
+          <path d="M28,60 L25,85 L30,88 L50,88 L55,85 L52,60 Z"
+                fill="var(--neon)" opacity="0.12"/>
+          <!-- Arms -->
+          <path d="M22,42 L12,80 L16,82 L26,46" fill="#1a1a1a" stroke="var(--neon)" stroke-width="0.8" opacity="0.4"/>
+          <path d="M58,42 L68,80 L64,82 L54,46" fill="#1a1a1a" stroke="var(--neon)" stroke-width="0.8" opacity="0.4"/>
+          <!-- Height line -->
+          <line x1="74" y1="6" x2="74" y2="195" stroke="#333" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <text x="76" y="100" fill="#444" font-size="5" font-family="JetBrains Mono" transform="rotate(90,76,100)">181 cm</text>
+        </svg>
+      </div>
+      <div class="body-stats">
+        <div class="body-stat-row">
+          <span class="body-stat-label">Height</span>
+          <span class="body-stat-val white">181 cm</span>
+        </div>
+        <div class="body-stat-row">
+          <span class="body-stat-label">Weight</span>
+          <span class="body-stat-val neon">72.4 kg</span>
+        </div>
+        <div class="body-stat-row">
+          <span class="body-stat-label">Body Fat</span>
+          <span class="body-stat-val neon">16.2%</span>
+        </div>
+        <div class="body-stat-row">
+          <span class="body-stat-label">Lean Mass</span>
+          <span class="body-stat-val white">60.7 kg</span>
+        </div>
+        <div class="body-stat-row">
+          <span class="body-stat-label">BMI</span>
+          <span class="body-stat-val neon">22.1</span>
+        </div>
+        <div class="body-stat-row">
+          <span class="body-stat-label">Waist-Hip</span>
+          <span class="body-stat-val white">0.84</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ SECTION: OVERVIEW TABLE ═══ -->
+<div class="section-label"><span>04</span> All Markers — Summary</div>
+
+<div class="grid-wide">
+  <div class="card">
+    <table class="trend-table">
+      <thead>
+        <tr>
+          <th>Marker</th>
+          <th>Current</th>
+          <th>Normal Range</th>
+          <th>Position</th>
+          <th>Trend</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="marker-name">Fecal Calprotectin</td>
+          <td class="marker-val" style="color:var(--amber);">186 µg/g</td>
+          <td class="marker-range">&lt;50 µg/g</td>
+          <td>
+            <div class="trend-mini-bar"><div class="trend-mini-fill" style="background:var(--amber);--w:74%;box-shadow:0 0 6px var(--amber-20);"></div></div>
+          </td>
+          <td class="trend-arrow arrow-down">↓</td>
+          <td><span class="status-badge badge-warn">Elevated</span></td>
+        </tr>
+        <tr>
+          <td class="marker-name">CRP</td>
+          <td class="marker-val" style="color:var(--neon);">2.1 mg/L</td>
+          <td class="marker-range">&lt;5 mg/L</td>
+          <td>
+            <div class="trend-mini-bar"><div class="trend-mini-fill" style="background:var(--neon);--w:21%;box-shadow:0 0 6px var(--neon-20);"></div></div>
+          </td>
+          <td class="trend-arrow arrow-down">↓</td>
+          <td><span class="status-badge badge-good">Normal</span></td>
+        </tr>
+        <tr>
+          <td class="marker-name">Hemoglobin</td>
+          <td class="marker-val" style="color:var(--amber);">12.8 g/dL</td>
+          <td class="marker-range">13.5–17.5 g/dL</td>
+          <td>
+            <div class="trend-mini-bar"><div class="trend-mini-fill" style="background:var(--amber);--w:52%;box-shadow:0 0 6px var(--amber-20);"></div></div>
+          </td>
+          <td class="trend-arrow arrow-up">↑</td>
+          <td><span class="status-badge badge-warn">Low</span></td>
+        </tr>
+        <tr>
+          <td class="marker-name">Hematocrit</td>
+          <td class="marker-val" style="color:var(--amber);">38.2%</td>
+          <td class="marker-range">40–54%</td>
+          <td>
+            <div class="trend-mini-bar"><div class="trend-mini-fill" style="background:var(--amber);--w:48%;box-shadow:0 0 6px var(--amber-20);"></div></div>
+          </td>
+          <td class="trend-arrow arrow-up">↑</td>
+          <td><span class="status-badge badge-warn">Low</span></td>
+        </tr>
+        <tr>
+          <td class="marker-name">Vitamin D</td>
+          <td class="marker-val" style="color:var(--red);">18 ng/mL</td>
+          <td class="marker-range">30–50 ng/mL</td>
+          <td>
+            <div class="trend-mini-bar"><div class="trend-mini-fill" style="background:var(--red);--w:24%;box-shadow:0 0 6px var(--red-20);"></div></div>
+          </td>
+          <td class="trend-arrow arrow-flat">→</td>
+          <td><span class="status-badge badge-alert">Deficient</span></td>
+        </tr>
+        <tr>
+          <td class="marker-name">Weight</td>
+          <td class="marker-val" style="color:var(--cyan);">72.4 kg</td>
+          <td class="marker-range">BMI 18.5–24.9</td>
+          <td>
+            <div class="trend-mini-bar"><div class="trend-mini-fill" style="background:var(--cyan);--w:58%;box-shadow:0 0 6px var(--cyan-20);"></div></div>
+          </td>
+          <td class="trend-arrow arrow-up">↑</td>
+          <td><span class="status-badge badge-good">Stable</span></td>
+        </tr>
+        <tr>
+          <td class="marker-name">Body Fat</td>
+          <td class="marker-val" style="color:var(--neon);">16.2%</td>
+          <td class="marker-range">10–20%</td>
+          <td>
+            <div class="trend-mini-bar"><div class="trend-mini-fill" style="background:var(--neon);--w:55%;box-shadow:0 0 6px var(--neon-20);"></div></div>
+          </td>
+          <td class="trend-arrow arrow-flat">→</td>
+          <td><span class="status-badge badge-good">Healthy</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ SECTION: FLARE HISTORY ═══ -->
+<div class="section-label"><span>05</span> Flare Activity — 12 Months</div>
+
+<div class="grid-wide">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-tag">Disease Activity Index</div>
+        <div class="card-title">Monthly Flare Severity</div>
+      </div>
+      <div class="status-badge badge-good">Remission trend</div>
+    </div>
+    <div class="timeline" id="flareTimeline"></div>
+    <div class="timeline-labels">
+      <span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span>
+    </div>
+    <div class="meta-line" style="margin-top: 14px;">
+      Significant improvement since August. Two minor flares (Oct, Dec) but trending toward sustained remission. <span class="neon-accent">Current period: 47 days flare-free.</span>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Sami · Health Dashboard · Data is illustrative — consult your gastroenterologist</div>
+
+<script>
+  // ── Vitamin D Sun Rays ──
+  const vdSun = document.getElementById('vdSun');
+  for (let i = 0; i < 12; i++) {
+    const ray = document.createElement('div');
+    ray.className = 'vd-ray';
+    const angle = (i * 30) - 90;
+    const rad = angle * Math.PI / 180;
+    const dist = 48;
+    ray.style.transform = `translate(${Math.cos(rad) * dist}px, ${Math.sin(rad) * dist}px) rotate(${angle + 90}deg)`;
+    ray.style.opacity = 0.15 + Math.random() * 0.15;
+    vdSun.appendChild(ray);
+  }
+
+  // ── Flare Timeline ──
+  const flareData = [72, 85, 65, 48, 55, 90, 78, 40, 30, 35, 20, 12];
+  const flareTimeline = document.getElementById('flareTimeline');
+  flareData.forEach((val, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'timeline-bar';
+    bar.style.height = val + '%';
+    bar.style.animationDelay = (i * 0.08) + 's';
+    // Color based on severity
+    if (val > 70) {
+      bar.style.background = `var(--red)`;
+      bar.style.boxShadow = `0 0 8px var(--red-20)`;
+    } else if (val > 40) {
+      bar.style.background = `var(--amber)`;
+      bar.style.boxShadow = `0 0 8px var(--amber-20)`;
+    } else {
+      bar.style.background = `var(--neon)`;
+      bar.style.boxShadow = `0 0 8px var(--neon-20)`;
+    }
+    flareTimeline.appendChild(bar);
+  });
+</script>
+
+</body>
+</html>

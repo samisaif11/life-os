@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Dashboard v2 — Crohn's Monitor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap');
+
+  :root {
+    --g: #39FF14;
+    --g10: #39ff141a;
+    --g20: #39ff1433;
+    --g30: #39ff144d;
+    --g50: #39ff1480;
+    --g70: #39ff14b3;
+    --warn: #FF9F1C;
+    --warn20: #FF9F1C33;
+    --crit: #FF3864;
+    --crit20: #FF386433;
+    --ice: #64FFDA;
+    --ice20: #64FFDA33;
+    --purple: #B388FF;
+    --purple20: #B388FF33;
+    --bg: #030305;
+    --card: #09090b;
+    --border: #131316;
+    --t1: #f0f0f0;
+    --t2: #888;
+    --t3: #444;
+    --t4: #222;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--t1);
+    font-family: 'Helvetica Neue', Helvetica, 'Outfit', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ═══ TOP BAR ═══ */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    max-width: 1500px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .topbar-logo {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--g10);
+    border: 1px solid var(--g20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .topbar-logo::after {
+    content: '';
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--g);
+    box-shadow: 0 0 12px var(--g50);
+    animation: logoPulse 3s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%,100% { box-shadow: 0 0 12px var(--g50); transform: scale(1); }
+    50% { box-shadow: 0 0 20px var(--g70); transform: scale(1.1); }
+  }
+  .topbar-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--t2);
+  }
+  .topbar-title strong { color: var(--g); font-weight: 500; }
+  .topbar-right {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--t3);
+    letter-spacing: 1px;
+    display: flex;
+    gap: 20px;
+  }
+  .topbar-chip {
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  /* ═══ HERO STRIP ═══ */
+  .hero {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 28px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: repeat(2, 1fr); }
+  }
+  .hero-cell {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .hero-cell:hover { border-color: #1e1e22; }
+  .hero-cell .h-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 12px;
+  }
+  .hero-cell .h-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .hero-cell .h-unit {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--t3);
+    margin-top: 4px;
+  }
+  .hero-cell .h-delta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .hero-cell::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+  }
+  .hero-cell.c-green::before { background: var(--g); box-shadow: 0 0 20px var(--g30); }
+  .hero-cell.c-warn::before { background: var(--warn); box-shadow: 0 0 20px var(--warn20); }
+  .hero-cell.c-crit::before { background: var(--crit); box-shadow: 0 0 20px var(--crit20); }
+  .hero-cell.c-ice::before { background: var(--ice); box-shadow: 0 0 20px var(--ice20); }
+  .hero-cell.c-purple::before { background: var(--purple); box-shadow: 0 0 20px var(--purple20); }
+
+  /* ═══ MAIN GRID ═══ */
+  .main {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 28px 40px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 1100px) {
+    .main { grid-template-columns: repeat(6, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .main { grid-template-columns: 1fr; }
+  }
+  .c { 
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .c:hover { border-color: #1e1e22; box-shadow: 0 0 40px #39ff1405; }
+  .c4 { grid-column: span 4; }
+  .c6 { grid-column: span 6; }
+  .c8 { grid-column: span 8; }
+  .c12 { grid-column: span 12; }
+  @media (max-width: 1100px) {
+    .c4, .c8 { grid-column: span 6; }
+    .c6 { grid-column: span 6; }
+    .c12 { grid-column: span 6; }
+  }
+  @media (max-width: 700px) {
+    .c4, .c6, .c8, .c12 { grid-column: span 1; }
+  }
+
+  .c-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .c-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  .c-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 3px;
+  }
+  .pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .pill-g { background: var(--g10); color: var(--g); border: 1px solid var(--g20); }
+  .pill-w { background: var(--warn20); color: var(--warn); border: 1px solid var(--warn20); }
+  .pill-c { background: var(--crit20); color: var(--crit); border: 1px solid var(--crit20); }
+  .pill-i { background: var(--ice20); color: var(--ice); border: 1px solid var(--ice20); }
+  .pill-p { background: var(--purple20); color: var(--purple); border: 1px solid var(--purple20); }
+
+  .note {
+    font-size: 10px;
+    color: var(--t3);
+    line-height: 1.6;
+    margin-top: 14px;
+  }
+  .note em { font-style: normal; }
+  .note .g { color: var(--g); }
+  .note .w { color: var(--warn); }
+  .note .cr { color: var(--crit); }
+
+  /* ═══ 1. CALPROTECTIN — VERTICAL THERMOMETER WITH ZONES ═══ */
+  .calp-thermo {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    height: 220px;
+    padding: 8px 0;
+  }
+  .calp-tube {
+    width: 36px;
+    flex-shrink: 0;
+    background: var(--border);
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .calp-tube-fill {
+    width: 100%;
+    border-radius: 0 0 18px 18px;
+    position: relative;
+    animation: calpRise 2s ease-out forwards;
+    height: 0;
+  }
+  @keyframes calpRise { to { height: var(--h); } }
+  .calp-tube-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: #ffffff30;
+    border-radius: 2px;
+  }
+  .calp-zones-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+  .calp-zone-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+  }
+  .calp-zone-bar {
+    height: 3px;
+    border-radius: 2px;
+    flex: 1;
+    max-width: 60px;
+  }
+  .calp-current {
+    text-align: center;
+    margin-top: 12px;
+  }
+  .calp-current .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 38px;
+    font-weight: 600;
+  }
+
+  /* ═══ 2. CRP — CONCENTRIC PULSE RINGS ═══ */
+  .crp-pulse {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    position: relative;
+  }
+  .crp-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+  }
+  .crp-ring.r1 { width: 180px; height: 180px; border-color: var(--border); }
+  .crp-ring.r2 { width: 140px; height: 140px; border-color: var(--border); }
+  .crp-ring.r3 { width: 100px; height: 100px; border-color: var(--border); }
+  .crp-ring.r4 { width: 60px; height: 60px; border-color: var(--g20); }
+
+  .crp-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--g);
+    box-shadow: 0 0 16px var(--g50), 0 0 40px var(--g20);
+    position: absolute;
+    animation: crpOrbit 8s linear infinite;
+    z-index: 3;
+  }
+  @keyframes crpOrbit {
+    from { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+  }
+  .crp-center {
+    z-index: 4;
+    text-align: center;
+    position: relative;
+  }
+  .crp-center .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--g);
+    text-shadow: 0 0 30px var(--g20);
+  }
+  .crp-center .lbl {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: var(--t3);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  /* Pulse wave */
+  .crp-wave {
+    position: absolute;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--g30);
+    animation: crpWave 3s ease-out infinite;
+  }
+  .crp-wave:nth-child(2) { animation-delay: 1s; }
+  .crp-wave:nth-child(3) { animation-delay: 2s; }
+  @keyframes crpWave {
+    0% { width: 30px; height: 30px; opacity: 0.6; }
+    100% { width: 200px; height: 200px; opacity: 0; }
+  }
+
+  /* ═══ 3. WEIGHT — AREA CHART ═══ */
+  .weight-chart {
+    height: 160px;
+    position: relative;
+  }
+  .weight-chart svg {
+    width: 100%;
+    height: 100%;
+  }
+  .wc-grid { stroke: var(--border); stroke-width: 0.5; }
+  .wc-area {
+    opacity: 0;
+    animation: wcAreaIn 1.5s ease-out 0.5s forwards;
+  }
+  @keyframes wcAreaIn { to { opacity: 0.2; } }
+  .wc-line {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 800;
+    stroke-dashoffset: 800;
+    animation: wcDraw 2.5s ease-out forwards;
+  }
+  @keyframes wcDraw { to { stroke-dashoffset: 0; } }
+  .wc-dot {
+    opacity: 0;
+    animation: wcDotIn 0.4s ease-out forwards;
+  }
+  @keyframes wcDotIn { to { opacity: 1; } }
+  .wc-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    fill: var(--t3);
+    letter-spacing: 1px;
+  }
+  .wc-val-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 6px;
+    fill: var(--t3);
+  }
+
+  /* ═══ 4. HEMOGLOBIN — WAVEFORM ECG STYLE ═══ */
+  .ecg-wrap {
+    height: 100px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #050508;
+    border: 1px solid var(--border);
+  }
+  .ecg-wrap svg {
+    width: 100%;
+    height: 100%;
+  }
+  .ecg-line {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: ecgDraw 3s ease-out forwards;
+  }
+  @keyframes ecgDraw { to { stroke-dashoffset: 0; } }
+  .ecg-glow {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.15;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: ecgDraw 3s ease-out forwards;
+  }
+  .ecg-grid-h {
+    stroke: var(--border);
+    stroke-width: 0.3;
+  }
+  .ecg-scanline {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 60px;
+    background: linear-gradient(90deg, transparent, var(--g10), transparent);
+    animation: ecgScan 4s linear infinite;
+  }
+  @keyframes ecgScan {
+    from { left: -60px; }
+    to { left: 100%; }
+  }
+  .ecg-data {
+    display: flex;
+    gap: 24px;
+    margin-top: 14px;
+  }
+  .ecg-stat .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--t3);
+  }
+  .ecg-stat .val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  /* ═══ 5. VITAMIN D — RADIAL PROGRESS ═══ */
+  .vd-radial {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    position: relative;
+  }
+  .vd-radial svg { width: 180px; height: 180px; }
+  .vd-track { fill: none; stroke: var(--border); stroke-width: 3; }
+  .vd-progress {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 440;
+    stroke-dashoffset: 440;
+    animation: vdFill 2.5s ease-out forwards;
+  }
+  @keyframes vdFill { to { stroke-dashoffset: var(--off); } }
+  .vd-ticks line {
+    stroke: var(--t4);
+    stroke-width: 1;
+  }
+  .vd-center {
+    position: absolute;
+    text-align: center;
+  }
+  .vd-center .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 36px;
+    font-weight: 600;
+    display: block;
+  }
+  .vd-center .sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-top: 2px;
+  }
+  .vd-center .target {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--t3);
+    margin-top: 6px;
+  }
+  .vd-center .target em { font-style: normal; color: var(--g); }
+
+  /* ═══ 6. BODY COMP — STACKED BAR ═══ */
+  .comp-bar-wrap {
+    padding: 10px 0;
+  }
+  .comp-bar {
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .comp-seg {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: #000;
+    animation: segGrow 1.5s ease-out forwards;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  @keyframes segGrow { to { width: var(--w); } }
+
+  .comp-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 14px;
+  }
+  .comp-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--t2);
+  }
+  .comp-legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+  }
+
+  /* ═══ 7. BODY METRICS — STAT GRID ═══ */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .stat-cell {
+    background: var(--card);
+    padding: 18px 14px;
+    text-align: center;
+  }
+  .stat-cell .s-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .stat-cell .s-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-top: 6px;
+  }
+  .stat-cell .s-sub {
+    font-size: 8px;
+    color: var(--t3);
+    margin-top: 3px;
+  }
+
+  /* ═══ 8. FLARE HEATMAP ═══ */
+  .heatmap {
+    display: grid;
+    grid-template-columns: repeat(52, 1fr);
+    gap: 2px;
+  }
+  .hm-cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    animation: hmFade 0.5s ease-out forwards;
+    opacity: 0;
+    min-width: 0;
+  }
+  @keyframes hmFade { to { opacity: 1; } }
+  .hm-months {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    color: var(--t3);
+    letter-spacing: 1px;
+  }
+  .hm-legend {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    color: var(--t3);
+  }
+  .hm-legend-cell {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+
+  /* ═══ 9. CORRELATION SCATTER ═══ */
+  .scatter-wrap {
+    height: 180px;
+    position: relative;
+  }
+  .scatter-wrap svg { width: 100%; height: 100%; }
+  .scatter-dot {
+    opacity: 0;
+    animation: sDotIn 0.5s ease-out forwards;
+  }
+  @keyframes sDotIn { to { opacity: 0.8; } }
+  .scatter-axis {
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+  .scatter-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 6px;
+    fill: var(--t3);
+    letter-spacing: 1px;
+  }
+  .scatter-trend {
+    fill: none;
+    stroke: var(--g30);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+
+  /* ═══ FOOTER ═══ */
+  .foot {
+    text-align: center;
+    padding: 50px 20px 30px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    color: var(--t4);
+    letter-spacing: 3px;
+  }
+
+  /* Grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.018;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP BAR ═══ -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo"></div>
+    <div class="topbar-title"><strong>Crohn's</strong> Health Monitor — v2</div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-chip">181 cm · 72.4 kg · 29y</div>
+    <div class="topbar-chip">Updated 28 Feb 2026</div>
+  </div>
+</div>
+
+<!-- ═══ HERO STRIP — KPI OVERVIEW ═══ -->
+<div class="hero">
+  <div class="hero-cell c-warn">
+    <div class="h-label">Calprotectin</div>
+    <div class="h-num" style="color:var(--warn);">186</div>
+    <div class="h-unit">µg/g · Target &lt;50</div>
+    <div class="h-delta" style="color:var(--g);">↓ 22% <span style="color:var(--t3);">from 240</span></div>
+  </div>
+  <div class="hero-cell c-green">
+    <div class="h-label">CRP</div>
+    <div class="h-num" style="color:var(--g);">2.1</div>
+    <div class="h-unit">mg/L · Normal &lt;5</div>
+    <div class="h-delta" style="color:var(--g);">↓ 75% <span style="color:var(--t3);">from 8.4</span></div>
+  </div>
+  <div class="hero-cell c-warn">
+    <div class="h-label">Hemoglobin</div>
+    <div class="h-num" style="color:var(--warn);">12.8</div>
+    <div class="h-unit">g/dL · Range 13.5–17.5</div>
+    <div class="h-delta" style="color:var(--g);">↑ 0.6 <span style="color:var(--t3);">from 12.2</span></div>
+  </div>
+  <div class="hero-cell c-crit">
+    <div class="h-label">Vitamin D</div>
+    <div class="h-num" style="color:var(--crit);">18</div>
+    <div class="h-unit">ng/mL · Target &gt;30</div>
+    <div class="h-delta" style="color:var(--warn);">→ Flat <span style="color:var(--t3);">no change</span></div>
+  </div>
+  <div class="hero-cell c-ice">
+    <div class="h-label">Weight</div>
+    <div class="h-num" style="color:var(--ice);">72.4</div>
+    <div class="h-unit">kg · BMI 22.1</div>
+    <div class="h-delta" style="color:var(--g);">↑ 7.3 <span style="color:var(--t3);">from 65.1 low</span></div>
+  </div>
+</div>
+
+<!-- ═══ MAIN GRID ═══ -->
+<div class="main">
+
+  <!-- CALPROTECTIN — VERTICAL THERMOMETER -->
+  <div class="c c4">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">Fecal Calprotectin</div>
+        <div class="c-title">Gut Inflammation Index</div>
+      </div>
+      <div class="pill pill-w">Elevated</div>
+    </div>
+    <div class="calp-thermo">
+      <div class="calp-tube">
+        <div class="calp-tube-fill" style="--h: 37%; background: linear-gradient(to top, var(--g), var(--warn)); box-shadow: 0 0 16px var(--warn20);"></div>
+      </div>
+      <div class="calp-zones-col">
+        <div class="calp-zone-row">
+          <div class="calp-zone-bar" style="background: var(--crit);"></div>
+          <span style="color:var(--crit);">&gt;500 Severe</span>
+        </div>
+        <div class="calp-zone-row">
+          <div class="calp-zone-bar" style="background: var(--crit);"></div>
+          <span style="color:var(--crit);">250–500 Active</span>
+        </div>
+        <div class="calp-zone-row">
+          <div class="calp-zone-bar" style="background: var(--warn);"></div>
+          <span style="color:var(--warn);">50–250 Mild ← You</span>
+        </div>
+        <div class="calp-zone-row">
+          <div class="calp-zone-bar" style="background: var(--g);"></div>
+          <span style="color:var(--g);">&lt;50 Remission</span>
+        </div>
+      </div>
+    </div>
+    <div class="calp-current">
+      <div class="num" style="color: var(--warn);">186 <span style="font-size:12px;color:var(--t3);">µg/g</span></div>
+    </div>
+    <div class="note">Declining from peak 240. <em class="g">Approaching mild threshold.</em></div>
+  </div>
+
+  <!-- CRP — ORBITAL PULSE -->
+  <div class="c c4">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">C-Reactive Protein</div>
+        <div class="c-title">Systemic Inflammation</div>
+      </div>
+      <div class="pill pill-g">Normal</div>
+    </div>
+    <div class="crp-pulse">
+      <div class="crp-ring r1"></div>
+      <div class="crp-ring r2"></div>
+      <div class="crp-ring r3"></div>
+      <div class="crp-ring r4"></div>
+      <div class="crp-wave"></div>
+      <div class="crp-wave"></div>
+      <div class="crp-wave"></div>
+      <div class="crp-dot"></div>
+      <div class="crp-center">
+        <div class="num">2.1</div>
+        <div class="lbl">mg/L</div>
+      </div>
+    </div>
+    <div class="note">Well within normal range. Steady orbit = stable system. Ring pulses faster during flares. <em class="g">Calm state.</em></div>
+  </div>
+
+  <!-- VITAMIN D — RADIAL DIAL -->
+  <div class="c c4">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">Vitamin D (25-OH)</div>
+        <div class="c-title">Immune & Bone Support</div>
+      </div>
+      <div class="pill pill-c">Deficient</div>
+    </div>
+    <div class="vd-radial">
+      <svg viewBox="0 0 180 180">
+        <circle class="vd-track" cx="90" cy="90" r="70"/>
+        <!-- Tick marks -->
+        <g class="vd-ticks" id="vdTicks"></g>
+        <!-- Progress arc -->
+        <circle class="vd-progress" cx="90" cy="90" r="70"
+          stroke="url(#vdGrad)" transform="rotate(-90, 90, 90)"
+          style="--off: 282;"/>
+        <defs>
+          <linearGradient id="vdGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="var(--crit)"/>
+            <stop offset="60%" stop-color="var(--warn)"/>
+            <stop offset="100%" stop-color="var(--g)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="vd-center">
+        <span class="num" style="color:var(--crit);">18</span>
+        <span class="sub">ng/mL</span>
+        <div class="target">Target: <em>30+</em> · 36% there</div>
+      </div>
+    </div>
+    <div class="note"><em class="cr">Malabsorption common in Crohn's.</em> Consider 4000 IU/day with fat-soluble carrier.</div>
+  </div>
+
+  <!-- WEIGHT — AREA CHART -->
+  <div class="c c8">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">Weight — 12 Month Trend</div>
+        <div class="c-title">Mass Recovery Trajectory</div>
+      </div>
+      <div class="pill pill-i">Stable</div>
+    </div>
+    <div class="weight-chart">
+      <svg viewBox="0 0 500 160" preserveAspectRatio="none">
+        <!-- Grid -->
+        <line class="wc-grid" x1="0" y1="40" x2="500" y2="40"/>
+        <line class="wc-grid" x1="0" y1="80" x2="500" y2="80"/>
+        <line class="wc-grid" x1="0" y1="120" x2="500" y2="120"/>
+        <!-- Y labels -->
+        <text class="wc-val-label" x="2" y="38">75</text>
+        <text class="wc-val-label" x="2" y="78">70</text>
+        <text class="wc-val-label" x="2" y="118">65</text>
+        <!-- Area -->
+        <path class="wc-area" fill="url(#wcGrad)"
+          d="M20,130 L60,125 L100,115 L140,108 L180,100 L220,90 L260,82 L300,78 L340,72 L380,70 L420,68 L460,66 L460,155 L20,155Z"/>
+        <defs>
+          <linearGradient id="wcGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--ice)" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="var(--ice)" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- Line -->
+        <path class="wc-line" stroke="var(--ice)" filter="url(#glow)"
+          d="M20,130 L60,125 L100,115 L140,108 L180,100 L220,90 L260,82 L300,78 L340,72 L380,70 L420,68 L460,66"/>
+        <defs>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <!-- Dots -->
+        <circle class="wc-dot" cx="20" cy="130" r="3" fill="var(--crit)" style="animation-delay:0.3s;"/>
+        <circle class="wc-dot" cx="180" cy="100" r="3" fill="var(--warn)" style="animation-delay:0.8s;"/>
+        <circle class="wc-dot" cx="460" cy="66" r="4" fill="var(--ice)" stroke="var(--bg)" stroke-width="2" style="animation-delay:1.6s;"/>
+        <!-- Flare marker -->
+        <line x1="20" y1="125" x2="20" y2="155" stroke="var(--crit20)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text class="wc-label" x="22" y="152" fill="var(--crit)">FLARE</text>
+        <!-- Current marker -->
+        <text class="wc-label" x="440" y="60" fill="var(--ice)">72.4 KG</text>
+        <!-- Month labels -->
+        <text class="wc-label" x="20" y="155">Mar</text>
+        <text class="wc-label" x="140" y="155">Jun</text>
+        <text class="wc-label" x="260" y="155">Sep</text>
+        <text class="wc-label" x="380" y="155">Dec</text>
+        <text class="wc-label" x="460" y="155">Feb</text>
+      </svg>
+    </div>
+    <div class="note">Recovered +7.3 kg from March flare low (65.1 kg). <em class="g">BMI 22.1 — solidly normal.</em> Weight gain sustained 3+ months.</div>
+  </div>
+
+  <!-- HEMOGLOBIN — ECG WAVEFORM -->
+  <div class="c c4">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">Hemoglobin & Hematocrit</div>
+        <div class="c-title">Blood Oxygen Capacity</div>
+      </div>
+      <div class="pill pill-w">Low-Normal</div>
+    </div>
+    <div class="ecg-wrap">
+      <div class="ecg-scanline"></div>
+      <svg viewBox="0 0 400 100" preserveAspectRatio="none">
+        <line class="ecg-grid-h" x1="0" y1="25" x2="400" y2="25"/>
+        <line class="ecg-grid-h" x1="0" y1="50" x2="400" y2="50"/>
+        <line class="ecg-grid-h" x1="0" y1="75" x2="400" y2="75"/>
+        <!-- ECG waveform pattern -->
+        <path class="ecg-glow" stroke="var(--warn)"
+          d="M0,50 L30,50 L40,50 L50,48 L60,52 L70,50 L80,50 L90,30 L95,80 L100,20 L105,60 L110,50 L140,50
+             L170,50 L180,48 L190,52 L200,50 L210,50 L220,30 L225,80 L230,20 L235,60 L240,50 L270,50
+             L300,50 L310,48 L320,52 L330,50 L340,50 L350,30 L355,80 L360,20 L365,60 L370,50 L400,50"/>
+        <path class="ecg-line" stroke="var(--warn)"
+          d="M0,50 L30,50 L40,50 L50,48 L60,52 L70,50 L80,50 L90,30 L95,80 L100,20 L105,60 L110,50 L140,50
+             L170,50 L180,48 L190,52 L200,50 L210,50 L220,30 L225,80 L230,20 L235,60 L240,50 L270,50
+             L300,50 L310,48 L320,52 L330,50 L340,50 L350,30 L355,80 L360,20 L365,60 L370,50 L400,50"/>
+      </svg>
+    </div>
+    <div class="ecg-data">
+      <div class="ecg-stat">
+        <div class="label">Hemoglobin</div>
+        <div class="val" style="color:var(--warn);">12.8 <span style="font-size:10px;color:var(--t3);">g/dL</span></div>
+      </div>
+      <div class="ecg-stat">
+        <div class="label">Hematocrit</div>
+        <div class="val" style="color:var(--warn);">38.2<span style="font-size:10px;color:var(--t3);">%</span></div>
+      </div>
+    </div>
+    <div class="note">Slightly below range. <em class="w">Common in Crohn's — iron malabsorption.</em> Trending up from 12.2.</div>
+  </div>
+
+  <!-- BODY COMPOSITION — STACKED BAR -->
+  <div class="c c4">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">Body Composition</div>
+        <div class="c-title">What You're Made Of</div>
+      </div>
+      <div class="pill pill-g">Healthy</div>
+    </div>
+    <div class="comp-bar-wrap">
+      <div class="comp-bar">
+        <div class="comp-seg" style="--w:55%; background: var(--g);">Muscle 55%</div>
+        <div class="comp-seg" style="--w:16%; background: var(--ice); animation-delay:0.2s;">Fat 16%</div>
+        <div class="comp-seg" style="--w:15%; background: var(--purple); animation-delay:0.4s;">Bone 15%</div>
+        <div class="comp-seg" style="--w:14%; background: var(--t3); color:var(--t1); animation-delay:0.6s;">Other 14%</div>
+      </div>
+      <div class="comp-legend">
+        <div class="comp-legend-item"><div class="comp-legend-dot" style="background:var(--g);"></div>Lean Muscle — 39.8 kg</div>
+        <div class="comp-legend-item"><div class="comp-legend-dot" style="background:var(--ice);"></div>Body Fat — 11.7 kg (16.2%)</div>
+        <div class="comp-legend-item"><div class="comp-legend-dot" style="background:var(--purple);"></div>Bone Mass — 10.9 kg</div>
+        <div class="comp-legend-item"><div class="comp-legend-dot" style="background:var(--t3);"></div>Water & Other — 10.0 kg</div>
+      </div>
+    </div>
+    <div class="note">Fat at <em class="g">16.2%</em> — healthy athletic range. Lean mass recovery is key post-flare indicator.</div>
+  </div>
+
+  <!-- BODY METRICS GRID -->
+  <div class="c c4">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">Anthropometrics</div>
+        <div class="c-title">Body Metrics</div>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-cell">
+        <div class="s-val" style="color:var(--t1);">181</div>
+        <div class="s-label">Height cm</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-val" style="color:var(--ice);">72.4</div>
+        <div class="s-label">Weight kg</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-val" style="color:var(--g);">22.1</div>
+        <div class="s-label">BMI</div>
+        <div class="s-sub">Normal</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-val" style="color:var(--g);">16.2<span style="font-size:12px;">%</span></div>
+        <div class="s-label">Body Fat</div>
+        <div class="s-sub">Athletic</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-val" style="color:var(--t1);">0.84</div>
+        <div class="s-label">Waist-Hip</div>
+        <div class="s-sub">Healthy</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-val" style="color:var(--g);">60.7</div>
+        <div class="s-label">Lean Mass kg</div>
+        <div class="s-sub">↑ Recovering</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLARE HEATMAP — FULL WIDTH -->
+  <div class="c c12">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">Disease Activity — 52 Weeks</div>
+        <div class="c-title">Flare Heatmap</div>
+      </div>
+      <div class="pill pill-g">47 days flare-free</div>
+    </div>
+    <div class="heatmap" id="heatmap"></div>
+    <div class="hm-months">
+      <span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span><span>Jan</span><span>Feb</span>
+    </div>
+    <div class="hm-legend">
+      <span>Quiet</span>
+      <div class="hm-legend-cell" style="background:var(--g10);"></div>
+      <div class="hm-legend-cell" style="background:var(--g30);"></div>
+      <div class="hm-legend-cell" style="background:var(--warn20);"></div>
+      <div class="hm-legend-cell" style="background:var(--warn);"></div>
+      <div class="hm-legend-cell" style="background:var(--crit);"></div>
+      <span>Severe</span>
+    </div>
+    <div class="note" style="margin-top:10px;">GitHub-style activity heatmap tracking daily symptom severity. Visible shift to green in recent months. <em class="g">Current streak: 47 days in remission.</em></div>
+  </div>
+
+  <!-- CORRELATION SCATTER -->
+  <div class="c c6">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">Correlation</div>
+        <div class="c-title">Weight vs. Calprotectin</div>
+      </div>
+      <div class="pill pill-p">Inverse R = −0.82</div>
+    </div>
+    <div class="scatter-wrap">
+      <svg viewBox="0 0 400 180">
+        <!-- Axes -->
+        <line class="scatter-axis" x1="40" y1="10" x2="40" y2="160"/>
+        <line class="scatter-axis" x1="40" y1="160" x2="390" y2="160"/>
+        <text class="scatter-label" x="200" y="178" text-anchor="middle">CALPROTECTIN µg/g</text>
+        <text class="scatter-label" x="10" y="90" text-anchor="middle" transform="rotate(-90,10,90)">WEIGHT KG</text>
+        <!-- Axis values -->
+        <text class="scatter-label" x="40" y="174">0</text>
+        <text class="scatter-label" x="215" y="174">250</text>
+        <text class="scatter-label" x="385" y="174">500</text>
+        <text class="scatter-label" x="32" y="155" text-anchor="end">62</text>
+        <text class="scatter-label" x="32" y="90" text-anchor="end">70</text>
+        <text class="scatter-label" x="32" y="20" text-anchor="end">78</text>
+        <!-- Trend line -->
+        <line class="scatter-trend" x1="60" y1="20" x2="370" y2="150"/>
+        <!-- Data points -->
+        <circle class="scatter-dot" cx="340" cy="145" r="5" fill="var(--crit)" style="animation-delay:0.1s;"/>
+        <circle class="scatter-dot" cx="300" cy="130" r="5" fill="var(--crit)" style="animation-delay:0.2s;"/>
+        <circle class="scatter-dot" cx="280" cy="120" r="5" fill="var(--warn)" style="animation-delay:0.3s;"/>
+        <circle class="scatter-dot" cx="250" cy="105" r="5" fill="var(--warn)" style="animation-delay:0.4s;"/>
+        <circle class="scatter-dot" cx="220" cy="95" r="5" fill="var(--warn)" style="animation-delay:0.5s;"/>
+        <circle class="scatter-dot" cx="200" cy="85" r="5" fill="var(--warn)" style="animation-delay:0.6s;"/>
+        <circle class="scatter-dot" cx="170" cy="70" r="5" fill="var(--g)" style="animation-delay:0.7s;"/>
+        <circle class="scatter-dot" cx="140" cy="55" r="5" fill="var(--g)" style="animation-delay:0.8s;"/>
+        <circle class="scatter-dot" cx="110" cy="45" r="5" fill="var(--g)" style="animation-delay:0.9s;"/>
+        <circle class="scatter-dot" cx="85" cy="35" r="6" fill="var(--ice)" stroke="var(--bg)" stroke-width="2" style="animation-delay:1s;"/>
+        <!-- Current point label -->
+        <text class="scatter-label" x="88" y="28" fill="var(--ice)" font-size="7">NOW</text>
+      </svg>
+    </div>
+    <div class="note">Strong inverse correlation (R = −0.82): as inflammation drops, weight recovers. <em class="g">Current point trending to optimal quadrant.</em></div>
+  </div>
+
+  <!-- INSIGHT CARD -->
+  <div class="c c6">
+    <div class="c-head">
+      <div>
+        <div class="c-tag">AI Insight</div>
+        <div class="c-title">Clinical Summary</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px; padding: 4px 0;">
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="width: 4px; min-height: 100%; border-radius: 2px; background: var(--g); flex-shrink: 0; align-self: stretch;"></div>
+        <div>
+          <div style="font-weight: 600; font-size: 12px; margin-bottom: 4px; color: var(--g);">Positive Trajectory</div>
+          <div style="font-size: 11px; color: var(--t2); line-height: 1.6;">CRP normalized (2.1 mg/L). Weight recovered +7.3 kg. 47-day flare-free streak. Calprotectin declining steadily.</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="width: 4px; min-height: 100%; border-radius: 2px; background: var(--warn); flex-shrink: 0; align-self: stretch;"></div>
+        <div>
+          <div style="font-weight: 600; font-size: 12px; margin-bottom: 4px; color: var(--warn);">Watch Items</div>
+          <div style="font-size: 11px; color: var(--t2); line-height: 1.6;">Hemoglobin still below range (12.8 vs 13.5 target). Calprotectin elevated but improving — not yet in remission zone (&lt;50).</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="width: 4px; min-height: 100%; border-radius: 2px; background: var(--crit); flex-shrink: 0; align-self: stretch;"></div>
+        <div>
+          <div style="font-weight: 600; font-size: 12px; margin-bottom: 4px; color: var(--crit);">Action Required</div>
+          <div style="font-size: 11px; color: var(--t2); line-height: 1.6;">Vitamin D critically low (18 ng/mL). Supplement immediately — Crohn's malabsorption demands higher dosage. Discuss with gastroenterologist.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="foot">Sami · Health Dashboard v2 · All data illustrative — always consult your gastroenterologist</div>
+
+<script>
+  // ═══ HEATMAP ═══
+  const hm = document.getElementById('heatmap');
+  // 52 weeks × 7 days simulated disease activity
+  // Start high (flare), end low (remission)
+  for (let w = 0; w < 52; w++) {
+    for (let d = 0; d < 7; d++) {
+      const cell = document.createElement('div');
+      cell.className = 'hm-cell';
+      cell.style.animationDelay = (w * 0.02) + 's';
+
+      // Generate severity — higher early, lower recent
+      const weekFactor = 1 - (w / 52); // 1 at start → 0 at end
+      let noise = Math.random();
+      let severity;
+
+      // Add occasional flare spikes
+      const isFlarePeriod = (w >= 8 && w <= 12) || (w >= 28 && w <= 30) || (w >= 38 && w <= 39);
+
+      if (isFlarePeriod) {
+        severity = 0.5 + Math.random() * 0.5;
+      } else if (w > 44) {
+        severity = Math.random() * 0.15; // Recent: mostly quiet
+      } else {
+        severity = weekFactor * 0.6 * noise;
+      }
+
+      // Map severity to color
+      if (severity < 0.1) {
+        cell.style.background = 'var(--g10)';
+      } else if (severity < 0.25) {
+        cell.style.background = 'var(--g30)';
+      } else if (severity < 0.45) {
+        cell.style.background = 'var(--warn20)';
+      } else if (severity < 0.7) {
+        cell.style.background = 'var(--warn)';
+      } else {
+        cell.style.background = 'var(--crit)';
+      }
+
+      hm.appendChild(cell);
+    }
+  }
+
+  // ═══ VD TICKS ═══
+  const ticksG = document.getElementById('vdTicks');
+  for (let i = 0; i < 40; i++) {
+    const angle = (i / 40) * 360 - 90;
+    const rad = (angle * Math.PI) / 180;
+    const inner = 62, outer = 66;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', 90 + Math.cos(rad) * inner);
+    line.setAttribute('y1', 90 + Math.sin(rad) * inner);
+    line.setAttribute('x2', 90 + Math.cos(rad) * outer);
+    line.setAttribute('y2', 90 + Math.sin(rad) * outer);
+    ticksG.appendChild(line);
+  }
+</script>
+
+</body>
+</html>
