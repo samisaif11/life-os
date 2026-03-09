@@ -28,7 +28,8 @@ const SHEETS = {
   INVOICES:   'Invoices',
   BANKACCTS:  'BankAccounts',
   CLIENTS:    'Clients',
-  GROCERIES:  'Groceries'
+  GROCERIES:  'Groceries',
+  HEALTH:     'Health'
 };
 
 // ═══════ COLUMN DEFINITIONS ═══════
@@ -47,6 +48,7 @@ const INVOICE_COLS   = ['id','invoiceNumber','date','client','project','descript
 const BANKACCT_COLS  = ['id','name','ribImageFileId'];
 const CLIENT_COLS    = ['name','address','siren','defaultCostCenter'];
 const GROCERY_COLS   = ['id','name','location','needsRefill','lastPurchased','typicalPrice','notes','createdAt'];
+const HEALTH_COLS    = ['id','date','metric','value','unit','notes','createdAt'];
 
 // ═══════════════════════════════════════════════════════════════
 //  doGet — READ all data from sheets, return as JSON
@@ -179,6 +181,14 @@ function doGet(e) {
     // --- Grocery Locations (stored in Meta) ---
     data.groceryLocations = meta.groceryLocations ? JSON.parse(meta.groceryLocations) : ['SUPER MARKET','MINI-STORE','PHARMACY'];
 
+    // --- Health Logs ---
+    data.healthLogs = readSheet(ss, SHEETS.HEALTH, HEALTH_COLS).map(row => ({
+      id: toNum(row.id), date: str(row.date), metric: str(row.metric),
+      value: parseFloat(row.value) || 0, unit: str(row.unit),
+      notes: str(row.notes), createdAt: str(row.createdAt)
+    }));
+    data.hid = toNum(meta.hid) || 1;
+
     return jsonResponse(data);
   } catch (err) {
     return jsonResponse({ error: err.message, stack: err.stack }, 500);
@@ -278,12 +288,19 @@ function doPost(e) {
         g.lastPurchased || '', g.typicalPrice || '', g.notes || '', g.createdAt || ''
       ]));
 
+    // --- Health Logs ---
+    writeSheet(ss, SHEETS.HEALTH, HEALTH_COLS,
+      (D.healthLogs || []).map(h => [
+        h.id, h.date, h.metric, h.value, h.unit || '', h.notes || '', h.createdAt || ''
+      ]));
+
     // --- Meta ---
     writeSheet(ss, SHEETS.META, META_COLS, [
       ['nid',     D.nid || 1],
       ['dlid',    D.dlid || 1],
       ['invid',   D.invid || 1],
       ['gid',     D.gid || 1],
+      ['hid',     D.hid || 1],
       ['savedAt', now],
       ['groceryLocations', JSON.stringify(D.groceryLocations || ['SUPER MARKET','MINI-STORE','PHARMACY'])]
     ]);

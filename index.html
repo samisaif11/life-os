@@ -575,6 +575,47 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 @media(max-width:900px){.books-panels{grid-template-columns:1fr}.books-carousel-wrap{grid-template-columns:36px 1fr 36px}.bk-card{min-width:132px;max-width:132px}.bk-cover{height:180px}}
 @media(min-width:1200px){.bk-card{min-width:190px;max-width:190px}.bk-cover{height:260px}.books-carousel{gap:18px;padding:16px}}
 
+/* ═══════ HEALTH ═══════ */
+:root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13)}
+.hl-topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.hl-title{font-size:1.05rem;font-weight:700;letter-spacing:.3px;color:var(--t0)}
+.hl-subtitle{font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-left:auto}
+.hl-frm{background:var(--bg-2);border:1px solid var(--b1);border-radius:var(--rl);padding:20px;margin-bottom:18px;display:none}
+.hl-frm.open{display:block;animation:mdIn .2s ease}
+.hl-grid{display:grid;grid-template-columns:1fr 148px 1fr;gap:14px;align-items:start}
+@media(max-width:1100px){.hl-grid{grid-template-columns:1fr 110px 1fr}}
+@media(max-width:680px){.hl-grid{grid-template-columns:1fr}.hl-avatar-col{display:none!important}}
+.hl-col{display:flex;flex-direction:column;gap:14px}
+.hl-avatar-col{display:flex;flex-direction:column;align-items:center;padding-top:8px}
+.hl-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;overflow:hidden;position:relative}
+.hl-card-pad{padding:18px 20px}
+.hl-card-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.hl-card-title{font-size:.74rem;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:.5px}
+.hl-card-sub{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
+.hl-card-val{text-align:right}
+.hl-big-val{font-family:'JetBrains Mono';font-size:2rem;font-weight:700;line-height:1}
+.hl-val-unit{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.hl-chip{font-family:'JetBrains Mono';font-size:.52rem;padding:2px 8px;border-radius:10px;font-weight:700;letter-spacing:.3px;display:inline-block;margin-left:4px}
+.hl-chip-g{background:var(--hg1);color:var(--hg);border:1px solid rgba(57,255,20,.18)}
+.hl-chip-w{background:var(--hw1);color:var(--hw);border:1px solid rgba(255,159,28,.18)}
+.hl-chip-r{background:var(--hr1);color:var(--hr);border:1px solid rgba(255,56,100,.18)}
+.hl-history{padding:10px 20px;border-top:1px solid var(--b0);display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.hl-history::-webkit-scrollbar{display:none}
+.hl-h-item{flex-shrink:0;padding:0 10px;border-right:1px solid var(--b0);text-align:center;min-width:52px}
+.hl-h-item:last-child{border:none}
+.hl-h-item .hd{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);letter-spacing:.5px}
+.hl-h-item .hv{font-family:'JetBrains Mono';font-size:.72rem;font-weight:700;margin-top:2px}
+.hl-h-item .hdt{font-family:'JetBrains Mono';font-size:.52rem;margin-top:1px}
+.hl-empty{text-align:center;padding:28px 16px;font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;opacity:.45}
+.hl-bottom{margin-top:14px}
+@keyframes hlDraw{to{stroke-dashoffset:0}}
+@keyframes hlFill{to{opacity:1}}
+@keyframes hlDot{to{opacity:1}}
+@keyframes hlGlw{0%,100%{opacity:.25}50%{opacity:.7}}
+@keyframes hlScan{from{left:-80px}to{left:100%}}
+@keyframes hlTube{to{height:var(--h)}}
+@keyframes hlBar{to{width:var(--w)}}
+
 </style>
 </head>
 <body>
@@ -587,6 +628,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <button class="nav-tab" data-v="projects">Projects</button>
     <button class="nav-tab" data-v="books">Books</button>
     <button class="nav-tab" data-v="groceries">Groceries</button>
+    <button class="nav-tab" data-v="health">Health</button>
   </nav>
   <div class="hdr-r">
     <div class="clk" id="clk"></div>
@@ -709,6 +751,47 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <div class="fac"><button class="btn btn-gh" id="cgItem">CANCEL</button><button class="btn btn-g" id="sgItem">ADD ITEM</button></div>
   </div>
   <div id="gList" class="groc-grid"></div>
+</div>
+
+<div class="vw" id="v-health">
+  <div class="hl-topbar">
+    <div class="hl-title">Health Monitor</div>
+    <div class="hl-subtitle" id="hlLastLog">181 CM · CROHN'S DISEASE</div>
+    <button class="nbtn" id="hlLogTgl">+ LOG READING</button>
+  </div>
+  <div class="tfrm hl-frm" id="hlFrm">
+    <div class="fr fr2">
+      <div><label class="fl">Metric</label>
+        <select class="fs" id="hlMetric">
+          <option value="weight">Weight (kg)</option>
+          <option value="calprotectin">Fecal Calprotectin (µg/g)</option>
+          <option value="crp">C-Reactive Protein (mg/L)</option>
+          <option value="hemoglobin">Hemoglobin (g/dL)</option>
+          <option value="hematocrit">Hematocrit (%)</option>
+          <option value="vitamin_d">Vitamin D (ng/mL)</option>
+          <option value="body_fat">Body Fat (%)</option>
+          <option value="lean_mass">Lean Mass (kg)</option>
+        </select>
+      </div>
+      <div><label class="fl">Date</label>
+        <div style="display:flex;gap:4px;align-items:center">
+          <input type="date" class="fi" id="hlDate">
+          <button type="button" class="setnow-b" id="hlDateToday">TODAY</button>
+        </div>
+      </div>
+    </div>
+    <div class="fr fr2">
+      <div><label class="fl">Value</label><input type="number" class="fi" id="hlVal" placeholder="0" step="0.01"></div>
+      <div><label class="fl">Notes</label><input type="text" class="fi" id="hlNotes" placeholder="Optional..."></div>
+    </div>
+    <div class="fac"><button class="btn btn-gh" id="hlFrmCancel">CANCEL</button><button class="btn btn-g" id="hlFrmSave">LOG READING</button></div>
+  </div>
+  <div class="hl-grid">
+    <div class="hl-col" id="hl-left"></div>
+    <div class="hl-avatar-col" id="hl-center"></div>
+    <div class="hl-col" id="hl-right"></div>
+  </div>
+  <div class="hl-bottom" id="hl-bottom"></div>
 </div>
 
 <!-- Books Modals -->
@@ -1019,6 +1102,7 @@ async function saveToSheet() {
       invoices: D.invoices, bankAccounts: D.bankAccounts, clients: D.clients, invid: D.invid,
       groceries: D.groceries, groceryLocations: D.groceryLocations, gid: D.gid,
       books: D.books, booksGoal: D.booksGoal, booksQueue: D.booksQueue, bkid: D.bkid,
+      healthLogs: D.healthLogs, hid: D.hid,
       partners: PA, projectColors: PC, peopleColors: PP,
       _expectedSavedAt: _lastSavedAt
     };
@@ -1075,6 +1159,8 @@ async function loadFromSheet(manual = false) {
     if (data.booksGoal) D.booksGoal = data.booksGoal;
     if (data.booksQueue) D.booksQueue = data.booksQueue;
     if (data.bkid) D.bkid = data.bkid;
+    if (data.healthLogs) D.healthLogs = data.healthLogs;
+    if (data.hid) D.hid = data.hid;
     // Apply color maps
     if (data.partners) {
       Object.keys(PA).forEach(k => delete PA[k]); Object.assign(PA, data.partners);
@@ -1162,6 +1248,8 @@ const D = {
   booksGoal: 30,
   booksQueue: [],
   bkid: 1,
+  healthLogs: [],
+  hid: 1,
 };
 
 // Poster images - relative paths for GitHub Pages
@@ -1210,7 +1298,7 @@ function getPoster(title){
 
 /* ═══════ UNDO HISTORY ═══════ */
 const HS=[];const MH=30;let hLock=false;
-function pH(label){if(hLock)return;HS.push({s:JSON.parse(JSON.stringify({tasks:D.tasks,completed:D.completed,deadlines:D.deadlines,projects:D.projects,closed:D.closed,people:D.people,monthly:D.monthly,projDone:D.projDone,nid:D.nid,dlid:D.dlid,groceries:D.groceries,groceryLocations:D.groceryLocations,gid:D.gid,books:D.books,booksGoal:D.booksGoal,booksQueue:D.booksQueue,bkid:D.bkid})),l:label});if(HS.length>MH)HS.shift();toast('✓ '+label.toUpperCase(),'gld');scheduleSave()}
+function pH(label){if(hLock)return;HS.push({s:JSON.parse(JSON.stringify({tasks:D.tasks,completed:D.completed,deadlines:D.deadlines,projects:D.projects,closed:D.closed,people:D.people,monthly:D.monthly,projDone:D.projDone,nid:D.nid,dlid:D.dlid,groceries:D.groceries,groceryLocations:D.groceryLocations,gid:D.gid,books:D.books,booksGoal:D.booksGoal,booksQueue:D.booksQueue,bkid:D.bkid,healthLogs:D.healthLogs,hid:D.hid})),l:label});if(HS.length>MH)HS.shift();toast('✓ '+label.toUpperCase(),'gld');scheduleSave()}
 function popH(){if(!HS.length){toast('NOTHING TO UNDO','rd');return}hLock=true;Object.assign(D,HS.pop().s);hLock=false;toast('↶ UNDONE','und');fullR()}
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();popH()}});
 
@@ -2118,6 +2206,380 @@ $('bkReadClose')?.addEventListener('click',()=>{$('bkReadMdl').classList.remove(
 $('bkPrev')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:-260,behavior:'smooth'})});
 $('bkNext')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:260,behavior:'smooth'})});
 
+/* ═══════════════════════════════════════════════════════════════
+   HEALTH
+   ═══════════════════════════════════════════════════════════════ */
+const HMETA = {
+  weight:       {label:'Mass Recovery',         sub:'Weight trajectory',        unit:'kg',    refMin:60, refMax:85,  goodDir:'up',   chipFn:(v)=>v>=60&&v<=85?'g':v<60?'r':'w'},
+  calprotectin: {label:'Gut Inflammation',      sub:'Fecal Calprotectin',       unit:'µg/g',  refMin:0,  refMax:50,  goodDir:'down', chipFn:(v)=>v<50?'g':v<200?'w':'r'},
+  crp:          {label:'Systemic Inflammation', sub:'C-Reactive Protein',       unit:'mg/L',  refMin:0,  refMax:5,   goodDir:'down', chipFn:(v)=>v<5?'g':v<10?'w':'r'},
+  hemoglobin:   {label:'Blood Oxygen Capacity', sub:'Hemoglobin · Blood draw',  unit:'g/dL',  refMin:13.5,refMax:17.5,goodDir:'up', chipFn:(v)=>v>=13.5?'g':v>=11?'w':'r'},
+  hematocrit:   {label:'Oxygen Capacity',       sub:'Hemoglobin & Hematocrit',  unit:'%',     refMin:40, refMax:52,  goodDir:'up',   chipFn:(v)=>v>=40?'g':v>=33?'w':'r'},
+  vitamin_d:    {label:'Vitamin D',             sub:'Immune & bone health',     unit:'ng/mL', refMin:30, refMax:100, goodDir:'up',   chipFn:(v)=>v>=30?'g':v>=20?'w':'r'},
+  body_fat:     {label:'Body Fat',              sub:'Fat percentage',            unit:'%',     refMin:10, refMax:22,  goodDir:'norm', chipFn:(v)=>v>=10&&v<=22?'g':v<10?'w':'w'},
+  lean_mass:    {label:'Lean Mass',             sub:'Muscle & bone mass',       unit:'kg',    refMin:55, refMax:75,  goodDir:'up',   chipFn:(v)=>v>=55?'g':v<55?'r':'w'},
+};
+
+function hCol(metric, value) {
+  const m = HMETA[metric]; if(!m) return 'var(--t2)';
+  const c = m.chipFn(value);
+  return c==='g'?'var(--hg)':c==='w'?'var(--hw)':'var(--hr)';
+}
+function hChip(metric, value) {
+  const m = HMETA[metric]; if(!m) return '';
+  return `<span class="hl-chip hl-chip-${m.chipFn(value)}">${value >= m.refMax ? (m.goodDir==='down'?'HIGH':'ABOVE') : value <= m.refMin ? (m.goodDir==='down'?'REMISSION':'LOW') : 'NORMAL'}</span>`;
+}
+function hlLogs(metric) {
+  return (D.healthLogs||[]).filter(l=>l.metric===metric).sort((a,b)=>a.date.localeCompare(b.date));
+}
+function hlLatest(metric) { const l=hlLogs(metric); return l.length?l[l.length-1]:null; }
+function hlDelta(logs) { return logs.length<2?null:+(logs[logs.length-1].value-logs[logs.length-2].value).toFixed(2); }
+function hlMonth(ds) {
+  if(!ds) return ''; const d=new Date(ds+'T00:00:00'); if(isNaN(d)) return '';
+  return ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()];
+}
+function hlCoords(logs, W, H, minV, maxV, px=44, py=18) {
+  const n=logs.length; if(!n) return [];
+  return logs.map((l,i)=>({
+    x: px + (n===1?(W-2*px)/2:i*(W-2*px)/(n-1)),
+    y: H - py - Math.max(0,Math.min(1,(l.value-minV)/(maxV-minV)))*(H-2*py),
+    ...l
+  }));
+}
+function hlPath(cs) { return cs.map((c,i)=>`${i?'L':'M'}${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' '); }
+function hlArea(cs, H, py) {
+  if(!cs.length) return '';
+  return hlPath(cs)+` L${cs[cs.length-1].x.toFixed(1)},${H-py} L${cs[0].x.toFixed(1)},${H-py} Z`;
+}
+function hlHistoryStrip(logs, metric) {
+  const m=HMETA[metric];
+  return `<div class="hl-history">${logs.slice(-8).map((l,i,arr)=>{
+    const d=i>0?+(l.value-arr[i-1].value).toFixed(2):null;
+    const good=m.goodDir==='down'?d<0:d>0;
+    const dc=d!==null?(good?'var(--hg)':'var(--hr)'):'var(--t3)';
+    const ds=d!==null?(d>0?`▲${Math.abs(d)}`:`↓${Math.abs(d)}`):'';
+    return `<div class="hl-h-item"><div class="hd">${hlMonth(l.date)}</div><div class="hv" style="color:${hCol(metric,l.value)}">${l.value}</div>${d!==null?`<div class="hdt" style="color:${dc}">${ds}</div>`:''}</div>`;
+  }).join('')}</div>`;
+}
+
+/* ── WEIGHT CHART (gravity / area ascent) ── */
+function renderWeightCard(logs) {
+  const m=HMETA.weight; const latest=logs.length?logs[logs.length-1]:null;
+  const col=latest?hCol('weight',latest.value):'var(--t3)';
+  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">kg</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
+  const W=900,H=180,px=50,py=20;
+  const vals=logs.map(l=>l.value); const minV=Math.min(...vals)-4; const maxV=Math.max(...vals)+4;
+  const cs=hlCoords(logs,W,H,minV,maxV,px,py);
+  const hy=H-py-Math.max(0,Math.min(1,(65-minV)/(maxV-minV)))*(H-2*py);
+  const delta=hlDelta(logs);
+  const dStr=delta!==null?(delta>0?`↑ +${delta} kg`:`↓ ${Math.abs(delta)} kg`):'';
+  const dCol=delta!==null?(delta>0?'var(--hg)':'var(--hr)'):'var(--t3)';
+  const last=cs[cs.length-1];
+  return `<div class="hl-card">
+    <div class="hl-card-pad" style="padding-bottom:0"><div class="hl-card-hdr" style="margin-bottom:0">
+      <div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">Escaping the gravity well</div></div>
+      <div class="hl-card-val">
+        <div class="hl-big-val" style="color:${col}">${latest.value}</div>
+        <div class="hl-val-unit">kg · BMI ${(latest.value/(1.81*1.81)).toFixed(1)}${hChip('weight',latest.value)}</div>
+        ${delta!==null?`<div style="font-family:'JetBrains Mono';font-size:.54rem;color:${dCol};margin-top:2px">${dStr}</div>`:''}
+      </div>
+    </div></div>
+    <div style="padding:14px 20px;height:170px;position:relative">
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">
+      <defs><linearGradient id="wG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".22"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      ${hy>0&&hy<H?`<line x1="0" y1="${hy.toFixed(1)}" x2="${W}" y2="${hy.toFixed(1)}" stroke="rgba(57,255,20,.15)" stroke-dasharray="6 8" stroke-width="1"/>
+      <text font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(57,255,20,.28)" x="${W-8}" y="${(hy-4).toFixed(1)}" text-anchor="end">HEALTHY 65+</text>`:''}
+      <path fill="url(#wG)" d="${hlArea(cs,H,py)}" style="opacity:0;animation:hlFill 1s ease-out .5s forwards"/>
+      <path fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="${hlPath(cs)}" style="stroke-dasharray:2000;stroke-dashoffset:2000;animation:hlDraw 2.5s ease-out forwards"/>
+      ${cs.map((c,i)=>{const isL=i===cs.length-1;const dc=hCol('weight',c.value);return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${isL?7:4}" fill="${isL?dc:'var(--bg-0)'}" stroke="${dc}" stroke-width="2" style="opacity:0;animation:hlDot .4s ease-out ${(.4+i*.12).toFixed(2)}s forwards"/>${isL?`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="16" fill="${dc}" style="opacity:0;animation:hlGlw 3s ease-in-out infinite 1s"/><text font-family="'JetBrains Mono',monospace" font-size="10" font-weight="700" fill="${dc}" x="${c.x.toFixed(1)}" y="${(c.y-14).toFixed(1)}" text-anchor="middle">${c.value}</text>`:''}`}).join('')}
+      ${cs.map(c=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${c.x.toFixed(1)}" y="${H-2}" text-anchor="middle">${hlMonth(c.date)}</text>`).join('')}
+    </svg></div>
+    ${hlHistoryStrip(logs,'weight')}
+  </div>`;
+}
+
+/* ── CRP HEARTBEAT CHART ── */
+function renderCRPCard(logs) {
+  const m=HMETA.crp; const latest=logs.length?logs[logs.length-1]:null;
+  const col=latest?hCol('crp',latest.value):'var(--t3)';
+  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">mg/L</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
+  const W=900,H=180; const baseY=H*0.58; const segs=logs.slice(-8); const segW=W/(segs.length+1);
+  let pd=`M0,${baseY}`;
+  segs.forEach((l,i)=>{
+    const cx=segW*(i+1); const sh=Math.min(H*0.52,(l.value/30)*H*0.52);
+    pd+=` L${(cx-segW*.28).toFixed(1)},${baseY} L${(cx-segW*.08).toFixed(1)},${(baseY+sh*.18).toFixed(1)} L${(cx-segW*.04).toFixed(1)},${(baseY-sh).toFixed(1)} L${cx.toFixed(1)},${(baseY+sh*.38).toFixed(1)} L${(cx+segW*.05).toFixed(1)},${(baseY-sh*.18).toFixed(1)} L${(cx+segW*.09).toFixed(1)},${baseY}`;
+  });
+  pd+=` L${W},${baseY}`;
+  return `<div class="hl-card">
+    <div class="hl-card-pad" style="padding-bottom:0"><div class="hl-card-hdr" style="margin-bottom:12px">
+      <div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">Calmer line = healthier you</div></div>
+      <div class="hl-card-val"><div class="hl-big-val" style="color:${col}">${latest.value}</div><div class="hl-val-unit">mg/L${hChip('crp',latest.value)}</div></div>
+    </div></div>
+    <div style="background:rgba(0,0,0,.28);border-top:1px solid var(--b0);height:140px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;bottom:0;width:80px;background:linear-gradient(90deg,transparent,rgba(57,255,20,.04),transparent);animation:hlScan 5s linear infinite"></div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">
+        <line x1="0" y1="${baseY}" x2="${W}" y2="${baseY}" stroke="rgba(57,255,20,.07)" stroke-width="1"/>
+        <text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(57,255,20,.22)" x="${W-8}" y="${(baseY-4).toFixed(1)}" text-anchor="end">NORMAL &lt;5</text>
+        <path fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round" d="${pd}" opacity=".09" style="stroke-dasharray:4000;stroke-dashoffset:4000;animation:hlDraw 3.5s ease-out forwards"/>
+        <path fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" d="${pd}" style="stroke-dasharray:4000;stroke-dashoffset:4000;animation:hlDraw 3.5s ease-out forwards"/>
+        ${segs.map((l,i)=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${(segW*(i+1)).toFixed(1)}" y="${H-4}" text-anchor="middle">${hlMonth(l.date)}</text>`).join('')}
+      </svg>
+      <div style="position:absolute;top:8px;right:10px;text-align:right;font-family:'JetBrains Mono'">
+        <div style="font-size:1.8rem;font-weight:700;color:${col};line-height:1">${latest.value}</div>
+        <div style="font-size:.48rem;color:var(--t3);letter-spacing:2px">MG/L</div>
+        <div style="font-size:.55rem;color:${col};margin-top:3px;animation:hlGlw 2s ease-in-out infinite">● ${latest.value<5?'NORMAL':latest.value<10?'ELEVATED':'HIGH'}</div>
+      </div>
+    </div>
+    ${hlHistoryStrip(logs,'crp')}
+  </div>`;
+}
+
+/* ── CALPROTECTIN MOUNTAIN CHART ── */
+function renderCalproCard(logs) {
+  const m=HMETA.calprotectin; const latest=logs.length?logs[logs.length-1]:null;
+  const col=latest?hCol('calprotectin',latest.value):'var(--t3)';
+  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">µg/g</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
+  const W=900,H=200,px=50,py=22;
+  const vals=logs.map(l=>l.value); const minV=0; const maxV=Math.max(...vals,100)+80;
+  const cs=hlCoords(logs,W,H,minV,maxV,px,py);
+  const ry50=H-py-((50-minV)/(maxV-minV))*(H-2*py);
+  const ry250=H-py-((250-minV)/(maxV-minV))*(H-2*py);
+  const delta=hlDelta(logs);
+  const dStr=delta!==null?(delta<0?`↓ ${Math.abs(delta)} µg/g`:`▲ ${delta} µg/g`):'';
+  const dCol=delta!==null?(delta<0?'var(--hg)':'var(--hr)'):'var(--t3)';
+  return `<div class="hl-card">
+    <div class="hl-card-pad"><div class="hl-card-hdr">
+      <div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">Descending toward remission</div></div>
+      <div class="hl-card-val">
+        <div class="hl-big-val" style="color:${col}">${latest.value}</div>
+        <div class="hl-val-unit">µg/g${hChip('calprotectin',latest.value)}</div>
+        ${delta!==null?`<div style="font-family:'JetBrains Mono';font-size:.54rem;color:${dCol};margin-top:2px">${dStr} from prev</div>`:''}
+      </div>
+    </div></div>
+    <svg class="hl-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:170px;display:block">
+      <defs><linearGradient id="cpG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".28"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      ${ry50>0&&ry50<H?`<rect x="0" y="${ry50.toFixed(1)}" width="${W}" height="${(H-ry50).toFixed(1)}" fill="rgba(57,255,20,.03)"/><line x1="0" y1="${ry50.toFixed(1)}" x2="${W}" y2="${ry50.toFixed(1)}" stroke="rgba(57,255,20,.2)" stroke-dasharray="6 8" stroke-width="1"/><text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(57,255,20,.35)" x="${W-8}" y="${(ry50-4).toFixed(1)}" text-anchor="end">REMISSION &lt;50</text>`:''}
+      ${ry250>0&&ry250<H?`<line x1="0" y1="${ry250.toFixed(1)}" x2="${W}" y2="${ry250.toFixed(1)}" stroke="rgba(255,56,100,.18)" stroke-dasharray="6 8" stroke-width="1"/><text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(255,56,100,.28)" x="${W-8}" y="${(ry250-4).toFixed(1)}" text-anchor="end">ACTIVE &gt;250</text>`:''}
+      <path fill="url(#cpG)" d="${hlArea(cs,H,py)}" style="opacity:0;animation:hlFill .8s ease-out .3s forwards"/>
+      <path fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="${hlPath(cs)}" style="stroke-dasharray:3000;stroke-dashoffset:3000;animation:hlDraw 2.5s ease-out forwards"/>
+      ${cs.map((c,i)=>{const isL=i===cs.length-1;const dc=hCol('calprotectin',c.value);return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${isL?6:4}" fill="${dc}" stroke="var(--bg-0)" stroke-width="2" style="opacity:0;animation:hlDot .4s ease-out ${(.5+i*.14).toFixed(2)}s forwards"/>${isL?`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="14" fill="${dc}" style="opacity:0;animation:hlGlw 3s ease-in-out infinite 1.2s"/>`:''}`}).join('')}
+      ${cs.map(c=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${c.x.toFixed(1)}" y="${H-3}" text-anchor="middle">${hlMonth(c.date)}</text>`).join('')}
+    </svg>
+    ${hlHistoryStrip(logs,'calprotectin')}
+  </div>`;
+}
+
+/* ── OXYGEN CAPACITY AREA CHART (hemoglobin/hematocrit) ── */
+function renderOxygenCard(hemoLogs, hctLogs) {
+  const logs=hemoLogs.length?hemoLogs:hctLogs;
+  const latestH=hemoLogs.length?hemoLogs[hemoLogs.length-1]:null;
+  const latestHct=hctLogs.length?hctLogs[hctLogs.length-1]:null;
+  const col=latestH?hCol('hemoglobin',latestH.value):'var(--t3)';
+  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">Oxygen Capacity</div><div class="hl-card-sub">HEMOGLOBIN & HEMATOCRIT</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">g/dL</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
+  const W=900,H=150,px=46,py=14;
+  const vals=logs.map(l=>l.value); const minV=Math.min(...vals)-1; const maxV=Math.max(...vals,13.5)+1;
+  const cs=hlCoords(logs,W,H,minV,maxV,px,py);
+  const ry=H-py-((13.5-minV)/(maxV-minV))*(H-2*py);
+  const delta=hlDelta(hemoLogs);
+  return `<div class="hl-card">
+    <div class="hl-card-pad" style="padding-bottom:0"><div class="hl-card-hdr" style="margin-bottom:8px">
+      <div><div class="hl-card-title">Oxygen Capacity</div><div class="hl-card-sub">HEMOGLOBIN & HEMATOCRIT</div></div>
+      <div class="hl-card-val">
+        <div class="hl-big-val" style="color:${col};font-size:1.75rem">${latestH?latestH.value:'—'}</div>
+        <div class="hl-val-unit">g/dL ${latestHct?`/ ${latestHct.value}%`:''}${latestH?hChip('hemoglobin',latestH.value):''}</div>
+        ${delta!==null?`<div style="font-family:'JetBrains Mono';font-size:.52rem;color:${delta>0?'var(--hg)':'var(--hr)'}">↑ recovering from ${hemoLogs[0].value}</div>`:''}
+      </div>
+    </div></div>
+    <div style="height:132px">
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">
+      <defs><linearGradient id="oxG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".45"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      ${ry>0&&ry<H?`<line x1="0" y1="${ry.toFixed(1)}" x2="${W}" y2="${ry.toFixed(1)}" stroke="rgba(57,255,20,.15)" stroke-dasharray="6 8" stroke-width="1"/><text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(57,255,20,.28)" x="${W-8}" y="${(ry-4).toFixed(1)}" text-anchor="end">NORMAL 13.5</text>`:''}
+      <path fill="url(#oxG)" d="${hlArea(cs,H,py)}" style="opacity:0;animation:hlFill 1s ease-out .4s forwards"/>
+      <path fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="${hlPath(cs)}" style="stroke-dasharray:2000;stroke-dashoffset:2000;animation:hlDraw 2s ease-out forwards"/>
+      ${cs.map((c,i)=>{const isL=i===cs.length-1;const dc=hCol('hemoglobin',c.value);return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${isL?5:3}" fill="${dc}" stroke="var(--bg-0)" stroke-width="2" style="opacity:0;animation:hlDot .4s ease-out ${(.3+i*.1).toFixed(2)}s forwards"/><text font-family="'JetBrains Mono',monospace" font-size="7" font-weight="600" fill="${dc}" x="${c.x.toFixed(1)}" y="${(c.y-8).toFixed(1)}" text-anchor="middle">${c.value}</text>`}).join('')}
+      ${cs.map(c=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${c.x.toFixed(1)}" y="${H-2}" text-anchor="middle">${hlMonth(c.date)}</text>`).join('')}
+    </svg></div>
+  </div>`;
+}
+
+/* ── HEMOGLOBIN LIQUID TUBES ── */
+function renderTubesCard(logs) {
+  const latest=logs.length?logs[logs.length-1]:null;
+  const col=latest?hCol('hemoglobin',latest.value):'var(--t3)';
+  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">Blood Oxygen Capacity</div><div class="hl-card-sub">LIQUID FILL · EACH TUBE = ONE DRAW</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">g/dL</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
+  const td=logs.slice(-9); const minH=9,maxH=18;
+  const tubesHtml=td.map((l,i)=>{
+    const pct=Math.max(0,Math.min(100,((l.value-minH)/(maxH-minH))*100));
+    const c=hCol('hemoglobin',l.value); const isL=i===td.length-1;
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:5px;min-width:34px">
+      <div style="width:26px;height:105px;border-radius:13px;background:var(--bg-0);position:relative;overflow:hidden;border:1px solid var(--b1)">
+        <div style="position:absolute;bottom:0;left:0;right:0;border-radius:0 0 12px 12px;background:${c};box-shadow:0 0 10px ${c}28;height:0;--h:${pct.toFixed(1)}%;animation:hlTube 1.5s ease-out ${(.15+i*.1).toFixed(2)}s forwards"></div>
+      </div>
+      <div style="font-family:'JetBrains Mono';font-size:.65rem;font-weight:700;color:${c}">${l.value}</div>
+      <div style="font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3)">${hlMonth(l.date)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="hl-card"><div class="hl-card-pad">
+    <div class="hl-card-hdr" style="margin-bottom:18px">
+      <div><div class="hl-card-title">Blood Oxygen Capacity</div><div class="hl-card-sub">Each tube = one blood draw</div></div>
+      <div class="hl-card-val"><div class="hl-big-val" style="color:${col};font-size:1.75rem">${latest.value}</div><div class="hl-val-unit">g/dL${hChip('hemoglobin',latest.value)}</div></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:flex-end">${tubesHtml}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:14px;justify-content:center">
+      <div style="height:1px;width:36px;border-top:1px dashed rgba(57,255,20,.25)"></div>
+      <div style="font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);letter-spacing:.8px">13.5 g/dL = NORMAL THRESHOLD</div>
+      <div style="height:1px;width:36px;border-top:1px dashed rgba(57,255,20,.25)"></div>
+    </div>
+  </div></div>`;
+}
+
+/* ── BODY COMPOSITION RINGS + BARS ── */
+function renderBodyCompCard(weightLogs, fatLogs, leanLogs) {
+  const latestW=weightLogs.length?weightLogs[weightLogs.length-1].value:null;
+  const latestF=fatLogs.length?fatLogs[fatLogs.length-1].value:null;
+  const latestL=leanLogs.length?leanLogs[leanLogs.length-1].value:null;
+  const H=181; const bmi=latestW?+(latestW/(H/100*H/100)).toFixed(1):null;
+  const fatCol=latestF?hCol('body_fat',latestF):'var(--t3)';
+  const leanPct=latestL&&latestW?((latestL/latestW)*100):latestF?(100-latestF):75;
+  const C1=2*Math.PI*90,C2=2*Math.PI*74;
+  const bmiCol=bmi?(bmi<18.5?'var(--hr)':bmi<25?'var(--hg)':'var(--hw)'):'var(--t3)';
+  const bars=[
+    {label:'Lean Mass', val:latestL?latestL.toFixed(1)+' kg':'—', col:'var(--hg)', pct:latestL&&latestW?(latestL/latestW)*100:0},
+    {label:'Body Fat',  val:latestF?latestF.toFixed(1)+' %':'—', col:fatCol,        pct:latestF||0},
+    {label:'Height',    val:`${H} cm`,                             col:'var(--t3)',   pct:50},
+    {label:'BMI',       val:bmi?bmi:'—',                           col:bmiCol,        pct:bmi?Math.min(100,(bmi/30)*100):0},
+  ];
+  return `<div class="hl-card"><div class="hl-card-pad">
+    <div class="hl-card-hdr">
+      <div><div class="hl-card-title">Body Composition</div><div class="hl-card-sub">181 CM · CROHN'S WARRIOR</div></div>
+      <span class="hl-chip ${latestF&&latestF>=10&&latestF<=22?'hl-chip-g':'hl-chip-w'}">${latestF?(latestF>=10&&latestF<=22?'HEALTHY RANGE':'MONITOR'):'LOG DATA'}</span>
+    </div>
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center">
+      <div style="position:relative;width:130px;height:130px;flex-shrink:0">
+        <svg viewBox="0 0 200 200" width="130" height="130">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="var(--b1)" stroke-width="8"/>
+          <circle cx="100" cy="100" r="90" fill="none" stroke="var(--hg)" stroke-width="8" stroke-linecap="round" transform="rotate(-90,100,100)" style="stroke-dasharray:${C1.toFixed(1)};stroke-dashoffset:${(C1-C1*(leanPct/100)).toFixed(1)};animation:hlDraw 2s ease-out forwards"/>
+          <circle cx="100" cy="100" r="74" fill="none" stroke="var(--b1)" stroke-width="6"/>
+          <circle cx="100" cy="100" r="74" fill="none" stroke="${fatCol}" stroke-width="6" stroke-linecap="round" transform="rotate(-90,100,100)" style="stroke-dasharray:${C2.toFixed(1)};stroke-dashoffset:${(C2-C2*((latestF||0)/100)).toFixed(1)};animation:hlDraw 2s ease-out .3s forwards"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+          <div style="font-family:'JetBrains Mono';font-size:1.5rem;font-weight:700;color:var(--t0);line-height:1">${latestF?latestF.toFixed(1):'—'}<span style="font-size:.7rem;color:var(--t3)">%</span></div>
+          <div style="font-family:'JetBrains Mono';font-size:.46rem;color:var(--t3);letter-spacing:2px;margin-top:2px">BODY FAT</div>
+        </div>
+      </div>
+      <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:9px">
+        ${bars.map(b=>`<div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:.6rem;color:var(--t2)">${b.label}</span><span style="font-family:'JetBrains Mono';font-size:.7rem;font-weight:700;color:${b.col}">${b.val}</span></div><div style="height:3px;background:var(--b0);border-radius:2px;overflow:hidden"><div style="height:100%;background:${b.col};width:0;--w:${Math.min(100,b.pct).toFixed(1)}%;animation:hlBar 1.5s ease-out forwards;border-radius:2px"></div></div></div>`).join('')}
+      </div>
+    </div>
+  </div></div>`;
+}
+
+/* ── VITAMIN D SUN PHASES ── */
+function renderVitDCard(logs) {
+  const latest=logs.length?logs[logs.length-1]:null;
+  const col=latest?hCol('vitamin_d',latest.value):'var(--t3)';
+  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">Vitamin D</div><div class="hl-card-sub">IMMUNE & BONE HEALTH</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">ng/mL</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
+  const pct=latest?Math.min(100,(latest.value/50)*100):0;
+  const orbs=logs.slice(-6).map((l,i)=>{
+    const sz=22+(l.value/50)*46; const br=(0.18+(l.value/50)*0.82).toFixed(2);
+    const isL=i===logs.slice(-6).length-1;
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="width:${sz.toFixed(0)}px;height:${sz.toFixed(0)}px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#FFE066,#FF9F1C,#662200);opacity:${br};box-shadow:0 0 ${isL?18:7}px rgba(255,159,28,${isL?.42:.18});display:flex;align-items:center;justify-content:center;${isL?'animation:hlGlw 3s ease-in-out infinite;':''}">
+        <span style="font-family:'JetBrains Mono';font-weight:700;color:#000;font-size:${sz>46?11:8}px">${l.value}</span>
+      </div>
+      <div style="font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3)">${hlMonth(l.date)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="hl-card"><div class="hl-card-pad">
+    <div class="hl-card-hdr">
+      <div><div class="hl-card-title">Vitamin D</div><div class="hl-card-sub">Sun grows as levels rise</div></div>
+      <div class="hl-card-val"><div class="hl-big-val" style="color:${col};font-size:1.75rem">${latest.value}</div><div class="hl-val-unit">ng/mL${hChip('vitamin_d',latest.value)}</div></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;align-items:flex-end;flex-wrap:wrap;padding:8px 0">${orbs}</div>
+    <div style="margin-top:14px;height:4px;background:var(--b0);border-radius:2px;overflow:hidden">
+      <div style="height:100%;background:linear-gradient(90deg,var(--hr),var(--hw));width:0;--w:${pct.toFixed(1)}%;animation:hlBar 2s ease-out forwards;border-radius:2px"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3)">
+      <span>0</span><span>20 DEF</span><span>30 OK</span><span>50+</span>
+    </div>
+    <div style="text-align:center;margin-top:10px;font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3)">
+      At <span style="color:${col}">${pct.toFixed(0)}%</span> of sufficient · Target: <span style="color:var(--hg)">30+ ng/mL</span>
+    </div>
+  </div></div>`;
+}
+
+/* ── CENTRAL AVATAR ── */
+function renderAvatarHTML(weight, bodyFat) {
+  const bmi=weight?weight/(1.81*1.81):null;
+  const fw=bmi?Math.max(0.52,Math.min(1.45,(bmi-16)/11)):0.62;
+  const col=bmi?(bmi<18.5?'var(--hr)':bmi<25?'var(--hg)':'var(--hw)'):'rgba(92,90,110,.55)';
+  const gc=bmi?(bmi<18.5?'rgba(255,56,100,.22)':bmi<25?'rgba(57,255,20,.22)':'rgba(255,159,28,.22)'):'rgba(92,90,110,.08)';
+  const bw=Math.round(40*fw); const label=bmi?(bmi<18.5?'UNDERWEIGHT':bmi<25?'NORMAL BMI':bmi<30?'OVERWEIGHT':'OBESE'):'LOG WEIGHT';
+  return `<div style="position:sticky;top:80px">
+    <div style="border:1px solid rgba(57,255,20,.1);border-radius:14px;padding:18px 12px 14px;background:rgba(57,255,20,.018);box-shadow:0 0 44px rgba(57,255,20,.04);text-align:center">
+      <svg viewBox="0 0 140 280" width="110" height="220" style="display:block;margin:0 auto;filter:drop-shadow(0 0 12px ${gc})">
+        <defs>
+          <linearGradient id="avG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".75"/><stop offset="100%" stop-color="${col}" stop-opacity=".28"/></linearGradient>
+          <filter id="avBl"><feGaussianBlur stdDeviation="2"/></filter>
+        </defs>
+        <ellipse cx="70" cy="145" rx="${bw+10}" ry="68" fill="${col}" opacity=".035" filter="url(#avBl)"/>
+        <circle cx="70" cy="28" r="21" fill="${col}" opacity=".07"/>
+        <circle cx="70" cy="28" r="21" fill="none" stroke="url(#avG)" stroke-width="2" opacity=".9"/>
+        <line x1="70" y1="49" x2="70" y2="63" stroke="${col}" stroke-width="${Math.max(4,(6*fw)).toFixed(1)}" stroke-linecap="round" opacity=".7"/>
+        <path d="M${70-bw} 73 Q${70-bw-6} 64 ${70-bw+3} 63 L${70+bw-3} 63 Q${70+bw+6} 64 ${70+bw} 73" fill="none" stroke="${col}" stroke-width="1.8" opacity=".75"/>
+        <path d="M${70-bw} 73 L${70-Math.round(bw*.82)} 155 Q70 ${160+bw*2} ${70+Math.round(bw*.82)} 155 L${70+bw} 73 Z" fill="${col}" opacity=".07"/>
+        <path d="M${70-bw} 73 L${70-Math.round(bw*.82)} 155 Q70 ${160+bw*2} ${70+Math.round(bw*.82)} 155 L${70+bw} 73" fill="none" stroke="url(#avG)" stroke-width="1.8"/>
+        <path d="M${70-bw+2} 82 L${70-bw-17} 140 Q${70-bw-19} 148 ${70-bw-13} 150" fill="none" stroke="${col}" stroke-width="${Math.max(3,(4*fw)).toFixed(1)}" stroke-linecap="round" opacity=".7"/>
+        <path d="M${70+bw-2} 82 L${70+bw+17} 140 Q${70+bw+19} 148 ${70+bw+13} 150" fill="none" stroke="${col}" stroke-width="${Math.max(3,(4*fw)).toFixed(1)}" stroke-linecap="round" opacity=".7"/>
+        <path d="M${70-Math.round(bw*.48)} 155 L${70-Math.round(bw*.52)} 232 Q${70-Math.round(bw*.56)} 240 ${70-Math.round(bw*.6)} 242" fill="none" stroke="${col}" stroke-width="${Math.max(4,(5*fw)).toFixed(1)}" stroke-linecap="round" opacity=".8"/>
+        <path d="M${70+Math.round(bw*.48)} 155 L${70+Math.round(bw*.52)} 232 Q${70+Math.round(bw*.56)} 240 ${70+Math.round(bw*.6)} 242" fill="none" stroke="${col}" stroke-width="${Math.max(4,(5*fw)).toFixed(1)}" stroke-linecap="round" opacity=".8"/>
+        <line x1="70" y1="63" x2="70" y2="155" stroke="${col}" stroke-width="1" opacity=".18" stroke-dasharray="3 4"/>
+      </svg>
+      <div style="font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);letter-spacing:.8px;margin-top:8px">BMI ${bmi?bmi.toFixed(1):'—'}</div>
+      <div style="font-family:'JetBrains Mono';font-size:.5rem;color:${col};letter-spacing:.5px;margin-top:2px">${label}</div>
+      ${weight?`<div style="font-family:'JetBrains Mono';font-size:.68rem;font-weight:700;color:var(--t0);margin-top:5px">${weight} kg</div>`:''}
+      <div style="font-family:'JetBrains Mono';font-size:.44rem;color:var(--t3);margin-top:4px;opacity:.45;line-height:1.5">GETS BIGGER & SMALLER<br>WITH WEIGHT AND FAT</div>
+    </div>
+  </div>`;
+}
+
+/* ── MAIN RENDER ── */
+function renderHealth() {
+  const lft=$('hl-left'); const ctr=$('hl-center'); const rgt=$('hl-right'); const bot=$('hl-bottom');
+  if(!lft) return;
+  const wLogs=hlLogs('weight'); const cpLogs=hlLogs('calprotectin'); const crpLogs=hlLogs('crp');
+  const hLogs=hlLogs('hemoglobin'); const hctLogs=hlLogs('hematocrit');
+  const vdLogs=hlLogs('vitamin_d'); const fLogs=hlLogs('body_fat'); const lnLogs=hlLogs('lean_mass');
+  const latestW=wLogs.length?wLogs[wLogs.length-1].value:null;
+  const latestF=fLogs.length?fLogs[fLogs.length-1].value:null;
+  const allLogs=[...(D.healthLogs||[])].sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const lastD=allLogs.length?fD(allLogs[0].date):'';
+  $('hlLastLog').textContent=lastD?`LAST LOG: ${lastD} · 181 CM · CROHN'S`:"181 CM · CROHN'S DISEASE";
+  lft.innerHTML=renderWeightCard(wLogs)+renderCRPCard(crpLogs)+renderCalproCard(cpLogs);
+  ctr.innerHTML=renderAvatarHTML(latestW,latestF);
+  rgt.innerHTML=renderOxygenCard(hLogs,hctLogs)+renderTubesCard(hLogs)+renderBodyCompCard(wLogs,fLogs,lnLogs);
+  bot.innerHTML=renderVitDCard(vdLogs);
+}
+
+/* ── HEALTH EVENT HANDLERS ── */
+$('hlLogTgl').onclick=()=>{const f=$('hlFrm');f.classList.toggle('open');if(f.classList.contains('open')){$('hlDate').value=td();$('hlVal').focus()}};
+$('hlFrmCancel').onclick=()=>$('hlFrm').classList.remove('open');
+$('hlDateToday').onclick=()=>{$('hlDate').value=td()};
+$('hlFrmSave').onclick=()=>{
+  const metric=$('hlMetric').value;
+  const date=$('hlDate').value;
+  const val=parseFloat($('hlVal').value);
+  if(!date){toast('SELECT A DATE','rd');return}
+  if(isNaN(val)){toast('ENTER A VALUE','rd');return}
+  const m=HMETA[metric];
+  pH('log health');
+  D.healthLogs.push({id:D.hid++,date,metric,value:val,unit:m?m.unit:'',notes:$('hlNotes').value.trim(),createdAt:nowI()});
+  ['hlVal','hlNotes'].forEach(i=>$(i).value='');
+  $('hlDate').value=td();
+  $('hlFrm').classList.remove('open');
+  renderHealth();
+};
+
 /* ═══════ FULL RENDER ═══════ */
 function fullR(){
   renderT();
@@ -2126,6 +2588,7 @@ function fullR(){
   if(v==='projects')renderProj();
   if(v==='groceries')renderGrc();
   if(v==='books')renderBooks();
+  if(v==='health')renderHealth();
 }
 	
 /* ═══════ RESIZE ═══════ */
