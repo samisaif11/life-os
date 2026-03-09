@@ -27,7 +27,8 @@ const SHEETS = {
   PPLCOLORS:  'PeopleColors',
   INVOICES:   'Invoices',
   BANKACCTS:  'BankAccounts',
-  CLIENTS:    'Clients'
+  CLIENTS:    'Clients',
+  GROCERIES:  'Groceries'
 };
 
 // ═══════ COLUMN DEFINITIONS ═══════
@@ -45,6 +46,7 @@ const PPLCOLOR_COLS  = ['code','color','bgColor'];
 const INVOICE_COLS   = ['id','invoiceNumber','date','client','project','description','montantHT','tvaRate','montantTTC','catchupHT','catchupTVA','catchupTTC','status','pdfUrl','emailSentDate','bankAccountId','notes','clientAddress','clientSIREN','clientCostCenter','clientDealRef'];
 const BANKACCT_COLS  = ['id','name','ribImageFileId'];
 const CLIENT_COLS    = ['name','address','siren','defaultCostCenter'];
+const GROCERY_COLS   = ['id','name','location','needsRefill','lastPurchased','typicalPrice','notes','createdAt'];
 
 // ═══════════════════════════════════════════════════════════════
 //  doGet — READ all data from sheets, return as JSON
@@ -164,6 +166,18 @@ function doGet(e) {
     }));
 
     data.invid = toNum(meta.invid) || 1;
+    data.gid = toNum(meta.gid) || 1;
+
+    // --- Groceries ---
+    data.groceries = readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS).map(row => ({
+      id: toNum(row.id), name: str(row.name), location: str(row.location),
+      needsRefill: toBool(row.needsRefill), lastPurchased: str(row.lastPurchased),
+      typicalPrice: row.typicalPrice ? parseFloat(row.typicalPrice) : null,
+      notes: str(row.notes), createdAt: str(row.createdAt)
+    }));
+
+    // --- Grocery Locations (stored in Meta) ---
+    data.groceryLocations = meta.groceryLocations ? JSON.parse(meta.groceryLocations) : ['SUPER MARKET','MINI-STORE','PHARMACY'];
 
     return jsonResponse(data);
   } catch (err) {
@@ -257,12 +271,21 @@ function doPost(e) {
     writeSheet(ss, SHEETS.CLIENTS, CLIENT_COLS,
       (D.clients || []).map(cl => [cl.name, cl.address, cl.siren, cl.defaultCostCenter]));
 
+    // --- Groceries ---
+    writeSheet(ss, SHEETS.GROCERIES, GROCERY_COLS,
+      (D.groceries || []).map(g => [
+        g.id, g.name, g.location, g.needsRefill ? 'TRUE' : 'FALSE',
+        g.lastPurchased || '', g.typicalPrice || '', g.notes || '', g.createdAt || ''
+      ]));
+
     // --- Meta ---
     writeSheet(ss, SHEETS.META, META_COLS, [
       ['nid',     D.nid || 1],
       ['dlid',    D.dlid || 1],
       ['invid',   D.invid || 1],
-      ['savedAt', now]
+      ['gid',     D.gid || 1],
+      ['savedAt', now],
+      ['groceryLocations', JSON.stringify(D.groceryLocations || ['SUPER MARKET','MINI-STORE','PHARMACY'])]
     ]);
 
     // --- Project Colors ---
