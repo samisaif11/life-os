@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Logger</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        :root {
+            --background: 240 10% 3.9%;
+            --foreground: 0 0% 98%;
+            --card: 240 10% 3.9%;
+            --card-foreground: 0 0% 98%;
+            --popover: 240 10% 3.9%;
+            --popover-foreground: 0 0% 98%;
+            --primary: 0 0% 98%;
+            --primary-foreground: 240 5.9% 10%;
+            --secondary: 240 3.7% 15.9%;
+            --secondary-foreground: 0 0% 98%;
+            --muted: 240 3.7% 15.9%;
+            --muted-foreground: 240 5% 64.9%;
+            --accent: 240 3.7% 15.9%;
+            --accent-foreground: 0 0% 98%;
+            --destructive: 0 62.8% 30.6%;
+            --destructive-foreground: 0 0% 98%;
+            --border: 240 3.7% 15.9%;
+            --input: 240 3.7% 15.9%;
+            --ring: 240 4.9% 83.9%;
+            --radius: 0.625rem;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 550px;
+            overflow: hidden;
+            perspective: 1500px;
+        }
+        
+        .carousel-scene {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            cursor: grab;
+        }
+        
+        .carousel-scene:active {
+            cursor: grabbing;
+        }
+        
+        .carousel-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.05s ease-out;
+        }
+        
+        .book-card {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .book-spine {
+            position: absolute;
+            inset: 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+            overflow: hidden;
+            transform: translateZ(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .book-spine::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.1) 100%);
+            pointer-events: none;
+        }
+        
+        .book-edge-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 100%;
+            transform-origin: left;
+            transform: rotateY(-90deg) translateZ(0);
+            filter: brightness(0.85);
+        }
+        
+        .book-edge-right {
+            position: absolute;
+            right: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 12px;
+            transform-origin: right;
+            transform: rotateY(90deg) translateZ(0);
+            background: linear-gradient(to right, #f5f5dc 0%, #e8e4c9 50%, #d4d0b8 100%);
+        }
+        
+        .book-edge-top {
+            position: absolute;
+            top: 0;
+            left: 4px;
+            right: 4px;
+            height: 12px;
+            transform-origin: top;
+            transform: rotateX(90deg) translateZ(0);
+            background: linear-gradient(to bottom, #f5f5dc 0%, #e8e4c9 100%);
+        }
+        
+        .book-edge-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 12px;
+            transform-origin: bottom;
+            transform: rotateX(-90deg) translateZ(0);
+        }
+        
+        .book-shadow {
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%) rotateX(90deg) translateZ(-20px);
+            width: 90%;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, transparent 70%);
+            filter: blur(12px);
+            transition: all 0.4s ease;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 8px;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .progress-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+            transition: height 0.5s ease;
+        }
+        
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 50;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-button:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .nav-button.left { left: 1rem; }
+        .nav-button.right { right: 1rem; }
+        
+        .indicators {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+        }
+        
+        .indicator {
+            height: 6px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .indicator.active {
+            background: white;
+            width: 24px;
+        }
+        
+        .indicator.inactive {
+            background: rgba(255,255,255,0.4);
+            width: 6px;
+        }
+        
+        .indicator.completed {
+            background: rgba(255,255,255,0.2);
+            width: 6px;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-content {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: 1rem;
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: hsl(var(--foreground));
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            background: hsl(var(--input));
+            border: 1px solid hsl(var(--border));
+            border-radius: calc(var(--radius) - 2px);
+            color: hsl(var(--foreground));
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: calc(var(--radius) - 2px);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+        
+        .btn-primary:hover {
+            background: hsl(var(--primary) / 0.9);
+        }
+        
+        .btn-secondary {
+            background: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+        }
+        
+        .btn-secondary:hover {
+            background: hsl(var(--secondary) / 0.8);
+        }
+        
+        .btn-destructive {
+            background: hsl(var(--destructive));
+            color: hsl(var(--destructive-foreground));
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid hsl(var(--border));
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 500px;
+            color: hsl(var(--muted-foreground));
+            font-size: 1.25rem;
+        }
+        
+        .recommendations {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid hsl(var(--border));
+        }
+        
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .rec-card {
+            padding: 1rem;
+            background: hsl(var(--muted));
+            border-radius: 0.75rem;
+            border: 1px solid hsl(var(--border));
+            transition: all 0.2s;
+        }
+        
+        .rec-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .rec-priority {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: hsl(var(--muted-foreground));
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+        
+        // Color palette for books
+        const colorPalette = [
+            { bg: "#1a365d", text: "#ffffff" },
+            { bg: "#c53030", text: "#ffffff" },
+            { bg: "#d69e2e", text: "#1a202c" },
+            { bg: "#2f855a", text: "#ffffff" },
+            { bg: "#553c9a", text: "#ffffff" },
+            { bg: "#c05621", text: "#ffffff" },
+            { bg: "#718096", text: "#ffffff" },
+            { bg: "#b83280", text: "#ffffff" },
+            { bg: "#744210", text: "#ffffff" },
+            { bg: "#2c5282", text: "#ffffff" },
+            { bg: "#285e61", text: "#ffffff" },
+            { bg: "#975a16", text: "#ffffff" }
+        ];
+        
+        // Default recommendations
+        const defaultRecommendations = [
+            { id: "rec-1", title: "The Psychology of Money", author: "Morgan Housel", priority: 1 },
+            { id: "rec-2", title: "Dune", author: "Frank Herbert", priority: 2 },
+            { id: "rec-3", title: "Project Hail Mary", author: "Andy Weir", priority: 3 },
+            { id: "rec-4", title: "The Midnight Library", author: "Matt Haig", priority: 4 },
+            { id: "rec-5", title: "Klara and the Sun", author: "Kazuo Ishiguro", priority: 5 }
+        ];
+        
+        // Icons (simplified SVG versions)
+        const Icons = {
+            BookOpen: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>,
+            ChevronLeft: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>,
+            ChevronRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>,
+            Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+            Trash2: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+            Save: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>,
+            X: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+            Trophy: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/><path d="M18 9h1.5a1 1 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6 9H4.5a1 1 0 0 1 0-5H6"/></svg>,
+            Library: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>
+        };
+        
+        // Book Spine Component
+        function BookSpine({ book, isHighlighted }) {
+            const progressHeight = `${book.progress}%`;
+            const isCompleted = book.progress === 100;
+            
+            return (
+                <div className="book-card" style={{
+                    width: isHighlighted ? '160px' : '120px',
+                    height: isHighlighted ? '240px' : '180px',
+                    transform: `scale(${isHighlighted ? 1.05 : 1})`,
+                    zIndex: isHighlighted ? 10 : 1
+                }}>
+                    {/* Shadow */}
+                    <div className="book-shadow" style={{
+                        filter: isHighlighted ? 'blur(8px)' : 'blur(12px)',
+                        opacity: isHighlighted ? 0.8 : 0.5
+                    }} />
+                    
+                    {/* Front Cover (Spine) */}
+                    <div className="book-spine" style={{
+                        backgroundColor: book.color,
+                        boxShadow: isHighlighted 
+                            ? '0 0 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,0,0,0.2)'
+                            : '0 10px 30px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.1)'
+                    }}>
+                        {/* Progress Bar */}
+                        <div className="progress-bar">
+                            <div className="progress-fill" style={{ height: progressHeight }} />
+                        </div>
+                        
+                        {/* Content */}
+                        <div style={{
+                            position: 'absolute',
+                            inset: 0,
+                            padding: '12px',
+                            paddingLeft: '16px',
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }}>
+                            <div style={{
+                                fontWeight: 'bold',
+                                lineHeight: 1.2,
+                                color: book.textColor,
+                                fontSize: isHighlighted ? '13px' : '10px',
+                                writingMode: book.spineStyle === 'vertical' ? 'vertical-rl' : 'horizontal-tb',
+                                textOrientation: book.spineStyle === 'vertical' ? 'mixed' : 'initial'
+                            }}>
+                                {book.title}
+                            </div>
+                            <div style={{
+                                marginTop: 'auto',
+                                fontSize: '10px',
+                                opacity: 0.7,
+                                color: book.textColor,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
+                            }}>
+                                {book.author}
+                            </div>
+                            <div style={{
+                                marginTop: '4px',
+                                fontSize: '9px',
+                                fontFamily: 'monospace',
+                                opacity: 0.8,
+                                color: book.textColor
+                            }}>
+                                {isCompleted ? '✓ Done' : `${book.progress}%`}
+                            </div>
+                        </div>
+                        
+                        {/* Shine effect */}
+                        <div style={{
+                            position: 'absolute',
+                            inset: 0,
+                            pointerEvents: 'none',
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.1) 100%)'
+                        }} />
+                        
+                        {/* Highlight pulse */}
+                        {isHighlighted && (
+                            <div style={{
+                                position: 'absolute',
+                                inset: 0,
+                                pointerEvents: 'none',
+                                animation: 'pulse 2s infinite',
+                                boxShadow: 'inset 0 0 20px rgba(255,255,255,0.1)'
+                            }} />
+                        )}
+                    </div>
+                    
+                    {/* Left Edge */}
+                    <div className="book-edge-left" style={{ backgroundColor: book.color }}>
+                        <div style={{ position: 'absolute', insetY: '8px', left: '4px', width: '1px', background: 'rgba(0,0,0,0.2)' }} />
+                        <div style={{ position: 'absolute', insetY: '8px', right: '4px', width: '1px', background: 'rgba(0,0,0,0.2)' }} />
+                    </div>
+                    
+                    {/* Right Edge (Pages) */}
+                    <div className="book-edge-right">
+                        {Array.from({ length: 8 }).map((_, i) => (
+                            <div key={i} style={{
+                                position: 'absolute',
+                                left: 0,
+                                right: 0,
+                                height: '1px',
+                                background: 'rgba(0,0,0,0.1)',
+                                top: `${10 + i * 12}%`
+                            }} />
+                        ))}
+                    </div>
+                    
+                    {/* Top Edge */}
+                    <div className="book-edge-top" />
+                    
+                    {/* Bottom Edge */}
+                    <div className="book-edge-bottom" style={{ backgroundColor: book.color, filter: 'brightness(0.7)' }} />
+                </div>
+            );
+        }
+        
+        // Book Carousel Component
+        function BookCarousel({ books, onSelectBook, onOpenDetail }) {
+            const [rotation, setRotation] = useState(0);
+            const [isDragging, setIsDragging] = useState(false);
+            const [startX, setStartX] = useState(0);
+            const [startRotation, setStartRotation] = useState(0);
+            const [hasMoved, setHasMoved] = useState(false);
+            const animationRef = useRef(null);
+            
+            const anglePerBook = books.length > 0 ? 360 / books.length : 0;
+            const radius = 280;
+            
+            const animateTo = (targetRotation) => {
+                const start = rotation;
+                const diff = targetRotation - start;
+                const duration = 600;
+                const startTime = Date.now();
+                
+                const animate = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = 1 - Math.pow(1 - progress, 4);
+                    
+                    setRotation(start + diff * easeProgress);
+                    
+                    if (progress < 1) {
+                        animationRef.current = requestAnimationFrame(animate);
+                    }
+                };
+                
+                if (animationRef.current) {
+                    cancelAnimationFrame(animationRef.current);
+                }
+                animationRef.current = requestAnimationFrame(animate);
+            };
+            
+            const getActiveIndex = () => {
+                if (books.length === 0) return -1;
+                const normalizedRotation = ((rotation % 360) + 360) % 360;
+                const index = Math.round(normalizedRotation / anglePerBook) % books.length;
+                return (books.length - index) % books.length;
+            };
+            
+            const activeIndex = getActiveIndex();
+            
+            useEffect(() => {
+                if (activeIndex >= 0 && books[activeIndex]) {
+                    onSelectBook(books[activeIndex]);
+                }
+            }, [activeIndex]);
+            
+            useEffect(() => {
+                return () => {
+                    if (animationRef.current) {
+                        cancelAnimationFrame(animationRef.current);
+                    }
+                };
+            }, []);
+            
+            const handlePrev = () => {
+                animateTo(rotation - anglePerBook);
+            };
+            
+            const handleNext = () => {
+                animateTo(rotation + anglePerBook);
+            };
+            
+            const handleMouseDown = (e) => {
+                setIsDragging(true);
+                setStartX(e.clientX);
+                setStartRotation(rotation);
+                setHasMoved(false);
+                if (animationRef.current) {
+                    cancelAnimationFrame(animationRef.current);
+                }
+            };
+            
+            const handleMouseMove = (e) => {
+                if (!isDragging) return;
+                const diff = e.clientX - startX;
+                if (Math.abs(diff) > 5) setHasMoved(true);
+                setRotation(startRotation + diff * 0.4);
+            };
+            
+            const handleMouseUp = () => {
+                setIsDragging(false);
+                if (anglePerBook > 0) {
+                    const target = Math.round(rotation / anglePerBook) * anglePerBook;
+                    animateTo(target);
+                }
+            };
+            
+            const handleTouchStart = (e) => {
+                setIsDragging(true);
+                setStartX(e.touches[0].clientX);
+                setStartRotation(rotation);
+                setHasMoved(false);
+                if (animationRef.current) {
+                    cancelAnimationFrame(animationRef.current);
+                }
+            };
+            
+            const handleTouchMove = (e) => {
+                if (!isDragging) return;
+                const diff = e.touches[0].clientX - startX;
+                if (Math.abs(diff) > 5) setHasMoved(true);
+                setRotation(startRotation + diff * 0.6);
+            };
+            
+            const handleTouchEnd = () => {
+                setIsDragging(false);
+                if (anglePerBook > 0) {
+                    const target = Math.round(rotation / anglePerBook) * anglePerBook;
+                    animateTo(target);
+                }
+            };
+            
+            const handleBookClick = (book, index) => {
+                if (hasMoved) return;
+                const currentIndex = getActiveIndex();
+                if (index === currentIndex) {
+                    onOpenDetail(book);
+                } else {
+                    const targetRotation = (books.length - index) * anglePerBook;
+                    animateTo(targetRotation);
+                }
+            };
+            
+            if (books.length === 0) {
+                return (
+                    <div className="empty-state">
+                        <p>Add your first book to get started</p>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="carousel-container">
+                    <button className="nav-button left" onClick={handlePrev}>
+                        <Icons.ChevronLeft />
+                    </button>
+                    <button className="nav-button right" onClick={handleNext}>
+                        <Icons.ChevronRight />
+                    </button>
+                    
+                    <div 
+                        className="carousel-scene"
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                    >
+                        <div 
+                            className="carousel-track"
+                            style={{
+                                transform: `rotateY(${rotation}deg)`,
+                                transition: isDragging ? 'none' : 'transform 0.05s ease-out'
+                            }}
+                        >
+                            {books.map((book, index) => {
+                                const bookAngle = index * anglePerBook;
+                                const isActive = index === activeIndex;
+                                const isCompleted = book.progress === 100;
+                                
+                                return (
+                                    <div
+                                        key={book.id}
+                                        style={{
+                                            position: 'absolute',
+                                            left: '50%',
+                                            top: '50%',
+                                            transform: `
+                                                rotateY(${bookAngle}deg) 
+                                                translateZ(${radius}px) 
+                                                translateX(-50%) 
+                                                translateY(-50%)
+                                            `,
+                                            transformStyle: 'preserve-3d'
+                                        }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleBookClick(book, index);
+                                        }}
+                                    >
+                                        <BookSpine 
+                                            book={book} 
+                                            isHighlighted={isActive}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    
+                    <div className="indicators">
+                        {books.map((book, index) => (
+                            <div
+                                key={book.id}
+                                className={`indicator ${index === activeIndex ? 'active' : book.progress === 100 ? 'completed' : 'inactive'}`}
+                            />
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        
+        // Book Detail Modal
+        function BookModal({ book, isOpen, onClose, onSave, onDelete }) {
+            const [formData, setFormData] = useState({
+                title: '',
+                author: '',
+                progress: 0,
+                notes: '',
+                spineStyle: 'horizontal'
+            });
+            
+            useEffect(() => {
+                if (book) {
+                    setFormData({
+                        title: book.title || '',
+                        author: book.author || '',
+                        progress: book.progress || 0,
+                        notes: book.notes || '',
+                        spineStyle: book.spineStyle || 'horizontal'
+                    });
+                } else {
+                    setFormData({
+                        title: '',
+                        author: '',
+                        progress: 0,
+                        notes: '',
+                        spineStyle: 'horizontal'
+                    });
+                }
+            }, [book, isOpen]);
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onSave({
+                    ...book,
+                    ...formData,
+                    id: book?.id || Date.now().toString(),
+                    color: book?.color || colorPalette[Math.floor(Math.random() * colorPalette.length)].bg,
+                    textColor: book?.textColor || '#ffffff'
+                });
+                onClose();
+            };
+            
+            if (!isOpen) return null;
+            
+            return (
+                <div className={`modal-overlay ${isOpen ? 'open' : ''}`} onClick={onClose}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+                                {book ? 'Edit Book' : 'Add New Book'}
+                            </h2>
+                            <button 
+                                onClick={onClose}
+                                style={{ 
+                                    background: 'none', 
+                                    border: 'none', 
+                                    color: 'hsl(var(--muted-foreground))',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <Icons.X />
+                            </button>
+                        </div>
+                        
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label className="form-label">Title</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={formData.title}
+                                    onChange={e => setFormData({...formData, title: e.target.value})}
+                                    required
+                                />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label className="form-label">Author</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={formData.author}
+                                    onChange={e => setFormData({...formData, author: e.target.value})}
+                                    required
+                                />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label className="form-label">Progress ({formData.progress}%)</label>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    className="form-input"
+                                    value={formData.progress}
+                                    onChange={e => setFormData({...formData, progress: parseInt(e.target.value)})}
+                                />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label className="form-label">Spine Style</label>
+                                <select
+                                    className="form-input"
+                                    value={formData.spineStyle}
+                                    onChange={e => setFormData({...formData, spineStyle: e.target.value})}
+                                >
+                                    <option value="horizontal">Horizontal</option>
+                                    <option value="vertical">Vertical</option>
+                                </select>
+                            </div>
+                            
+                            <div className="form-group">
+                                <label className="form-label">Notes</label>
+                                <textarea
+                                    className="form-input"
+                                    rows="3"
+                                    value={formData.notes}
+                                    onChange={e => setFormData({...formData, notes: e.target.value})}
+                                />
+                            </div>
+                            
+                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                {book && (
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-destructive"
+                                        onClick={() => {
+                                            onDelete(book.id);
+                                            onClose();
+                                        }}
+                                    >
+                                        <Icons.Trash2 /> Delete
+                                    </button>
+                                )}
+                                <button type="button" className="btn btn-secondary" onClick={onClose}>
+                                    Cancel
+                                </button>
+                                <button type="submit" className="btn btn-primary">
+                                    <Icons.Save /> Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Recommendations Section
+        function Recommendations({ books, onAdd }) {
+            return (
+                <div className="recommendations">
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Icons.Library /> Recommended Next
+                    </h3>
+                    <div className="rec-grid">
+                        {defaultRecommendations.map(rec => (
+                            <div key={rec.id} className="rec-card">
+                                <div style={{ fontWeight: '500', fontSize: '0.9375rem' }}>{rec.title}</div>
+                                <div style={{ fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))' }}>{rec.author}</div>
+                                <div className="rec-priority">
+                                    <Icons.Trophy /> Priority #{rec.priority}
+                                </div>
+                                <button 
+                                    className="btn btn-primary" 
+                                    style={{ marginTop: '0.75rem', width: '100%', fontSize: '0.75rem' }}
+                                    onClick={() => onAdd({
+                                        ...rec,
+                                        color: colorPalette[Math.floor(Math.random() * colorPalette.length)].bg,
+                                        textColor: '#ffffff',
+                                        progress: 0,
+                                        spineStyle: 'horizontal'
+                                    })}
+                                >
+                                    <Icons.Plus /> Add to Library
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        
+        // Main App Component
+        function App() {
+            const [books, setBooks] = useState([]);
+            const [selectedBook, setSelectedBook] = useState(null);
+            const [modalOpen, setModalOpen] = useState(false);
+            const [editingBook, setEditingBook] = useState(null);
+            
+            // Load from localStorage
+            useEffect(() => {
+                const saved = localStorage.getItem('bookLoggerBooks');
+                if (saved) {
+                    setBooks(JSON.parse(saved));
+                }
+            }, []);
+            
+            // Save to localStorage
+            useEffect(() => {
+                localStorage.setItem('bookLoggerBooks', JSON.stringify(books));
+            }, [books]);
+            
+            const handleSaveBook = (bookData) => {
+                if (editingBook) {
+                    setBooks(books.map(b => b.id === bookData.id ? bookData : b));
+                } else {
+                    setBooks([...books, bookData]);
+                }
+            };
+            
+            const handleDeleteBook = (id) => {
+                setBooks(books.filter(b => b.id !== id));
+            };
+            
+            const handleOpenDetail = (book) => {
+                setEditingBook(book);
+                setModalOpen(true);
+            };
+            
+            const handleAddNew = () => {
+                setEditingBook(null);
+                setModalOpen(true);
+            };
+            
+            return (
+                <div className="container">
+                    <header className="header">
+                        <h1 className="title">
+                            <Icons.BookOpen /> Book Logger
+                        </h1>
+                        <button className="btn btn-primary" onClick={handleAddNew}>
+                            <Icons.Plus /> Add Book
+                        </button>
+                    </header>
+                    
+                    <BookCarousel 
+                        books={books} 
+                        onSelectBook={setSelectedBook}
+                        onOpenDetail={handleOpenDetail}
+                    />
+                    
+                    {selectedBook && (
+                        <div style={{ 
+                            marginTop: '2rem', 
+                            padding: '1rem', 
+                            background: 'hsl(var(--muted))',
+                            borderRadius: '0.75rem',
+                            border: '1px solid hsl(var(--border))'
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <div>
+                                    <h3 style={{ fontWeight: '600' }}>{selectedBook.title}</h3>
+                                    <p style={{ color: 'hsl(var(--muted-foreground))', fontSize: '0.875rem' }}>
+                                        by {selectedBook.author}
+                                    </p>
+                                </div>
+                                <div style={{ 
+                                    padding: '0.25rem 0.75rem', 
+                                    background: selectedBook.progress === 100 ? 'hsl(var(--primary))' : 'hsl(var(--secondary))',
+                                    color: selectedBook.progress === 100 ? 'hsl(var(--primary-foreground))' : 'hsl(var(--secondary-foreground))',
+                                    borderRadius: '9999px',
+                                    fontSize: '0.875rem',
+                                    fontWeight: '500'
+                                }}>
+                                    {selectedBook.progress === 100 ? 'Completed' : `${selectedBook.progress}%`}
+                                </div>
+                            </div>
+                            {selectedBook.notes && (
+                                <p style={{ marginTop: '0.75rem', fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))' }}>
+                                    {selectedBook.notes}
+                                </p>
+                            )}
+                        </div>
+                    )}
+                    
+                    <Recommendations books={books} onAdd={handleSaveBook} />
+                    
+                    <BookModal
+                        book={editingBook}
+                        isOpen={modalOpen}
+                        onClose={() => setModalOpen(false)}
+                        onSave={handleSaveBook}
+                        onDelete={handleDeleteBook}
+                    />
+                </div>
+            );
+        }
+        
+        // Mount the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</body>
+</html>
