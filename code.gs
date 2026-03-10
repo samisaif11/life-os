@@ -635,3 +635,49 @@ function countMissingData() {
 
   return count;
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  RESTORE — Bulk import data from Excel backup
+// ═══════════════════════════════════════════════════════════════
+/**
+ * RESTORE DATA from Excel backup
+ *
+ * Usage:
+ * 1. In terminal: cd /home/user/life-os && python3 restore_backup.py
+ * 2. Check Google Sheets - data will be restored
+ * 3. Run scanMissingData() to verify
+ */
+function restoreFromBackup(sheetData) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  if (!sheetData || typeof sheetData !== 'object') {
+    return { success: false, error: "Invalid data format" };
+  }
+
+  try {
+    // Restore all original sheets
+    if (sheetData.tasks)      writeSheet(ss, SHEETS.TASKS,      TASK_COLS,       sheetData.tasks);
+    if (sheetData.completed)  writeSheet(ss, SHEETS.COMPLETED,  TASK_COLS,       sheetData.completed);
+    if (sheetData.deadlines)  writeSheet(ss, SHEETS.DEADLINES,  DEADLINE_COLS,   sheetData.deadlines);
+    if (sheetData.projects)   writeSheet(ss, SHEETS.PROJECTS,   PROJECT_COLS,    sheetData.projects);
+    if (sheetData.closed)     writeSheet(ss, SHEETS.CLOSED,     CLOSED_COLS,     sheetData.closed);
+    if (sheetData.people)     writeSheet(ss, SHEETS.PEOPLE,     PEOPLE_COLS,     sheetData.people);
+    if (sheetData.partners)   writeSheet(ss, SHEETS.PARTNERS,   PARTNER_COLS,    sheetData.partners);
+    if (sheetData.monthly)    writeSheet(ss, SHEETS.MONTHLY,    MONTHLY_COLS,    sheetData.monthly);
+    if (sheetData.projdone)   writeSheet(ss, SHEETS.PROJDONE,   PROJDONE_COLS,   sheetData.projdone);
+    if (sheetData.meta)       writeSheet(ss, SHEETS.META,       META_COLS,       sheetData.meta);
+    if (sheetData.projcolors) writeSheet(ss, SHEETS.PROJCOLORS, PROJCOLOR_COLS,  sheetData.projcolors);
+    if (sheetData.pplcolors)  writeSheet(ss, SHEETS.PPLCOLORS,  PPLCOLOR_COLS,   sheetData.pplcolors);
+    if (sheetData.invoices)   writeSheet(ss, SHEETS.INVOICES,   INVOICE_COLS,    sheetData.invoices);
+    if (sheetData.bankaccts)  writeSheet(ss, SHEETS.BANKACCTS,  BANKACCT_COLS,   sheetData.bankaccts);
+    if (sheetData.clients)    writeSheet(ss, SHEETS.CLIENTS,    CLIENT_COLS,     sheetData.clients);
+
+    return {
+      success: true,
+      message: "✅ All data restored!",
+      sheetsRestored: Object.keys(sheetData).length
+    };
+  } catch (error) {
+    return { success: false, error: error.toString() };
+  }
+}
