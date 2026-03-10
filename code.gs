@@ -467,10 +467,13 @@ function readSheet(ss, name, cols) {
   if (!sheet) return [];
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return []; // Only header or empty
-  const data = sheet.getRange(2, 1, lastRow - 1, cols.length).getValues();
+  // Use actual column count to avoid "range invalid" errors on sheets with fewer columns
+  const sheetCols = Math.max(1, sheet.getLastColumn());
+  const readCols = Math.min(sheetCols, cols.length);
+  const data = sheet.getRange(2, 1, lastRow - 1, readCols).getValues();
   return data.map(row => {
     const obj = {};
-    cols.forEach((col, i) => { obj[col] = row[i]; });
+    cols.forEach((col, i) => { obj[col] = i < readCols ? row[i] : ''; });
     return obj;
   });
 }

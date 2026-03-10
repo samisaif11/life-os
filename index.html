@@ -1159,7 +1159,14 @@ async function loadFromSheet(manual = false) {
     if (data.booksGoal != null) D.booksGoal = data.booksGoal;
     if (data.booksQueue) D.booksQueue = data.booksQueue;
     if (data.bkid != null) D.bkid = data.bkid;
-    if (data.healthLogs) D.healthLogs = data.healthLogs;
+    if (data.healthLogs) {
+      D.healthLogs = data.healthLogs;
+      const metrics = [...new Set(data.healthLogs.map(l => l.metric))];
+      console.log('[HEALTH] Loaded', data.healthLogs.length, 'log(s). Metrics in sheet:', metrics.length ? metrics : '(none)');
+      if (data.healthLogs.length) console.log('[HEALTH] First entry:', JSON.stringify(data.healthLogs[0]));
+    } else {
+      console.warn('[HEALTH] No healthLogs in server response — HealthLogs sheet may be empty or missing.');
+    }
     if (data.hid != null) D.hid = data.hid;
     // Apply color maps
     if (data.partners) {
@@ -2256,7 +2263,7 @@ function hlArea(cs, H, py) {
 }
 function hlHistoryStrip(logs, metric) {
   const m=HMETA[metric];
-  return `<div class="hl-history">${logs.slice(-8).map((l,i,arr)=>{
+  return `<div class="hl-history">${logs.map((l,i,arr)=>{
     const d=i>0?+(l.value-arr[i-1].value).toFixed(2):null;
     const good=m.goodDir==='down'?d<0:d>0;
     const dc=d!==null?(good?'var(--hg)':'var(--hr)'):'var(--t3)';
@@ -2306,7 +2313,7 @@ function renderCRPCard(logs) {
   const m=HMETA.crp; const latest=logs.length?logs[logs.length-1]:null;
   const col=latest?hCol('crp',latest.value):'var(--t3)';
   if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">mg/L</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
-  const W=900,H=180; const baseY=H*0.58; const segs=logs.slice(-8); const segW=W/(segs.length+1);
+  const W=900,H=180; const baseY=H*0.58; const segs=logs; const segW=W/(segs.length+1);
   let pd=`M0,${baseY}`;
   segs.forEach((l,i)=>{
     const cx=segW*(i+1); const sh=Math.min(H*0.52,(l.value/30)*H*0.52);
@@ -2410,7 +2417,7 @@ function renderTubesCard(logs) {
   const latest=logs.length?logs[logs.length-1]:null;
   const col=latest?hCol('hemoglobin',latest.value):'var(--t3)';
   if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">Blood Oxygen Capacity</div><div class="hl-card-sub">LIQUID FILL · EACH TUBE = ONE DRAW</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">g/dL</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
-  const td=logs.slice(-9); const minH=9,maxH=18;
+  const td=logs; const minH=9,maxH=18;
   const tubesHtml=td.map((l,i)=>{
     const pct=Math.max(0,Math.min(100,((l.value-minH)/(maxH-minH))*100));
     const c=hCol('hemoglobin',l.value); const isL=i===td.length-1;
@@ -2483,9 +2490,9 @@ function renderVitDCard(logs) {
   const col=latest?hCol('vitamin_d',latest.value):'var(--t3)';
   if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">Vitamin D</div><div class="hl-card-sub">IMMUNE & BONE HEALTH</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">ng/mL</div></div></div><div class="hl-empty">No readings logged yet</div></div></div>`;
   const pct=latest?Math.min(100,(latest.value/50)*100):0;
-  const orbs=logs.slice(-6).map((l,i)=>{
+  const orbs=logs.map((l,i)=>{
     const sz=22+(l.value/50)*46; const br=(0.18+(l.value/50)*0.82).toFixed(2);
-    const isL=i===logs.slice(-6).length-1;
+    const isL=i===logs.length-1;
     return `<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
       <div style="width:${sz.toFixed(0)}px;height:${sz.toFixed(0)}px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#FFE066,#FF9F1C,#662200);opacity:${br};box-shadow:0 0 ${isL?18:7}px rgba(255,159,28,${isL?.42:.18});display:flex;align-items:center;justify-content:center;${isL?'animation:hlGlw 3s ease-in-out infinite;':''}">
         <span style="font-family:'JetBrains Mono';font-weight:700;color:#000;font-size:${sz>46?11:8}px">${l.value}</span>
