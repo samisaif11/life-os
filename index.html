@@ -577,9 +577,9 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
 /* ═══════ HEALTH ═══════ */
 :root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13)}
-.hl-topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-.hl-title{font-size:1.05rem;font-weight:700;letter-spacing:.3px;color:var(--t0)}
-.hl-subtitle{font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-left:auto;cursor:text;transition:border .2s}
+.hl-topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;padding:14px 16px;border:1px solid var(--b1);border-radius:22px;background:linear-gradient(140deg,var(--bg-2),rgba(255,255,255,.02));box-shadow:0 16px 30px -22px rgba(0,0,0,.55)}
+.hl-title{font-size:1.2rem;font-weight:800;letter-spacing:.6px;color:var(--t0);text-transform:uppercase}
+.hl-subtitle{font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-left:auto;cursor:text;transition:border .2s;background:var(--bg-1);border:1px solid var(--b1);border-radius:999px;padding:7px 12px}
 .hl-subtitle[contenteditable="true"]:hover{border-bottom:1px dashed var(--gold)}
 .hl-subtitle[contenteditable="true"]:focus{outline:none;border-bottom:1px solid var(--gold);color:var(--t1)}
 .hl-frm{background:var(--bg-2);border:1px solid var(--b1);border-radius:var(--rl);padding:20px;margin-bottom:18px;display:none}
@@ -596,7 +596,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 @media(max-width:680px){.hl-grid{grid-template-columns:1fr}.hl-avatar-col{display:none!important}}
 .hl-col{display:flex;flex-direction:column;gap:14px}
 .hl-avatar-col{display:flex;flex-direction:column;align-items:center;padding-top:8px}
-.hl-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;overflow:hidden;position:relative}
+.hl-card{background:linear-gradient(165deg,var(--bg-2),rgba(255,255,255,.01));border:1px solid var(--b0);border-radius:22px;overflow:hidden;position:relative;box-shadow:0 20px 34px -28px rgba(0,0,0,.7)}
 .hl-card-pad{padding:18px 20px}
 .hl-card-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .hl-card-title{font-size:.74rem;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:.5px}
@@ -610,6 +610,12 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .hl-chip-w{background:var(--hw1);color:var(--hw);border:1px solid rgba(255,159,28,.18)}
 .hl-chip-r{background:var(--hr1);color:var(--hr);border:1px solid rgba(255,56,100,.18)}
 .hl-chip-stale{background:rgba(92,90,110,.08);color:var(--t3);border:1px solid rgba(92,90,110,.18);font-style:italic}
+.hl-comp-bars{display:flex;flex-direction:column;gap:10px;min-width:220px;flex:1}
+.hl-comp-row{display:grid;grid-template-columns:84px 1fr auto;gap:8px;align-items:center}
+.hl-comp-row label{font-family:'JetBrains Mono';font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
+.hl-comp-track{height:8px;background:var(--bg-4);border:1px solid var(--b1);border-radius:999px;overflow:hidden}
+.hl-comp-fill{height:100%;width:var(--w);background:linear-gradient(90deg,var(--c),rgba(255,255,255,.32));box-shadow:0 0 12px color-mix(in srgb,var(--c) 30%, transparent)}
+.hl-comp-val{font-family:'JetBrains Mono';font-size:.58rem;font-weight:700;color:var(--t1)}
 .hl-history{padding:10px 20px;border-top:1px solid var(--b0);display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
 .hl-history::-webkit-scrollbar{display:none}
 .hl-h-item{flex-shrink:0;padding:0 10px;border-right:1px solid var(--b0);text-align:center;min-width:52px}
@@ -642,7 +648,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <button class="nav-tab" data-v="projects">Projects</button>
     <button class="nav-tab" data-v="books">Books</button>
     <button class="nav-tab" data-v="groceries">Groceries</button>
-    <button class="nav-tab" data-v="health">Santé</button>
+    <button class="nav-tab" data-v="health">HEALTH</button>
   </nav>
   <div class="hdr-r">
     <div class="clk" id="clk"></div>
@@ -769,7 +775,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
 <div class="vw" id="v-health">
   <div class="hl-topbar">
-    <div class="hl-title">Moniteur Santé</div>
+    <div class="hl-title">HEALTH</div>
     <div class="hl-subtitle" id="hlLastLog" contenteditable="true" spellcheck="false">181 CM · MALADIE DE CROHN · DOSSIER N° 070218-007 · STOMIE ILÉALE DÉFINITIVE</div>
     <button class="nbtn" id="hlLogTgl">+ SAISIE UNIQUE</button>
     <button class="nbtn" id="hlBatchTgl" style="background:var(--gold-d);color:var(--gold);border-color:var(--gold)">+ AJOUTER BILAN SANGUIN</button>
@@ -2512,7 +2518,7 @@ function renderTubesCard(logs) {
   </div></div>`;
 }
 
-/* ── BODY COMPOSITION RINGS + BARS (with detailed metrics) ── */
+/* ── BODY COMPOSITION MATRIX (ring-free) ── */
 function renderBodyCompCard(weightLogs, fatLogs, leanLogs) {
   const latestW=weightLogs.length?weightLogs[weightLogs.length-1].value:null;
   const latestF=fatLogs.length?fatLogs[fatLogs.length-1].value:null;
@@ -2523,7 +2529,6 @@ function renderBodyCompCard(weightLogs, fatLogs, leanLogs) {
   const fatCol=hCol('body_fat',fatPct);
   const musclePct=bc.musclePct;
   const waterPct=bc.waterPct;
-  const C1=2*Math.PI*90,C2=2*Math.PI*74,C3=2*Math.PI*58;
   const bmiCol=bmi?(bmi<18.5?'var(--hr)':bmi<25?'var(--hg)':'var(--hw)'):'var(--t3)';
   const metrics=[
     {label:'Graisse',     val:`${fatPct}%`,          sub:`${bc.fatMass} kg`, col:fatCol},
@@ -2539,19 +2544,10 @@ function renderBodyCompCard(weightLogs, fatLogs, leanLogs) {
       <span class="hl-chip ${fatPct>=10&&fatPct<=22?'hl-chip-g':'hl-chip-w'}">${fatPct>=10&&fatPct<=22?'PLAGE SAINE':'À SURVEILLER'}</span>
     </div>
     <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center">
-      <div style="position:relative;width:150px;height:150px;flex-shrink:0">
-        <svg viewBox="0 0 200 200" width="150" height="150">
-          <circle cx="100" cy="100" r="90" fill="none" stroke="var(--b1)" stroke-width="7"/>
-          <circle cx="100" cy="100" r="90" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" transform="rotate(-90,100,100)" style="stroke-dasharray:${C1.toFixed(1)};stroke-dashoffset:${(C1-C1*(waterPct/100)).toFixed(1)};animation:hlRingDraw 2s ease-out forwards"/>
-          <circle cx="100" cy="100" r="74" fill="none" stroke="var(--b1)" stroke-width="6"/>
-          <circle cx="100" cy="100" r="74" fill="none" stroke="var(--hg)" stroke-width="6" stroke-linecap="round" transform="rotate(-90,100,100)" style="stroke-dasharray:${C2.toFixed(1)};stroke-dashoffset:${(C2-C2*(musclePct/100)).toFixed(1)};animation:hlRingDraw 2s ease-out .2s forwards"/>
-          <circle cx="100" cy="100" r="58" fill="none" stroke="var(--b1)" stroke-width="5"/>
-          <circle cx="100" cy="100" r="58" fill="none" stroke="${fatCol}" stroke-width="5" stroke-linecap="round" transform="rotate(-90,100,100)" style="stroke-dasharray:${C3.toFixed(1)};stroke-dashoffset:${(C3-C3*(fatPct/100)).toFixed(1)};animation:hlRingDraw 2s ease-out .4s forwards"/>
-        </svg>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
-          <div style="font-family:'JetBrains Mono';font-size:1.3rem;font-weight:700;color:var(--t0);line-height:1">${fatPct}<span style="font-size:.6rem;color:var(--t3)">%</span></div>
-          <div style="font-family:'JetBrains Mono';font-size:.42rem;color:var(--t3);letter-spacing:1.5px;margin-top:2px">GRAISSE</div>
-        </div>
+      <div class="hl-comp-bars">
+        <div class="hl-comp-row"><label>Eau</label><div class="hl-comp-track"><div class="hl-comp-fill" style="--w:${Math.max(0,Math.min(100,waterPct)).toFixed(1)}%;--c:var(--blue)"></div></div><div class="hl-comp-val">${waterPct}%</div></div>
+        <div class="hl-comp-row"><label>Muscle</label><div class="hl-comp-track"><div class="hl-comp-fill" style="--w:${Math.max(0,Math.min(100,musclePct)).toFixed(1)}%;--c:var(--hg)"></div></div><div class="hl-comp-val">${musclePct}%</div></div>
+        <div class="hl-comp-row"><label>Graisse</label><div class="hl-comp-track"><div class="hl-comp-fill" style="--w:${Math.max(0,Math.min(100,fatPct)).toFixed(1)}%;--c:${fatCol}"></div></div><div class="hl-comp-val">${fatPct}%</div></div>
       </div>
       <div style="flex:1;min-width:170px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
         ${metrics.map(m=>`<div style="background:rgba(255,255,255,.02);border:1px solid var(--b0);border-radius:8px;padding:8px 10px;text-align:center">
