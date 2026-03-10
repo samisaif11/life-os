@@ -8,6 +8,7 @@
 <link rel="icon" type="image/png" href="assets/images/logo.png">
 <link rel="apple-touch-icon" href="assets/images/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
 :root{--bg-0:#060608;--bg-1:#0c0c10;--bg-2:#121216;--bg-3:#18181e;--bg-4:#1f1f28;--bg-h:#24242e;--b0:#1e1e28;--b1:#2a2a36;--b2:#36364a;--t0:#f0eeea;--t1:#c0beb8;--t2:#8a8898;--t3:#5c5a6e;--gold:#d4af37;--gold-d:rgba(212,175,55,.12);--red:#ef4444;--red-d:rgba(239,68,68,.10);--green:#22c55e;--green-d:rgba(34,197,94,.10);--blue:#3b82f6;--blue-d:rgba(59,130,246,.10);--orange:#f59e0b;--orange-d:rgba(245,158,11,.10);--purple:#a855f7;--purple-d:rgba(168,85,247,.10);--cyan:#06b6d4;--cyan-d:rgba(6,182,212,.10);--r:8px;--rl:12px;--tr:.2s cubic-bezier(.4,0,.2,1)}
 @media(min-width:1200px){:root{--tf:1.8rem;--hf:1.1rem;--sn:2.6rem;--sl:.7rem;--st:1rem;--cf:.72rem;--tg:.65rem;--df:.75rem;--ff:.85rem}}
@@ -575,13 +576,55 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 @media(max-width:900px){.books-panels{grid-template-columns:1fr}.books-carousel-wrap{grid-template-columns:36px 1fr 36px}.bk-card{min-width:132px;max-width:132px}.bk-cover{height:180px}}
 @media(min-width:1200px){.bk-card{min-width:190px;max-width:190px}.bk-cover{height:260px}.books-carousel{gap:18px;padding:16px}}
 
-/* ═══════ HEALTH ═══════ */
+/* ═══════ HEALTH — DeepSeek Layout Clone ═══════ */
 :root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13)}
-.hl-topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-.hl-title{font-size:1.05rem;font-weight:700;letter-spacing:.3px;color:var(--t0)}
-.hl-subtitle{font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-left:auto;cursor:text;transition:border .2s}
-.hl-subtitle[contenteditable="true"]:hover{border-bottom:1px dashed var(--gold)}
-.hl-subtitle[contenteditable="true"]:focus{outline:none;border-bottom:1px solid var(--gold);color:var(--t1)}
+/* Patient header */
+.ds-patient{background:var(--bg-2);border:1px solid var(--b0);border-radius:16px;padding:28px 32px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+.ds-patient-name{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--t0);line-height:1.2}
+.ds-patient-meta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:8px;font-family:'JetBrains Mono';font-size:.6rem;color:var(--t2);letter-spacing:.5px}
+.ds-patient-tag{padding:4px 12px;border-radius:6px;font-size:.58rem;font-weight:600;letter-spacing:.3px}
+.ds-patient-tag.teal{background:rgba(6,182,212,.1);color:var(--cyan);border:1px solid rgba(6,182,212,.2)}
+.ds-patient-tag.purple{background:rgba(168,85,247,.1);color:var(--purple);border:1px solid rgba(168,85,247,.2)}
+.ds-dossier{background:var(--bg-3);border:1px solid var(--b1);border-radius:10px;padding:12px 18px;font-family:'JetBrains Mono';font-size:.62rem;color:var(--t2);letter-spacing:.3px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.ds-dossier-icon{font-size:1rem}
+/* KPI summary row */
+.ds-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:900px){.ds-kpi-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.ds-kpi-row{grid-template-columns:1fr}}
+.ds-kpi{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:20px 22px;position:relative}
+.ds-kpi-label{font-family:'JetBrains Mono';font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.ds-kpi-val-row{display:flex;align-items:baseline;gap:8px}
+.ds-kpi-icon{font-size:1.2rem;margin-right:4px}
+.ds-kpi-big{font-family:'JetBrains Mono';font-size:2rem;font-weight:700;line-height:1}
+.ds-kpi-unit{font-family:'JetBrains Mono';font-size:.6rem;color:var(--t3)}
+.ds-kpi-status{font-family:'JetBrains Mono';font-size:.52rem;margin-top:6px;letter-spacing:.3px}
+/* Charts grid */
+.ds-chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:800px){.ds-chart-grid{grid-template-columns:1fr}}
+.ds-chart-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:22px 24px;overflow:hidden}
+.ds-chart-title{font-size:.78rem;font-weight:600;color:var(--t0);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.ds-chart-title-icon{font-size:.9rem}
+.ds-chart-wrap{position:relative;width:100%;height:220px}
+.ds-chart-wrap canvas{width:100%!important;height:100%!important}
+/* Full-width table card */
+.ds-table-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:24px 28px;margin-bottom:20px;overflow-x:auto}
+.ds-table-title{font-size:.82rem;font-weight:600;color:var(--t0);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.ds-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono';font-size:.62rem}
+.ds-table th{text-align:left;padding:10px 12px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:1px;font-size:.5rem;border-bottom:1px solid var(--b1)}
+.ds-table td{padding:10px 12px;border-bottom:1px solid var(--b0);color:var(--t1)}
+.ds-table tr:last-child td{border:none;font-weight:700}
+.ds-table .val-high{color:var(--hr)}
+.ds-table .val-warn{color:var(--hw)}
+.ds-table .val-ok{color:var(--t1)}
+/* Alerts row */
+.ds-alerts{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.ds-alert{flex:1;min-width:220px;padding:12px 16px;border-radius:10px;font-family:'JetBrains Mono';font-size:.58rem;letter-spacing:.3px;display:flex;align-items:center;gap:8px;line-height:1.4}
+.ds-alert-icon{font-size:.9rem;flex-shrink:0}
+.ds-alert.green{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);color:var(--green)}
+.ds-alert.orange{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);color:var(--orange)}
+.ds-alert.purple{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.15);color:var(--purple)}
+/* Form styles */
+.ds-topbar-btns{display:flex;gap:6px;margin-left:auto}
 .hl-frm{background:var(--bg-2);border:1px solid var(--b1);border-radius:var(--rl);padding:20px;margin-bottom:18px;display:none}
 .hl-frm.open{display:block;animation:mdIn .2s ease}
 .hl-batch-frm{background:var(--bg-2);border:1px solid var(--b1);border-radius:var(--rl);padding:20px;margin-bottom:18px;display:none}
@@ -591,58 +634,10 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .hl-batch-field input{width:100%;padding:7px 10px;background:var(--bg-1);border:1px solid var(--b1);border-radius:6px;color:var(--t0);font-family:'JetBrains Mono';font-size:.72rem;outline:none}
 .hl-batch-field input:focus{border-color:var(--gold)}
 .hl-batch-field input::placeholder{color:var(--t3)}
-/* DeepSeek-style: single-column stacked sections */
-.hl-sections{display:flex;flex-direction:column;gap:36px}
-.hl-sec{position:relative}
-.hl-sec-label{font-family:'JetBrains Mono';font-size:.5rem;letter-spacing:4px;text-transform:uppercase;color:var(--t3);margin-bottom:12px;padding-left:2px}
-.hl-sec-label em{font-style:normal;color:var(--hg);margin-right:6px}
-/* Avatar floating sidebar on desktop, hidden on mobile */
-.hl-layout{display:grid;grid-template-columns:1fr 148px;gap:20px;align-items:start}
-@media(max-width:900px){.hl-layout{grid-template-columns:1fr}.hl-avatar-float{display:none!important}}
-.hl-avatar-float{position:sticky;top:80px}
-/* Two-column grid for smaller cards */
-.hl-duo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:800px){.hl-duo{grid-template-columns:1fr}}
-.hl-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;overflow:hidden;position:relative}
-.hl-card-pad{padding:22px 28px}
-.hl-card-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.hl-card-title{font-size:.82rem;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:.5px}
-.hl-card-sub{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
-.hl-card-date{font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3);letter-spacing:.5px;margin-top:4px;opacity:.6;display:block}
-.hl-card-val{text-align:right}
-.hl-big-val{font-family:'JetBrains Mono';font-size:2.2rem;font-weight:700;line-height:1}
-.hl-val-unit{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
-.hl-chip{font-family:'JetBrains Mono';font-size:.52rem;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.3px;display:inline-block;margin-left:4px}
-.hl-chip-g{background:var(--hg1);color:var(--hg);border:1px solid rgba(57,255,20,.18)}
-.hl-chip-w{background:var(--hw1);color:var(--hw);border:1px solid rgba(255,159,28,.18)}
-.hl-chip-r{background:var(--hr1);color:var(--hr);border:1px solid rgba(255,56,100,.18)}
-.hl-chip-stale{background:rgba(92,90,110,.08);color:var(--t3);border:1px solid rgba(92,90,110,.18);font-style:italic}
-.hl-history{padding:12px 28px;border-top:1px solid var(--b0);display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
-.hl-history::-webkit-scrollbar{display:none}
-.hl-h-item{flex-shrink:0;padding:0 14px;border-right:1px solid var(--b0);text-align:center;min-width:60px}
-.hl-h-item:last-child{border:none}
-.hl-h-item .hd{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);letter-spacing:.5px}
-.hl-h-item .hv{font-family:'JetBrains Mono';font-size:.72rem;font-weight:700;margin-top:2px}
-.hl-h-item .hdt{font-family:'JetBrains Mono';font-size:.52rem;margin-top:1px}
-.hl-empty{text-align:center;padding:28px 16px;font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;opacity:.45}
-.hl-note{font-family:'JetBrains Mono';font-size:.56rem;color:var(--t3);margin-top:14px;letter-spacing:.3px;line-height:1.7;padding:0 28px 20px}
-.hl-note .ng{color:var(--hg)} .hl-note .nw{color:var(--hw)} .hl-note .nr{color:var(--hr)}
-/* Body comp stat rows */
-.hl-comp-stats{display:flex;flex-direction:column;gap:0}
-.hl-comp-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--b0)}
-.hl-comp-row:last-child{border:none;padding-bottom:0}
-.hl-comp-label{font-size:.72rem;color:var(--t2)}
-.hl-comp-val{font-family:'JetBrains Mono';font-size:.92rem;font-weight:600;text-align:right}
-.hl-comp-bar{height:3px;background:var(--b0);border-radius:2px;overflow:hidden;margin-top:6px}
-.hl-comp-bar-fill{height:100%;border-radius:2px;width:0;animation:hlBar 1.5s ease-out forwards}
-@keyframes hlDraw{to{stroke-dashoffset:0}}
-@keyframes hlFill{to{opacity:1}}
-@keyframes hlDot{to{opacity:1}}
-@keyframes hlGlw{0%,100%{opacity:.25}50%{opacity:.7}}
-@keyframes hlScan{from{left:-80px}to{left:100%}}
-@keyframes hlTube{to{height:var(--h)}}
-@keyframes hlBar{to{width:var(--w)}}
-@keyframes hlRingDraw{to{stroke-dashoffset:0}}
+/* Subtitle editable */
+.ds-subtitle{font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;cursor:text;transition:border .2s}
+.ds-subtitle[contenteditable="true"]:hover{border-bottom:1px dashed var(--gold)}
+.ds-subtitle[contenteditable="true"]:focus{outline:none;border-bottom:1px solid var(--gold);color:var(--t1)}
 
 </style>
 </head>
@@ -782,12 +777,12 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 </div>
 
 <div class="vw" id="v-health">
-  <div class="hl-topbar">
-    <div class="hl-title">HEALTH</div>
-    <div class="hl-subtitle" id="hlLastLog" contenteditable="true" spellcheck="false">181 CM · MALADIE DE CROHN · DOSSIER N° 070218-007 · STOMIE ILÉALE DÉFINITIVE</div>
+  <!-- Buttons bar -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
     <button class="nbtn" id="hlLogTgl">+ SAISIE UNIQUE</button>
     <button class="nbtn" id="hlBatchTgl" style="background:var(--gold-d);color:var(--gold);border-color:var(--gold)">+ AJOUTER BILAN SANGUIN</button>
   </div>
+  <!-- Single entry form -->
   <div class="tfrm hl-frm" id="hlFrm">
     <div class="fr fr2">
       <div><label class="fl">Métrique</label>
@@ -799,6 +794,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
           <option value="hematocrit">Hématocrite (%)</option>
           <option value="vitamin_d">Vitamine D (ng/mL)</option>
           <option value="platelets">Plaquettes (/µL)</option>
+          <option value="neutrophils">Neutrophiles (10³/µL)</option>
+          <option value="leukocytes">Leucocytes (10³/µL)</option>
           <option value="body_fat">Graisse corporelle (%)</option>
           <option value="lean_mass">Masse maigre (kg)</option>
           <option value="creatinine">Créatinine (mg/L)</option>
@@ -818,6 +815,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     </div>
     <div class="fac"><button class="btn btn-gh" id="hlFrmCancel">ANNULER</button><button class="btn btn-g" id="hlFrmSave">ENREGISTRER</button></div>
   </div>
+  <!-- Batch form -->
   <div class="hl-batch-frm" id="hlBatchFrm">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div style="font-size:.78rem;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:.5px">Saisie groupée — Bilan sanguin</div>
@@ -833,19 +831,17 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
       <div class="hl-batch-field"><label>Hémoglobine (g/dL)</label><input type="number" step="0.1" placeholder="—" data-metric="hemoglobin"></div>
       <div class="hl-batch-field"><label>Hématocrite (%)</label><input type="number" step="0.1" placeholder="—" data-metric="hematocrit"></div>
       <div class="hl-batch-field"><label>Plaquettes (/µL)</label><input type="number" step="1" placeholder="—" data-metric="platelets"></div>
+      <div class="hl-batch-field"><label>Neutrophiles (10³/µL)</label><input type="number" step="0.01" placeholder="—" data-metric="neutrophils"></div>
+      <div class="hl-batch-field"><label>Leucocytes (10³/µL)</label><input type="number" step="0.01" placeholder="—" data-metric="leukocytes"></div>
       <div class="hl-batch-field"><label>Vitamine D (ng/mL)</label><input type="number" step="0.1" placeholder="—" data-metric="vitamin_d"></div>
       <div class="hl-batch-field"><label>Créatinine (mg/L)</label><input type="number" step="0.1" placeholder="—" data-metric="creatinine"></div>
       <div class="hl-batch-field"><label>Albumine (g/L)</label><input type="number" step="0.1" placeholder="—" data-metric="albumin"></div>
       <div class="hl-batch-field"><label>Poids (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="weight"></div>
-      <div class="hl-batch-field"><label>Graisse corporelle (%)</label><input type="number" step="0.1" placeholder="—" data-metric="body_fat"></div>
-      <div class="hl-batch-field"><label>Masse maigre (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="lean_mass"></div>
     </div>
     <div class="fac" style="margin-top:14px"><button class="btn btn-gh" id="hlBatchCancel">ANNULER</button><button class="btn btn-g" id="hlBatchSave">ENREGISTRER TOUT</button></div>
   </div>
-  <div class="hl-layout">
-    <div class="hl-sections" id="hl-sections"></div>
-    <div class="hl-avatar-float" id="hl-center"></div>
-  </div>
+  <!-- Dynamic content rendered by JS -->
+  <div id="hl-content"></div>
 </div>
 
 <!-- Books Modals -->
@@ -2262,31 +2258,22 @@ $('bkPrev')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:-260,b
 $('bkNext')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:260,behavior:'smooth'})});
 
 /* ═══════════════════════════════════════════════════════════════
-   HEALTH
+   HEALTH — DeepSeek Layout Clone (dark neon theme)
    ═══════════════════════════════════════════════════════════════ */
 const HMETA = {
-  weight:       {label:'Récupération Poids',    sub:'Trajectoire pondérale',    unit:'kg',    refMin:60, refMax:85,  goodDir:'up',   chipFn:(v)=>v>=60&&v<=85?'g':v<60?'r':'w'},
-  calprotectin: {label:'Inflammation Digestive', sub:'Calprotectine fécale',    unit:'µg/g',  refMin:0,  refMax:50,  goodDir:'down', chipFn:(v)=>v<50?'g':v<200?'w':'r'},
-  crp:          {label:'Inflammation Systémique',sub:'Protéine C Réactive',     unit:'mg/L',  refMin:0,  refMax:5,   goodDir:'down', chipFn:(v)=>v<5?'g':v<10?'w':'r'},
-  hemoglobin:   {label:'Capacité en Oxygène',   sub:'Hémoglobine · Prise sang', unit:'g/dL',  refMin:13.5,refMax:17.5,goodDir:'up', chipFn:(v)=>v>=13.5?'g':v>=11?'w':'r'},
-  hematocrit:   {label:'Hématocrite',           sub:'Hémoglobine & Hématocrite',unit:'%',     refMin:40, refMax:52,  goodDir:'up',   chipFn:(v)=>v>=40?'g':v>=33?'w':'r'},
-  vitamin_d:    {label:'Vitamine D',            sub:'Santé immunitaire & osseuse',unit:'ng/mL',refMin:30, refMax:100, goodDir:'up',   chipFn:(v)=>v>=30?'g':v>=20?'w':'r'},
-  body_fat:     {label:'Graisse Corporelle',    sub:'Pourcentage de graisse',   unit:'%',     refMin:10, refMax:22,  goodDir:'norm', chipFn:(v)=>v>=10&&v<=22?'g':v<10?'w':'w'},
-  lean_mass:    {label:'Masse Maigre',          sub:'Masse musculaire & osseuse',unit:'kg',   refMin:55, refMax:75,  goodDir:'up',   chipFn:(v)=>v>=55?'g':v<55?'r':'w'},
-  platelets:    {label:'Plaquettes',            sub:'Numération plaquettaire',  unit:'/µL',   refMin:150,refMax:400, goodDir:'norm', chipFn:(v)=>v>=150&&v<=400?'g':v<150?'r':'w'},
-  creatinine:   {label:'Créatinine',            sub:'Fonction rénale',          unit:'mg/L',  refMin:6,  refMax:13,  goodDir:'norm', chipFn:(v)=>v>=6&&v<=13?'g':v>13?'r':'w'},
-  albumin:      {label:'Albumine',              sub:'État nutritionnel',        unit:'g/L',   refMin:38, refMax:50,  goodDir:'up',   chipFn:(v)=>v>=38?'g':v>=30?'w':'r'},
-};
-
-/* Body composition static data (editable later) */
-const BODY_COMP = {
-  fatPct: 7.2,
-  fatMass: 3.9,
-  waterPct: 63.7,
-  musclePct: 44,
-  boneMass: 2.6,
-  protein: 10.5,
-  bodyAge: 26
+  weight:       {label:'Poids',                 unit:'kg',    refMin:60, refMax:85,  goodDir:'up',   chipFn:(v)=>v>=60&&v<=85?'g':v<60?'r':'w'},
+  calprotectin: {label:'Calprotectine fécale',  unit:'µg/g',  refMin:0,  refMax:50,  goodDir:'down', chipFn:(v)=>v<50?'g':v<200?'w':'r'},
+  crp:          {label:'CRP',                   unit:'mg/L',  refMin:0,  refMax:10,  goodDir:'down', chipFn:(v)=>v<5?'g':v<10?'w':'r'},
+  hemoglobin:   {label:'Hémoglobine',           unit:'g/dL',  refMin:13, refMax:17.5,goodDir:'up',   chipFn:(v)=>v>=13?'g':v>=11?'w':'r'},
+  hematocrit:   {label:'Hématocrite',           unit:'%',     refMin:40, refMax:52,  goodDir:'up',   chipFn:(v)=>v>=40?'g':v>=33?'w':'r'},
+  vitamin_d:    {label:'Vitamine D',            unit:'ng/mL', refMin:30, refMax:100, goodDir:'up',   chipFn:(v)=>v>=30?'g':v>=20?'w':'r'},
+  body_fat:     {label:'Graisse corporelle',    unit:'%',     refMin:10, refMax:22,  goodDir:'norm', chipFn:(v)=>v>=10&&v<=22?'g':v<10?'w':'w'},
+  lean_mass:    {label:'Masse maigre',          unit:'kg',    refMin:55, refMax:75,  goodDir:'up',   chipFn:(v)=>v>=55?'g':v<55?'r':'w'},
+  platelets:    {label:'Plaquettes',            unit:'/µL',   refMin:150,refMax:400, goodDir:'norm', chipFn:(v)=>v>=150&&v<=400?'g':v<150?'r':'w'},
+  creatinine:   {label:'Créatinine',            unit:'mg/L',  refMin:6,  refMax:13,  goodDir:'norm', chipFn:(v)=>v>=6&&v<=13?'g':v>13?'r':'w'},
+  albumin:      {label:'Albumine',              unit:'g/L',   refMin:38, refMax:50,  goodDir:'up',   chipFn:(v)=>v>=38?'g':v>=30?'w':'r'},
+  neutrophils:  {label:'Neutrophiles',          unit:'10³/µL',refMin:1.5,refMax:7,   goodDir:'norm', chipFn:(v)=>v>=1.5&&v<=7?'g':v<1.5?'r':'w'},
+  leukocytes:   {label:'Leucocytes totaux',     unit:'10³/µL',refMin:4,  refMax:10,  goodDir:'norm', chipFn:(v)=>v>=4&&v<=10?'g':v<4?'r':'w'},
 };
 
 function hCol(metric, value) {
@@ -2325,436 +2312,170 @@ function hlDaysSince(ds) {
   return Math.floor((new Date()-d)/(864e5));
 }
 function hlIsStale(ds, days=180) { return hlDaysSince(ds)>days; }
-function hlCoords(logs, W, H, minV, maxV, px=44, py=18) {
-  const n=logs.length; if(!n) return [];
-  return logs.map((l,i)=>({
-    x: px + (n===1?(W-2*px)/2:i*(W-2*px)/(n-1)),
-    y: H - py - Math.max(0,Math.min(1,(l.value-minV)/(maxV-minV)))*(H-2*py),
-    ...l
-  }));
-}
-function hlPath(cs) { return cs.map((c,i)=>`${i?'L':'M'}${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' '); }
-function hlArea(cs, H, py) {
-  if(!cs.length) return '';
-  return hlPath(cs)+` L${cs[cs.length-1].x.toFixed(1)},${H-py} L${cs[0].x.toFixed(1)},${H-py} Z`;
-}
-function hlHistoryStrip(logs, metric) {
+/* Chart.js instances cache */
+let hlCharts={};
+function hlMakeChart(canvasId,logs,metric,lineColor){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas||!logs.length){if(canvas){canvas.style.display='none';canvas.parentElement.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'JetBrains Mono\';font-size:.6rem;color:var(--t3)">Aucune donnée</div>';}return;}
+  if(hlCharts[canvasId]){try{hlCharts[canvasId].destroy();}catch(e){}}
   const m=HMETA[metric];
-  return `<div class="hl-history">${logs.slice(-8).map((l,i,arr)=>{
-    const d=i>0?+(l.value-arr[i-1].value).toFixed(2):null;
-    const good=m.goodDir==='down'?d<0:d>0;
-    const dc=d!==null?(good?'var(--hg)':'var(--hr)'):'var(--t3)';
-    const ds=d!==null?(d>0?`▲${Math.abs(d)}`:`↓${Math.abs(d)}`):'';
-    return `<div class="hl-h-item"><div class="hd">${hlMonth(l.date)}</div><div class="hv" style="color:${hCol(metric,l.value)}">${l.value}</div>${d!==null?`<div class="hdt" style="color:${dc}">${ds}</div>`:''}</div>`;
-  }).join('')}</div>`;
-}
-function hlDateTag(latest) {
-  if(!latest) return '';
-  return `<span class="hl-card-date">${hlFmtDate(latest.date)}</span>`;
-}
-
-/* ── WEIGHT CHART (gravity / area ascent) ── */
-function renderWeightCard(logs) {
-  const m=HMETA.weight; const latest=logs.length?logs[logs.length-1]:null;
-  const col=latest?hCol('weight',latest.value):'var(--t3)';
-  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">kg</div></div></div><div class="hl-empty">Aucune mesure enregistrée</div></div></div>`;
-  const W=900,H=180,px=50,py=20;
-  const vals=logs.map(l=>l.value); const minV=Math.min(...vals)-4; const maxV=Math.max(...vals)+4;
-  const cs=hlCoords(logs,W,H,minV,maxV,px,py);
-  const hy=H-py-Math.max(0,Math.min(1,(65-minV)/(maxV-minV)))*(H-2*py);
-  const delta=hlDelta(logs);
-  const dStr=delta!==null?(delta>0?`↑ +${delta} kg`:`↓ ${Math.abs(delta)} kg`):'';
-  const dCol=delta!==null?(delta>0?'var(--hg)':'var(--hr)'):'var(--t3)';
-  return `<div class="hl-card">
-    <div class="hl-card-pad" style="padding-bottom:0"><div class="hl-card-hdr" style="margin-bottom:0">
-      <div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">Sortir du puits de gravité</div>${hlDateTag(latest)}</div>
-      <div class="hl-card-val">
-        <div class="hl-big-val" style="color:${col}">${latest.value}</div>
-        <div class="hl-val-unit">kg · IMC ${(latest.value/(1.81*1.81)).toFixed(1)}${hChip('weight',latest.value)}</div>
-        ${delta!==null?`<div style="font-family:'JetBrains Mono';font-size:.54rem;color:${dCol};margin-top:2px">${dStr}</div>`:''}
-      </div>
-    </div></div>
-    <div style="padding:14px 20px;height:170px;position:relative">
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">
-      <defs><linearGradient id="wG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".22"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-      ${hy>0&&hy<H?`<line x1="0" y1="${hy.toFixed(1)}" x2="${W}" y2="${hy.toFixed(1)}" stroke="rgba(57,255,20,.15)" stroke-dasharray="6 8" stroke-width="1"/>
-      <text font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(57,255,20,.28)" x="${W-8}" y="${(hy-4).toFixed(1)}" text-anchor="end">OBJECTIF 65+</text>`:''}
-      <path fill="url(#wG)" d="${hlArea(cs,H,py)}" style="opacity:0;animation:hlFill 1s ease-out .5s forwards"/>
-      <path fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="${hlPath(cs)}" style="stroke-dasharray:2000;stroke-dashoffset:2000;animation:hlDraw 2.5s ease-out forwards"/>
-      ${cs.map((c,i)=>{const isL=i===cs.length-1;const dc=hCol('weight',c.value);return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${isL?7:4}" fill="${isL?dc:'var(--bg-0)'}" stroke="${dc}" stroke-width="2" style="opacity:0;animation:hlDot .4s ease-out ${(.4+i*.12).toFixed(2)}s forwards"/>${isL?`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="16" fill="${dc}" style="opacity:0;animation:hlGlw 3s ease-in-out infinite 1s"/><text font-family="'JetBrains Mono',monospace" font-size="10" font-weight="700" fill="${dc}" x="${c.x.toFixed(1)}" y="${(c.y-14).toFixed(1)}" text-anchor="middle">${c.value}</text>`:''}`}).join('')}
-      ${cs.map(c=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${c.x.toFixed(1)}" y="${H-2}" text-anchor="middle">${hlMonth(c.date)}</text>`).join('')}
-    </svg></div>
-    ${hlHistoryStrip(logs,'weight')}
-  </div>`;
-}
-
-/* ── CRP HEARTBEAT CHART ── */
-function renderCRPCard(logs) {
-  const m=HMETA.crp; const latest=logs.length?logs[logs.length-1]:null;
-  const col=latest?hCol('crp',latest.value):'var(--t3)';
-  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">mg/L</div></div></div><div class="hl-empty">Aucune mesure enregistrée</div></div></div>`;
-  const W=900,H=180; const baseY=H*0.58; const segs=logs.slice(-8); const segW=W/(segs.length+1);
-  let pd=`M0,${baseY}`;
-  segs.forEach((l,i)=>{
-    const cx=segW*(i+1); const sh=Math.min(H*0.52,(l.value/30)*H*0.52);
-    pd+=` L${(cx-segW*.28).toFixed(1)},${baseY} L${(cx-segW*.08).toFixed(1)},${(baseY+sh*.18).toFixed(1)} L${(cx-segW*.04).toFixed(1)},${(baseY-sh).toFixed(1)} L${cx.toFixed(1)},${(baseY+sh*.38).toFixed(1)} L${(cx+segW*.05).toFixed(1)},${(baseY-sh*.18).toFixed(1)} L${(cx+segW*.09).toFixed(1)},${baseY}`;
+  const labels=logs.map(l=>{const d=new Date(l.date+'T00:00:00');return d.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});});
+  const data=logs.map(l=>l.value);
+  hlCharts[canvasId]=new Chart(canvas,{
+    type:'line',
+    data:{labels,datasets:[{data,borderColor:lineColor,backgroundColor:lineColor+'18',fill:true,tension:0.35,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:lineColor,pointBorderColor:'transparent',borderWidth:2.5}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      animation:{duration:900,easing:'easeOutQuart'},
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'#121216',titleColor:'#f0eeea',bodyColor:'#c0beb8',borderColor:'#2a2a36',borderWidth:1,padding:10,
+          titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:11},
+          callbacks:{label:ctx=>`${ctx.parsed.y} ${m?m.unit:''}`}
+        }
+      },
+      scales:{
+        x:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:9},maxRotation:0},grid:{color:'#1e1e2814'},border:{color:'#1e1e28'}},
+        y:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:9}},grid:{color:'#1e1e2830'},border:{color:'#1e1e28'}}
+      }
+    }
   });
-  pd+=` L${W},${baseY}`;
-  const statusLabel=latest.value<5?'NORMAL':latest.value<10?'ÉLEVÉ':'TRÈS ÉLEVÉ';
-  return `<div class="hl-card">
-    <div class="hl-card-pad" style="padding-bottom:0"><div class="hl-card-hdr" style="margin-bottom:12px">
-      <div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">Ligne calme = meilleure santé</div>${hlDateTag(latest)}</div>
-      <div class="hl-card-val"><div class="hl-big-val" style="color:${col}">${latest.value}</div><div class="hl-val-unit">mg/L${hChip('crp',latest.value)}</div></div>
-    </div></div>
-    <div style="background:rgba(0,0,0,.28);border-top:1px solid var(--b0);height:140px;position:relative;overflow:hidden">
-      <div style="position:absolute;top:0;bottom:0;width:80px;background:linear-gradient(90deg,transparent,rgba(57,255,20,.04),transparent);animation:hlScan 5s linear infinite"></div>
-      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">
-        <line x1="0" y1="${baseY}" x2="${W}" y2="${baseY}" stroke="rgba(57,255,20,.07)" stroke-width="1"/>
-        <text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(57,255,20,.22)" x="${W-8}" y="${(baseY-4).toFixed(1)}" text-anchor="end">NORMAL &lt;5</text>
-        <path fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round" d="${pd}" opacity=".09" style="stroke-dasharray:4000;stroke-dashoffset:4000;animation:hlDraw 3.5s ease-out forwards"/>
-        <path fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" d="${pd}" style="stroke-dasharray:4000;stroke-dashoffset:4000;animation:hlDraw 3.5s ease-out forwards"/>
-        ${segs.map((l,i)=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${(segW*(i+1)).toFixed(1)}" y="${H-4}" text-anchor="middle">${hlMonth(l.date)}</text>`).join('')}
-      </svg>
-      <div style="position:absolute;top:8px;right:10px;text-align:right;font-family:'JetBrains Mono'">
-        <div style="font-size:1.8rem;font-weight:700;color:${col};line-height:1">${latest.value}</div>
-        <div style="font-size:.48rem;color:var(--t3);letter-spacing:2px">MG/L</div>
-        <div style="font-size:.55rem;color:${col};margin-top:3px;animation:hlGlw 2s ease-in-out infinite">● ${statusLabel}</div>
+}
+
+function renderHealth(){
+  const el=$('hl-content');
+  if(!el) return;
+  const wLogs=hlLogs('weight'),cpLogs=hlLogs('calprotectin'),crpLogs=hlLogs('crp');
+  const hLogs=hlLogs('hemoglobin'),hctLogs=hlLogs('hematocrit');
+  const vdLogs=hlLogs('vitamin_d'),fLogs=hlLogs('body_fat'),lnLogs=hlLogs('lean_mass');
+  const pltLogs=hlLogs('platelets'),creatLogs=hlLogs('creatinine'),albLogs=hlLogs('albumin');
+  const neutLogs=hlLogs('neutrophils'),leuLogs=hlLogs('leukocytes');
+  const latCRP=hlLatest('crp'),latCP=hlLatest('calprotectin');
+  const latVD=hlLatest('vitamin_d'),latHb=hlLatest('hemoglobin');
+  const latNeut=hlLatest('neutrophils'),latCreat=hlLatest('creatinine'),latAlb=hlLatest('albumin');
+  const allLogs=D.healthLogs||[];
+  const allDates=[...new Set(allLogs.map(l=>l.date))].sort();
+  const tableMetrics=['crp','calprotectin','hemoglobin','hematocrit','vitamin_d','platelets','neutrophils','leukocytes','creatinine','albumin'];
+  let html='';
+
+  /* 1 — Patient header */
+  html+=`<div class="ds-patient">
+    <div>
+      <div class="ds-patient-name">Sami Saif</div>
+      <div class="ds-patient-meta">
+        <span>DDN : 02/07/2002</span>
+        <span class="ds-patient-tag teal">Maladie de Crohn</span>
+        <span class="ds-patient-tag purple">Stomie iléale définitive</span>
       </div>
     </div>
-    ${hlHistoryStrip(logs,'crp')}
+    <div class="ds-dossier"><span class="ds-dossier-icon">📋</span>Dossier N° 070218-007</div>
   </div>`;
-}
 
-/* ── CALPROTECTIN MOUNTAIN CHART ── */
-function renderCalproCard(logs) {
-  const m=HMETA.calprotectin; const latest=logs.length?logs[logs.length-1]:null;
-  const col=latest?hCol('calprotectin',latest.value):'var(--t3)';
-  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">µg/g</div></div></div><div class="hl-empty">Aucune mesure enregistrée</div></div></div>`;
-  const W=900,H=200,px=50,py=22;
-  const vals=logs.map(l=>l.value); const minV=0; const maxV=Math.max(...vals,100)+80;
-  const cs=hlCoords(logs,W,H,minV,maxV,px,py);
-  const ry50=H-py-((50-minV)/(maxV-minV))*(H-2*py);
-  const ry250=H-py-((250-minV)/(maxV-minV))*(H-2*py);
-  const delta=hlDelta(logs);
-  const dStr=delta!==null?(delta<0?`↓ ${Math.abs(delta)} µg/g`:`▲ ${delta} µg/g`):'';
-  const dCol=delta!==null?(delta<0?'var(--hg)':'var(--hr)'):'var(--t3)';
-  return `<div class="hl-card">
-    <div class="hl-card-pad"><div class="hl-card-hdr">
-      <div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">En descente vers la rémission</div>${hlDateTag(latest)}</div>
-      <div class="hl-card-val">
-        <div class="hl-big-val" style="color:${col}">${latest.value}</div>
-        <div class="hl-val-unit">µg/g${hChip('calprotectin',latest.value)}</div>
-        ${delta!==null?`<div style="font-family:'JetBrains Mono';font-size:.54rem;color:${dCol};margin-top:2px">${dStr} vs précédent</div>`:''}
+  /* 2 — KPI row */
+  function kpiCard(icon,label,latest,metric){
+    if(!latest) return `<div class="ds-kpi"><div class="ds-kpi-label">${label}</div><div class="ds-kpi-val-row"><span class="ds-kpi-big" style="color:var(--t3)">—</span></div><div class="ds-kpi-status" style="color:var(--t3)">Aucune donnée</div></div>`;
+    const m=HMETA[metric];
+    const col=hCol(metric,latest.value);
+    const chip=m.chipFn(latest.value);
+    const statusTxt=chip==='g'?'Normal':chip==='w'?'Attention':'Critique';
+    const logs=hlLogs(metric);
+    const delta=hlDelta(logs);
+    const deltaStr=delta!==null?(delta>0?`▲ +${delta}`:`▼ ${Math.abs(delta)}`):'';
+    return `<div class="ds-kpi">
+      <div class="ds-kpi-label">${label}</div>
+      <div class="ds-kpi-val-row">
+        <span class="ds-kpi-icon">${icon}</span>
+        <span class="ds-kpi-big" style="color:${col}">${latest.value}</span>
+        <span class="ds-kpi-unit">${m.unit}</span>
       </div>
-    </div></div>
-    <svg class="hl-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:170px;display:block">
-      <defs><linearGradient id="cpG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".28"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-      ${ry50>0&&ry50<H?`<rect x="0" y="${ry50.toFixed(1)}" width="${W}" height="${(H-ry50).toFixed(1)}" fill="rgba(57,255,20,.03)"/><line x1="0" y1="${ry50.toFixed(1)}" x2="${W}" y2="${ry50.toFixed(1)}" stroke="rgba(57,255,20,.2)" stroke-dasharray="6 8" stroke-width="1"/><text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(57,255,20,.35)" x="${W-8}" y="${(ry50-4).toFixed(1)}" text-anchor="end">RÉMISSION &lt;50</text>`:''}
-      ${ry250>0&&ry250<H?`<line x1="0" y1="${ry250.toFixed(1)}" x2="${W}" y2="${ry250.toFixed(1)}" stroke="rgba(255,56,100,.18)" stroke-dasharray="6 8" stroke-width="1"/><text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(255,56,100,.28)" x="${W-8}" y="${(ry250-4).toFixed(1)}" text-anchor="end">ACTIF &gt;250</text>`:''}
-      <path fill="url(#cpG)" d="${hlArea(cs,H,py)}" style="opacity:0;animation:hlFill .8s ease-out .3s forwards"/>
-      <path fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="${hlPath(cs)}" style="stroke-dasharray:3000;stroke-dashoffset:3000;animation:hlDraw 2.5s ease-out forwards"/>
-      ${cs.map((c,i)=>{const isL=i===cs.length-1;const dc=hCol('calprotectin',c.value);return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${isL?6:4}" fill="${dc}" stroke="var(--bg-0)" stroke-width="2" style="opacity:0;animation:hlDot .4s ease-out ${(.5+i*.14).toFixed(2)}s forwards"/>${isL?`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="14" fill="${dc}" style="opacity:0;animation:hlGlw 3s ease-in-out infinite 1.2s"/>`:''}`}).join('')}
-      ${cs.map(c=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${c.x.toFixed(1)}" y="${H-3}" text-anchor="middle">${hlMonth(c.date)}</text>`).join('')}
-    </svg>
-    ${hlHistoryStrip(logs,'calprotectin')}
-  </div>`;
-}
-
-/* ── OXYGEN CAPACITY AREA CHART (hemoglobin/hematocrit) ── */
-function renderOxygenCard(hemoLogs, hctLogs) {
-  const logs=hemoLogs.length?hemoLogs:hctLogs;
-  const latestH=hemoLogs.length?hemoLogs[hemoLogs.length-1]:null;
-  const latestHct=hctLogs.length?hctLogs[hctLogs.length-1]:null;
-  const col=latestH?hCol('hemoglobin',latestH.value):'var(--t3)';
-  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">Capacité en Oxygène</div><div class="hl-card-sub">HÉMOGLOBINE & HÉMATOCRITE</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">g/dL</div></div></div><div class="hl-empty">Aucune mesure enregistrée</div></div></div>`;
-  const W=900,H=150,px=46,py=14;
-  const vals=logs.map(l=>l.value); const minV=Math.min(...vals)-1; const maxV=Math.max(...vals,13.5)+1;
-  const cs=hlCoords(logs,W,H,minV,maxV,px,py);
-  const ry=H-py-((13.5-minV)/(maxV-minV))*(H-2*py);
-  const delta=hlDelta(hemoLogs);
-  return `<div class="hl-card">
-    <div class="hl-card-pad" style="padding-bottom:0"><div class="hl-card-hdr" style="margin-bottom:8px">
-      <div><div class="hl-card-title">Capacité en Oxygène</div><div class="hl-card-sub">HÉMOGLOBINE & HÉMATOCRITE</div>${hlDateTag(latestH||latestHct)}</div>
-      <div class="hl-card-val">
-        <div class="hl-big-val" style="color:${col};font-size:1.75rem">${latestH?latestH.value:'—'}</div>
-        <div class="hl-val-unit">g/dL ${latestHct?`/ ${latestHct.value}%`:''}${latestH?hChip('hemoglobin',latestH.value):''}</div>
-        ${delta!==null?`<div style="font-family:'JetBrains Mono';font-size:.52rem;color:${delta>0?'var(--hg)':'var(--hr)'}">↑ en récupération depuis ${hemoLogs[0].value}</div>`:''}
+      <div class="ds-kpi-status" style="color:${col}">${statusTxt}${deltaStr?` · <span style="font-size:.5rem;color:var(--t3)">${deltaStr}</span>`:''}
       </div>
-    </div></div>
-    <div style="height:132px">
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">
-      <defs><linearGradient id="oxG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".45"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-      ${ry>0&&ry<H?`<line x1="0" y1="${ry.toFixed(1)}" x2="${W}" y2="${ry.toFixed(1)}" stroke="rgba(57,255,20,.15)" stroke-dasharray="6 8" stroke-width="1"/><text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(57,255,20,.28)" x="${W-8}" y="${(ry-4).toFixed(1)}" text-anchor="end">NORMAL 13.5</text>`:''}
-      <path fill="url(#oxG)" d="${hlArea(cs,H,py)}" style="opacity:0;animation:hlFill 1s ease-out .4s forwards"/>
-      <path fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="${hlPath(cs)}" style="stroke-dasharray:2000;stroke-dashoffset:2000;animation:hlDraw 2s ease-out forwards"/>
-      ${cs.map((c,i)=>{const isL=i===cs.length-1;const dc=hCol('hemoglobin',c.value);return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${isL?5:3}" fill="${dc}" stroke="var(--bg-0)" stroke-width="2" style="opacity:0;animation:hlDot .4s ease-out ${(.3+i*.1).toFixed(2)}s forwards"/><text font-family="'JetBrains Mono',monospace" font-size="7" font-weight="600" fill="${dc}" x="${c.x.toFixed(1)}" y="${(c.y-8).toFixed(1)}" text-anchor="middle">${c.value}</text>`}).join('')}
-      ${cs.map(c=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${c.x.toFixed(1)}" y="${H-2}" text-anchor="middle">${hlMonth(c.date)}</text>`).join('')}
-    </svg></div>
-  </div>`;
-}
-
-/* ── HEMOGLOBIN LIQUID TUBES ── */
-function renderTubesCard(logs) {
-  const latest=logs.length?logs[logs.length-1]:null;
-  const col=latest?hCol('hemoglobin',latest.value):'var(--t3)';
-  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">Capacité Sanguine</div><div class="hl-card-sub">REMPLISSAGE · CHAQUE TUBE = UNE PRISE</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">g/dL</div></div></div><div class="hl-empty">Aucune mesure enregistrée</div></div></div>`;
-  const td2=logs.slice(-9); const minH=9,maxH=18;
-  const tubesHtml=td2.map((l,i)=>{
-    const pct=Math.max(0,Math.min(100,((l.value-minH)/(maxH-minH))*100));
-    const c=hCol('hemoglobin',l.value);
-    return `<div style="display:flex;flex-direction:column;align-items:center;gap:5px;min-width:34px">
-      <div style="width:26px;height:105px;border-radius:13px;background:var(--bg-0);position:relative;overflow:hidden;border:1px solid var(--b1)">
-        <div style="position:absolute;bottom:0;left:0;right:0;border-radius:0 0 12px 12px;background:${c};box-shadow:0 0 10px ${c}28;height:0;--h:${pct.toFixed(1)}%;animation:hlTube 1.5s ease-out ${(.15+i*.1).toFixed(2)}s forwards"></div>
-      </div>
-      <div style="font-family:'JetBrains Mono';font-size:.65rem;font-weight:700;color:${c}">${l.value}</div>
-      <div style="font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3)">${hlMonth(l.date)}</div>
     </div>`;
-  }).join('');
-  return `<div class="hl-card"><div class="hl-card-pad">
-    <div class="hl-card-hdr" style="margin-bottom:18px">
-      <div><div class="hl-card-title">Capacité Sanguine</div><div class="hl-card-sub">Chaque tube = une prise de sang</div>${hlDateTag(latest)}</div>
-      <div class="hl-card-val"><div class="hl-big-val" style="color:${col};font-size:1.75rem">${latest.value}</div><div class="hl-val-unit">g/dL${hChip('hemoglobin',latest.value)}</div></div>
-    </div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:flex-end">${tubesHtml}</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-top:14px;justify-content:center">
-      <div style="height:1px;width:36px;border-top:1px dashed rgba(57,255,20,.25)"></div>
-      <div style="font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);letter-spacing:.8px">13.5 g/dL = SEUIL NORMAL</div>
-      <div style="height:1px;width:36px;border-top:1px dashed rgba(57,255,20,.25)"></div>
-    </div>
-  </div></div>`;
-}
-
-/* ── BODY COMPOSITION — HORIZONTAL BARS + STATS (no rings) ── */
-function renderBodyCompCard(weightLogs, fatLogs, leanLogs) {
-  const latestW=weightLogs.length?weightLogs[weightLogs.length-1].value:null;
-  const latestF=fatLogs.length?fatLogs[fatLogs.length-1].value:null;
-  const latestL=leanLogs.length?leanLogs[leanLogs.length-1].value:null;
-  const H=181; const bmi=latestW?+(latestW/(H/100*H/100)).toFixed(1):null;
-  const bc=BODY_COMP;
-  const fatPct=latestF||bc.fatPct;
-  const fatCol=hCol('body_fat',fatPct);
-  const bmiCol=bmi?(bmi<18.5?'var(--hr)':bmi<25?'var(--hg)':'var(--hw)'):'var(--t3)';
-  const rows=[
-    {label:'Graisse corporelle',val:`${fatPct}%`, sub:`${bc.fatMass} kg`,col:fatCol, pct:Math.min(100,fatPct*2.5)},
-    {label:'Masse musculaire',  val:`${bc.musclePct}%`,sub:'',col:'var(--hg)',  pct:Math.min(100,bc.musclePct*1.5)},
-    {label:'Taux d\'eau',       val:`${bc.waterPct}%`, sub:'',col:'var(--blue)', pct:Math.min(100,bc.waterPct)},
-    {label:'Masse osseuse',     val:`${bc.boneMass} kg`,sub:'',col:'var(--t2)',  pct:Math.min(100,bc.boneMass*15)},
-    {label:'Protéines',         val:`${bc.protein} kg`,sub:'',col:'var(--purple)',pct:Math.min(100,bc.protein*5)},
-    {label:'Âge estimé du corps',val:`${bc.bodyAge} ans`,sub:'',col:'var(--gold)',pct:Math.min(100,(bc.bodyAge/40)*100)},
-    {label:'IMC',               val:bmi||'—',   sub:bmi?(bmi<18.5?'Sous-poids':bmi<25?'Normal':'Surpoids'):'', col:bmiCol, pct:bmi?Math.min(100,(bmi/35)*100):0},
-  ];
-  return `<div class="hl-card"><div class="hl-card-pad">
-    <div class="hl-card-hdr">
-      <div><div class="hl-card-title">Composition Corporelle</div><div class="hl-card-sub">181 CM · Ce dont vous êtes fait</div></div>
-      <div class="hl-card-val">
-        <div class="hl-big-val" style="color:${fatCol};font-size:2rem">${fatPct}<span style="font-size:.8rem;color:var(--t3)">%</span></div>
-        <div class="hl-val-unit">Graisse corporelle ${fatPct>=10&&fatPct<=22?'<span class="hl-chip hl-chip-g">PLAGE SAINE</span>':'<span class="hl-chip hl-chip-w">À SURVEILLER</span>'}</div>
-      </div>
-    </div>
-    <div class="hl-comp-stats">
-      ${rows.map((r,i)=>`<div class="hl-comp-row">
-        <div style="flex:1;min-width:0">
-          <div class="hl-comp-label">${r.label}</div>
-          <div class="hl-comp-bar"><div class="hl-comp-bar-fill" style="--w:${r.pct.toFixed(1)}%;background:${r.col};box-shadow:0 0 8px ${r.col}28;animation-delay:${(i*0.1).toFixed(2)}s"></div></div>
-        </div>
-        <div style="text-align:right;margin-left:16px;flex-shrink:0">
-          <div class="hl-comp-val" style="color:${r.col}">${r.val}</div>
-          ${r.sub?`<div style="font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3);margin-top:1px">${r.sub}</div>`:''}
-        </div>
-      </div>`).join('')}
-    </div>
-  </div></div>`;
-}
-
-/* ── PLATELETS CHART ── */
-function renderPlateletsCard(logs) {
-  const m=HMETA.platelets; const latest=logs.length?logs[logs.length-1]:null;
-  const col=latest?hCol('platelets',latest.value):'var(--t3)';
-  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">/µL</div></div></div><div class="hl-empty">Aucune mesure enregistrée</div></div></div>`;
-  const W=900,H=150,px=50,py=18;
-  const vals=logs.map(l=>l.value); const minV=Math.min(...vals,150)-30; const maxV=Math.max(...vals,400)+30;
-  const cs=hlCoords(logs,W,H,minV,maxV,px,py);
-  const ry150=H-py-((150-minV)/(maxV-minV))*(H-2*py);
-  const ry400=H-py-((400-minV)/(maxV-minV))*(H-2*py);
-  return `<div class="hl-card">
-    <div class="hl-card-pad" style="padding-bottom:0"><div class="hl-card-hdr" style="margin-bottom:8px">
-      <div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div>${hlDateTag(latest)}</div>
-      <div class="hl-card-val"><div class="hl-big-val" style="color:${col};font-size:1.75rem">${latest.value}</div><div class="hl-val-unit">/µL${hChip('platelets',latest.value)}</div></div>
-    </div></div>
-    <div style="height:130px">
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">
-      <defs><linearGradient id="pltG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".25"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-      ${ry150>0&&ry150<H?`<line x1="0" y1="${ry150.toFixed(1)}" x2="${W}" y2="${ry150.toFixed(1)}" stroke="rgba(255,56,100,.15)" stroke-dasharray="6 8" stroke-width="1"/><text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(255,56,100,.28)" x="${W-8}" y="${(ry150+10).toFixed(1)}" text-anchor="end">MIN 150</text>`:''}
-      ${ry400>0&&ry400<H?`<line x1="0" y1="${ry400.toFixed(1)}" x2="${W}" y2="${ry400.toFixed(1)}" stroke="rgba(255,159,28,.15)" stroke-dasharray="6 8" stroke-width="1"/><text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(255,159,28,.28)" x="${W-8}" y="${(ry400-4).toFixed(1)}" text-anchor="end">MAX 400</text>`:''}
-      <path fill="url(#pltG)" d="${hlArea(cs,H,py)}" style="opacity:0;animation:hlFill 1s ease-out .4s forwards"/>
-      <path fill="none" stroke="${col}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="${hlPath(cs)}" style="stroke-dasharray:2000;stroke-dashoffset:2000;animation:hlDraw 2s ease-out forwards"/>
-      ${cs.map((c,i)=>{const isL=i===cs.length-1;const dc=hCol('platelets',c.value);return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${isL?5:3}" fill="${dc}" stroke="var(--bg-0)" stroke-width="2" style="opacity:0;animation:hlDot .4s ease-out ${(.3+i*.1).toFixed(2)}s forwards"/><text font-family="'JetBrains Mono',monospace" font-size="7" font-weight="600" fill="${dc}" x="${c.x.toFixed(1)}" y="${(c.y-8).toFixed(1)}" text-anchor="middle">${c.value}</text>`}).join('')}
-      ${cs.map(c=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${c.x.toFixed(1)}" y="${H-2}" text-anchor="middle">${hlMonth(c.date)}</text>`).join('')}
-    </svg></div>
-    ${hlHistoryStrip(logs,'platelets')}
+  }
+  html+=`<div class="ds-kpi-row">
+    ${kpiCard('🔬','CRP',latCRP,'crp')}
+    ${kpiCard('🧪','Calprotectine',latCP,'calprotectin')}
+    ${kpiCard('☀','Vitamine D',latVD,'vitamin_d')}
+    ${kpiCard('🩸','Hémoglobine',latHb,'hemoglobin')}
   </div>`;
-}
 
-/* ── GENERIC SIMPLE LINE CARD (for creatinine, albumin, etc.) ── */
-function renderSimpleLineCard(metric, logs) {
-  const m=HMETA[metric]; if(!m) return '';
-  const latest=logs.length?logs[logs.length-1]:null;
-  const col=latest?hCol(metric,latest.value):'var(--t3)';
-  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">${m.unit}</div></div></div><div class="hl-empty">Aucune mesure enregistrée</div></div></div>`;
-  const W=900,H=130,px=50,py=16;
-  const vals=logs.map(l=>l.value); const minV=Math.min(...vals)-Math.abs(Math.min(...vals)*.1||1); const maxV=Math.max(...vals)+Math.abs(Math.max(...vals)*.1||1);
-  const cs=hlCoords(logs,W,H,minV,maxV,px,py);
-  return `<div class="hl-card">
-    <div class="hl-card-pad" style="padding-bottom:0"><div class="hl-card-hdr" style="margin-bottom:6px">
-      <div><div class="hl-card-title">${m.label}</div><div class="hl-card-sub">${m.sub}</div>${hlDateTag(latest)}</div>
-      <div class="hl-card-val"><div class="hl-big-val" style="color:${col};font-size:1.6rem">${latest.value}</div><div class="hl-val-unit">${m.unit}${hChip(metric,latest.value)}</div></div>
-    </div></div>
-    <div style="height:110px">
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="100%">
-      <defs><linearGradient id="${metric}G" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".2"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
-      <path fill="url(#${metric}G)" d="${hlArea(cs,H,py)}" style="opacity:0;animation:hlFill .8s ease-out .3s forwards"/>
-      <path fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="${hlPath(cs)}" style="stroke-dasharray:2000;stroke-dashoffset:2000;animation:hlDraw 2s ease-out forwards"/>
-      ${cs.map((c,i)=>{const isL=i===cs.length-1;const dc=hCol(metric,c.value);return `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${isL?5:3}" fill="${dc}" stroke="var(--bg-0)" stroke-width="2" style="opacity:0;animation:hlDot .4s ease-out ${(.3+i*.1).toFixed(2)}s forwards"/><text font-family="'JetBrains Mono',monospace" font-size="7" font-weight="600" fill="${dc}" x="${c.x.toFixed(1)}" y="${(c.y-8).toFixed(1)}" text-anchor="middle">${c.value}</text>`}).join('')}
-      ${cs.map(c=>`<text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(92,90,110,.55)" x="${c.x.toFixed(1)}" y="${H-2}" text-anchor="middle">${hlMonth(c.date)}</text>`).join('')}
-    </svg></div>
-    ${hlHistoryStrip(logs,metric)}
-  </div>`;
-}
-
-/* ── VITAMIN D SUN PHASES (with stale detection) ── */
-function renderVitDCard(logs) {
-  const latest=logs.length?logs[logs.length-1]:null;
-  const stale=latest?hlIsStale(latest.date,180):false;
-  const col=latest&&!stale?hCol('vitamin_d',latest.value):'var(--t3)';
-  if(!logs.length) return `<div class="hl-card"><div class="hl-card-pad"><div class="hl-card-hdr"><div><div class="hl-card-title">Vitamine D</div><div class="hl-card-sub">SANTÉ IMMUNITAIRE & OSSEUSE</div></div><div class="hl-card-val"><div class="hl-big-val" style="color:var(--t3)">—</div><div class="hl-val-unit">ng/mL</div></div></div><div class="hl-empty">Aucune mesure enregistrée</div></div></div>`;
-  const pct=latest?Math.min(100,(latest.value/50)*100):0;
-  const staleWarning=stale?`<div style="text-align:center;margin-top:10px;padding:8px 12px;background:rgba(92,90,110,.06);border:1px dashed var(--b2);border-radius:8px;font-family:'JetBrains Mono';font-size:.56rem;color:var(--t3)">⚠ Test obsolète — dernier résultat du ${hlFmtDate(latest.date)} (il y a ${hlDaysSince(latest.date)} jours)<br><span style="color:var(--hw)">Veuillez refaire un dosage de vitamine D</span></div>`:'';
-  const orbs=logs.slice(-6).map((l,i)=>{
-    const sz=22+(l.value/50)*46; const br=(0.18+(l.value/50)*0.82).toFixed(2);
-    const isL=i===logs.slice(-6).length-1;
-    return `<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-      <div style="width:${sz.toFixed(0)}px;height:${sz.toFixed(0)}px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#FFE066,#FF9F1C,#662200);opacity:${isL&&stale?'0.3':br};box-shadow:0 0 ${isL?18:7}px rgba(255,159,28,${isL?.42:.18});display:flex;align-items:center;justify-content:center;${isL&&!stale?'animation:hlGlw 3s ease-in-out infinite;':''}">
-        <span style="font-family:'JetBrains Mono';font-weight:700;color:#000;font-size:${sz>46?11:8}px">${l.value}</span>
-      </div>
-      <div style="font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3)">${hlMonth(l.date)}</div>
-    </div>`;
-  }).join('');
-  const valDisplay=stale?`<span style="opacity:.45">${latest.value}</span>`:`${latest.value}`;
-  const chipDisplay=stale?`<span class="hl-chip hl-chip-stale">TEST OBSOLÈTE</span>`:hChip('vitamin_d',latest.value);
-  return `<div class="hl-card"><div class="hl-card-pad">
-    <div class="hl-card-hdr">
-      <div><div class="hl-card-title">Vitamine D</div><div class="hl-card-sub">Le soleil grandit avec vos niveaux</div>${hlDateTag(latest)}</div>
-      <div class="hl-card-val"><div class="hl-big-val" style="color:${col};font-size:1.75rem">${valDisplay}</div><div class="hl-val-unit">ng/mL${chipDisplay}</div></div>
+  /* 3 — Chart grid 2×2 */
+  html+=`<div class="ds-chart-grid">
+    <div class="ds-chart-card">
+      <div class="ds-chart-title"><span class="ds-chart-title-icon">📈</span> CRP — Inflammation systémique</div>
+      <div class="ds-chart-wrap"><canvas id="hlChartCRP"></canvas></div>
     </div>
-    <div style="display:flex;gap:10px;justify-content:center;align-items:flex-end;flex-wrap:wrap;padding:8px 0">${orbs}</div>
-    ${staleWarning}
-    ${!stale?`<div style="margin-top:14px;height:4px;background:var(--b0);border-radius:2px;overflow:hidden">
-      <div style="height:100%;background:linear-gradient(90deg,var(--hr),var(--hw));width:0;--w:${pct.toFixed(1)}%;animation:hlBar 2s ease-out forwards;border-radius:2px"></div>
+    <div class="ds-chart-card">
+      <div class="ds-chart-title"><span class="ds-chart-title-icon">🔬</span> Neutrophiles</div>
+      <div class="ds-chart-wrap"><canvas id="hlChartNeut"></canvas></div>
     </div>
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3)">
-      <span>0</span><span>20 DÉF</span><span>30 OK</span><span>50+</span>
+    <div class="ds-chart-card">
+      <div class="ds-chart-title"><span class="ds-chart-title-icon">🩸</span> Hémoglobine</div>
+      <div class="ds-chart-wrap"><canvas id="hlChartHb"></canvas></div>
     </div>
-    <div style="text-align:center;margin-top:10px;font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3)">
-      À <span style="color:${col}">${pct.toFixed(0)}%</span> du seuil suffisant · Objectif : <span style="color:var(--hg)">30+ ng/mL</span>
-    </div>`:''}
-  </div></div>`;
-}
-
-/* ── CENTRAL AVATAR (dynamic scale based on weight/BMI/fat) ── */
-function renderAvatarHTML(weight, bodyFat) {
-  const bmi=weight?weight/(1.81*1.81):null;
-  const fatPct=bodyFat||BODY_COMP.fatPct;
-  /* Scale factor: use combination of BMI and body fat */
-  const bmiFactor=bmi?Math.max(0.52,Math.min(1.45,(bmi-16)/11)):0.62;
-  const fatFactor=fatPct?Math.max(0.7,Math.min(1.3,fatPct/15)):1;
-  const fw=(bmiFactor*0.7+fatFactor*0.3);
-  const col=bmi?(bmi<18.5?'var(--hr)':bmi<25?'var(--hg)':'var(--hw)'):'rgba(92,90,110,.55)';
-  const gc=bmi?(bmi<18.5?'rgba(255,56,100,.22)':bmi<25?'rgba(57,255,20,.22)':'rgba(255,159,28,.22)'):'rgba(92,90,110,.08)';
-  const bw=Math.round(40*fw); const label=bmi?(bmi<18.5?'SOUS-POIDS':bmi<25?'IMC NORMAL':bmi<30?'SURPOIDS':'OBÈSE'):'SAISIR POIDS';
-  const scaleCSS=weight?`transform:scale(${(weight/70).toFixed(2)});transform-origin:center center;transition:transform .6s ease`:'';
-  return `<div style="position:sticky;top:80px">
-    <div style="border:1px solid rgba(57,255,20,.1);border-radius:14px;padding:18px 12px 14px;background:rgba(57,255,20,.018);box-shadow:0 0 44px rgba(57,255,20,.04);text-align:center">
-      <div style="${scaleCSS}">
-      <svg viewBox="0 0 140 280" width="110" height="220" style="display:block;margin:0 auto;filter:drop-shadow(0 0 12px ${gc})">
-        <defs>
-          <linearGradient id="avG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".75"/><stop offset="100%" stop-color="${col}" stop-opacity=".28"/></linearGradient>
-          <filter id="avBl"><feGaussianBlur stdDeviation="2"/></filter>
-        </defs>
-        <ellipse cx="70" cy="145" rx="${bw+10}" ry="68" fill="${col}" opacity=".035" filter="url(#avBl)"/>
-        <circle cx="70" cy="28" r="21" fill="${col}" opacity=".07"/>
-        <circle cx="70" cy="28" r="21" fill="none" stroke="url(#avG)" stroke-width="2" opacity=".9"/>
-        <line x1="70" y1="49" x2="70" y2="63" stroke="${col}" stroke-width="${Math.max(4,(6*fw)).toFixed(1)}" stroke-linecap="round" opacity=".7"/>
-        <path d="M${70-bw} 73 Q${70-bw-6} 64 ${70-bw+3} 63 L${70+bw-3} 63 Q${70+bw+6} 64 ${70+bw} 73" fill="none" stroke="${col}" stroke-width="1.8" opacity=".75"/>
-        <path d="M${70-bw} 73 L${70-Math.round(bw*.82)} 155 Q70 ${160+bw*2} ${70+Math.round(bw*.82)} 155 L${70+bw} 73 Z" fill="${col}" opacity=".07"/>
-        <path d="M${70-bw} 73 L${70-Math.round(bw*.82)} 155 Q70 ${160+bw*2} ${70+Math.round(bw*.82)} 155 L${70+bw} 73" fill="none" stroke="url(#avG)" stroke-width="1.8"/>
-        <path d="M${70-bw+2} 82 L${70-bw-17} 140 Q${70-bw-19} 148 ${70-bw-13} 150" fill="none" stroke="${col}" stroke-width="${Math.max(3,(4*fw)).toFixed(1)}" stroke-linecap="round" opacity=".7"/>
-        <path d="M${70+bw-2} 82 L${70+bw+17} 140 Q${70+bw+19} 148 ${70+bw+13} 150" fill="none" stroke="${col}" stroke-width="${Math.max(3,(4*fw)).toFixed(1)}" stroke-linecap="round" opacity=".7"/>
-        <path d="M${70-Math.round(bw*.48)} 155 L${70-Math.round(bw*.52)} 232 Q${70-Math.round(bw*.56)} 240 ${70-Math.round(bw*.6)} 242" fill="none" stroke="${col}" stroke-width="${Math.max(4,(5*fw)).toFixed(1)}" stroke-linecap="round" opacity=".8"/>
-        <path d="M${70+Math.round(bw*.48)} 155 L${70+Math.round(bw*.52)} 232 Q${70+Math.round(bw*.56)} 240 ${70+Math.round(bw*.6)} 242" fill="none" stroke="${col}" stroke-width="${Math.max(4,(5*fw)).toFixed(1)}" stroke-linecap="round" opacity=".8"/>
-        <line x1="70" y1="63" x2="70" y2="155" stroke="${col}" stroke-width="1" opacity=".18" stroke-dasharray="3 4"/>
-      </svg>
-      </div>
-      <div style="font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);letter-spacing:.8px;margin-top:8px">IMC ${bmi?bmi.toFixed(1):'—'}</div>
-      <div style="font-family:'JetBrains Mono';font-size:.5rem;color:${col};letter-spacing:.5px;margin-top:2px">${label}</div>
-      ${weight?`<div style="font-family:'JetBrains Mono';font-size:.68rem;font-weight:700;color:var(--t0);margin-top:5px">${weight} kg</div>`:''}
-      <div style="font-family:'JetBrains Mono';font-size:.44rem;color:var(--t3);margin-top:4px;opacity:.45;line-height:1.5">S'ADAPTE DYNAMIQUEMENT<br>AU POIDS ET À LA GRAISSE</div>
+    <div class="ds-chart-card">
+      <div class="ds-chart-title"><span class="ds-chart-title-icon">🧪</span> Calprotectine fécale</div>
+      <div class="ds-chart-wrap"><canvas id="hlChartCalpro"></canvas></div>
     </div>
   </div>`;
-}
 
-/* ── MAIN RENDER (DeepSeek-style stacked sections) ── */
-function renderHealth() {
-  const sec=$('hl-sections'); const ctr=$('hl-center');
-  if(!sec) return;
-  const wLogs=hlLogs('weight'); const cpLogs=hlLogs('calprotectin'); const crpLogs=hlLogs('crp');
-  const hLogs=hlLogs('hemoglobin'); const hctLogs=hlLogs('hematocrit');
-  const vdLogs=hlLogs('vitamin_d'); const fLogs=hlLogs('body_fat'); const lnLogs=hlLogs('lean_mass');
-  const pltLogs=hlLogs('platelets'); const creatLogs=hlLogs('creatinine'); const albLogs=hlLogs('albumin');
-  const latestW=wLogs.length?wLogs[wLogs.length-1].value:null;
-  const latestF=fLogs.length?fLogs[fLogs.length-1].value:null;
-  const allLogs=[...(D.healthLogs||[])].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
-  const lastD=allLogs.length?hlFmtDate(allLogs[0].date):'';
-  const sub=$('hlLastLog');
-  if(!sub.dataset.edited){
-    sub.textContent=lastD?`DERNIER BILAN : ${lastD} · 181 CM · CROHN`:"181 CM · MALADIE DE CROHN · DOSSIER N° 070218-007 · STOMIE ILÉALE DÉFINITIVE";
-  }
-  /* Avatar sidebar */
-  ctr.innerHTML=renderAvatarHTML(latestW,latestF);
-  /* Build numbered sections */
-  let n=1, html='';
-  function addSec(label,content){
-    html+=`<div class="hl-sec"><div class="hl-sec-label"><em>${String(n).padStart(2,'0')}</em> ${label}</div>${content}</div>`;
-    n++;
-  }
-  /* 01 — Calprotectin */
-  addSec('Calprotectine Fécale', renderCalproCard(cpLogs));
-  /* 02 — CRP */
-  addSec('Protéine C Réactive', renderCRPCard(crpLogs));
-  /* 03 — Hemoglobin & Hematocrit */
-  addSec('Hémoglobine & Hématocrite', renderOxygenCard(hLogs,hctLogs)+renderTubesCard(hLogs));
-  /* 04 — Vitamin D */
-  addSec('Vitamine D', renderVitDCard(vdLogs));
-  /* 05 — Weight */
-  addSec('Poids', renderWeightCard(wLogs));
-  /* 06 — Body Composition */
-  addSec('Composition Corporelle', renderBodyCompCard(wLogs,fLogs,lnLogs));
-  /* 07 — Platelets */
-  addSec('Plaquettes', renderPlateletsCard(pltLogs));
-  /* 08/09 — Extra metrics in a two-column grid */
-  if(creatLogs.length||albLogs.length){
-    let duo='<div class="hl-duo">';
-    if(creatLogs.length) duo+=renderSimpleLineCard('creatinine',creatLogs);
-    if(albLogs.length) duo+=renderSimpleLineCard('albumin',albLogs);
-    duo+='</div>';
-    addSec('Fonction Rénale & Nutrition', duo);
-  }
-  sec.innerHTML=html;
+  /* 4 — Chart row 2-col: Créatinine & Albumine */
+  html+=`<div class="ds-chart-grid">
+    <div class="ds-chart-card">
+      <div class="ds-chart-title"><span class="ds-chart-title-icon">🫘</span> Créatinine — Fonction rénale</div>
+      <div class="ds-chart-wrap"><canvas id="hlChartCreat"></canvas></div>
+    </div>
+    <div class="ds-chart-card">
+      <div class="ds-chart-title"><span class="ds-chart-title-icon">💧</span> Albumine — Nutrition</div>
+      <div class="ds-chart-wrap"><canvas id="hlChartAlb"></canvas></div>
+    </div>
+  </div>`;
+
+  /* 5 — Data table */
+  const recentDates=allDates.slice(-8);
+  html+=`<div class="ds-table-card">
+    <div class="ds-table-title"><span style="margin-right:6px">📊</span> Évolution des biomarqueurs clés</div>
+    <table class="ds-table"><thead><tr><th>Biomarqueur</th>`;
+  recentDates.forEach(d=>{html+=`<th>${hlFmtDate(d)}</th>`;});
+  html+=`</tr></thead><tbody>`;
+  tableMetrics.forEach(metric=>{
+    const m=HMETA[metric]; if(!m) return;
+    const logs=hlLogs(metric); if(!logs.length) return;
+    html+=`<tr><td>${m.label} <span style="color:var(--t3)">(${m.unit})</span></td>`;
+    recentDates.forEach(d=>{
+      const entry=logs.find(l=>l.date===d);
+      if(entry){const c=m.chipFn(entry.value);const cls=c==='r'?'val-high':c==='w'?'val-warn':'val-ok';html+=`<td class="${cls}">${entry.value}</td>`;}
+      else{html+=`<td style="color:var(--b2)">—</td>`;}
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table></div>`;
+
+  /* 6 — Alerts */
+  const alerts=[];
+  if(latCRP){const c=HMETA.crp.chipFn(latCRP.value);if(c==='g')alerts.push({type:'green',icon:'✓',text:`CRP ${latCRP.value} mg/L — Inflammation systémique contrôlée`});else alerts.push({type:'orange',icon:'⚠',text:`CRP ${latCRP.value} mg/L — ${c==='w'?'Surveillance recommandée':'Inflammation élevée, consultez votre médecin'}`});}
+  if(latVD){const c=HMETA.vitamin_d.chipFn(latVD.value);if(c!=='g')alerts.push({type:'orange',icon:'☀',text:`Vit. D ${latVD.value} ng/mL — ${c==='r'?'Carence sévère':'Insuffisant'} · supplémentation nécessaire`});if(hlIsStale(latVD.date))alerts.push({type:'purple',icon:'📅',text:`Dernière Vit. D : ${hlFmtDate(latVD.date)} — Contrôle recommandé (> 6 mois)`});}
+  if(latHb){const c=HMETA.hemoglobin.chipFn(latHb.value);if(c==='r')alerts.push({type:'orange',icon:'🩸',text:`Hémoglobine ${latHb.value} g/dL — Risque d'anémie ferriprive`});else if(c==='g')alerts.push({type:'green',icon:'✓',text:`Hémoglobine ${latHb.value} g/dL — Dans les normes`});}
+  if(latCP){const c=HMETA.calprotectin.chipFn(latCP.value);if(c==='r')alerts.push({type:'orange',icon:'🔥',text:`Calprotectine ${latCP.value} µg/g — Inflammation intestinale active`});else if(c==='g')alerts.push({type:'green',icon:'✓',text:`Calprotectine ${latCP.value} µg/g — Rémission endoscopique`});}
+  if(!alerts.length)alerts.push({type:'green',icon:'✓',text:'Tous les marqueurs dans les normes — Bonne stabilité clinique'});
+  html+=`<div class="ds-alerts">`;
+  alerts.forEach(a=>{html+=`<div class="ds-alert ${a.type}"><span class="ds-alert-icon">${a.icon}</span> ${a.text}</div>`;});
+  html+=`</div>`;
+
+  el.innerHTML=html;
+
+  /* Init Chart.js */
+  setTimeout(()=>{
+    hlMakeChart('hlChartCRP',crpLogs,'crp','#FF3864');
+    hlMakeChart('hlChartNeut',neutLogs,'neutrophils','#39FF14');
+    hlMakeChart('hlChartHb',hLogs,'hemoglobin','#FF9F1C');
+    hlMakeChart('hlChartCalpro',cpLogs,'calprotectin','#f59e0b');
+    hlMakeChart('hlChartCreat',creatLogs,'creatinine','#64FFDA');
+    hlMakeChart('hlChartAlb',albLogs,'albumin','#a855f7');
+  },60);
 }
 
 /* ── HEALTH EVENT HANDLERS ── */
-/* Track if user has manually edited the subtitle */
-$('hlLastLog').addEventListener('input',function(){this.dataset.edited='1'});
-
 $('hlLogTgl').onclick=()=>{const f=$('hlFrm');f.classList.toggle('open');$('hlBatchFrm').classList.remove('open');if(f.classList.contains('open')){$('hlDate').value=td();$('hlVal').focus()}};
 $('hlFrmCancel').onclick=()=>$('hlFrm').classList.remove('open');
 $('hlDateToday').onclick=()=>{$('hlDate').value=td()};
@@ -2771,9 +2492,9 @@ $('hlFrmSave').onclick=()=>{
   $('hlDate').value=td();
   $('hlFrm').classList.remove('open');
   renderHealth();
+  scheduleSave();
 };
 
-/* ── BATCH FORM EVENT HANDLERS ── */
 $('hlBatchTgl').onclick=()=>{const f=$('hlBatchFrm');f.classList.toggle('open');$('hlFrm').classList.remove('open');if(f.classList.contains('open')){$('hlBatchDate').value=td()}};
 $('hlBatchCancel').onclick=()=>$('hlBatchFrm').classList.remove('open');
 $('hlBatchDateToday').onclick=()=>{$('hlBatchDate').value=td()};
@@ -2794,8 +2515,9 @@ $('hlBatchSave').onclick=()=>{
   });
   if(!count){toast('REMPLISSEZ AU MOINS UN CHAMP','rd');return}
   $('hlBatchFrm').classList.remove('open');
-  toast(`${count} MESURE${count>1?'S':''} ENREGISTRÉE${count>1?'S':''}`,'gld');
+  toast(`${count} MESURE${count>1?'S':''} ENREGISTRÉE${count>1?'S':''}`, 'gld');
   renderHealth();
+  scheduleSave();
 };
 
 /* ═══════ FULL RENDER ═══════ */
@@ -2803,13 +2525,14 @@ function fullR(){
   renderT();
   renderDL();
   const v=document.querySelector('.nav-tab.active').dataset.v;
-  if(v==='projects')renderProj();
-  if(v==='groceries')renderGrc();
-  if(v==='books')renderBooks();
-  if(v==='health')renderHealth();
+  if(v==='projects') renderProj();
+  if(v==='groceries') renderGrc();
+  if(v==='books') renderBooks();
+  if(v==='health') renderHealth();
 }
-	
+
 /* ═══════ RESIZE ═══════ */
+
 
 /* ═══════ SEED HEALTH DATA (if empty) ═══════ */
 function seedHealthData(){
@@ -2857,6 +2580,14 @@ function seedHealthData(){
     {date:'2025-11-06',metric:'body_fat',value:7.2,unit:'%'},
     /* Lean mass */
     {date:'2025-11-06',metric:'lean_mass',value:50.1,unit:'kg'},
+    /* Neutrophils */
+    {date:'2021-07-09',metric:'neutrophils',value:4.2,unit:'10³/µL'},
+    {date:'2021-11-26',metric:'neutrophils',value:5.1,unit:'10³/µL'},
+    {date:'2025-11-06',metric:'neutrophils',value:7.8,unit:'10³/µL'},
+    /* Leukocytes */
+    {date:'2021-07-09',metric:'leukocytes',value:7.1,unit:'10³/µL'},
+    {date:'2021-11-26',metric:'leukocytes',value:8.2,unit:'10³/µL'},
+    {date:'2025-11-06',metric:'leukocytes',value:11.2,unit:'10³/µL'},
   ];
   seed.forEach(s=>{
     D.healthLogs.push({id:D.hid++,...s,notes:s.notes||'',createdAt:s.date+'T12:00:00Z'});
