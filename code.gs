@@ -37,7 +37,7 @@ const SHEETS = {
 // ═══════ COLUMN DEFINITIONS ═══════
 const TASK_COLS     = ['id','name','project','person','partner','priority','due','done','blocked','blockedBy','order','notes','createdAt','completedAt','doneDate','subtasks'];
 const DEADLINE_COLS = ['id','date','title','project','partner','type','allDay','keepCount','notes'];
-const PROJECT_COLS  = ['title','year','status','type','director'];
+const PROJECT_COLS  = ['title','year','status','type','director','category'];
 const CLOSED_COLS   = ['title','year','director'];
 const PEOPLE_COLS   = ['code','name','role'];
 const PARTNER_COLS  = ['name','color','bgColor'];
@@ -73,7 +73,7 @@ function doGet(e) {
     // --- Deadlines ---
     data.deadlines = readSheet(ss, SHEETS.DEADLINES, DEADLINE_COLS).map(row => ({
       id:        toNum(row.id),
-      date:      str(row.date),
+      date:      normalizeDate(str(row.date)),
       title:     str(row.title),
       project:   str(row.project),
       partner:   str(row.partner),
@@ -89,7 +89,8 @@ function doGet(e) {
       year:     toNum(row.year),
       status:   str(row.status),
       type:     str(row.type),
-      director: str(row.director)
+      director: str(row.director),
+      category: str(row.category) || (str(row.status) === 'personal' ? 'personal' : 'film')
     }));
 
     // --- Closed ---
@@ -254,9 +255,9 @@ function doGet(e) {
     // --- Health Logs ---
     data.healthLogs = readSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS).map(row => ({
       id: toNum(row.id),
-      date: str(row.date),
+      date: normalizeDate(str(row.date)),
       metric: str(row.metric),
-      value: str(row.value),
+      value: toNum(row.value),
       unit: str(row.unit),
       category: str(row.category),
       notes: str(row.notes),
@@ -316,7 +317,7 @@ function doPost(e) {
 
     // --- Projects ---
     writeSheet(ss, SHEETS.PROJECTS, PROJECT_COLS,
-      (D.projects || []).map(p => [p.title, p.year, p.status, p.type, p.director]));
+      (D.projects || []).map(p => [p.title, p.year, p.status, p.type, p.director, p.category || (p.status === 'personal' ? 'personal' : 'film')]));
 
     // --- Closed ---
     writeSheet(ss, SHEETS.CLOSED, CLOSED_COLS,
@@ -517,6 +518,22 @@ function toBool(v) {
   if (typeof v === 'boolean') return v;
   const s = String(v).toLowerCase().trim();
   return s === 'true' || s === '1' || s === 'yes';
+}
+
+/**
+ * Normalize a date string to YYYY-MM-DD format.
+ * Handles both YYYY-MM-DD and long JS Date strings like
+ * "Mon Mar 09 2026 00:00:00 GMT+0000 (UTC+00:00)".
+ */
+function normalizeDate(s) {
+  if (!s) return '';
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return s;
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return y + '-' + m + '-' + day;
 }
 
 function getHeaders(ss, sheetName) {
