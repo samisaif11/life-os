@@ -576,68 +576,111 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 @media(max-width:900px){.books-panels{grid-template-columns:1fr}.books-carousel-wrap{grid-template-columns:36px 1fr 36px}.bk-card{min-width:132px;max-width:132px}.bk-cover{height:180px}}
 @media(min-width:1200px){.bk-card{min-width:190px;max-width:190px}.bk-cover{height:260px}.books-carousel{gap:18px;padding:16px}}
 
-/* ═══════ HEALTH — DeepSeek Layout Clone ═══════ */
-:root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13)}
-/* Patient header */
-.ds-patient{background:var(--bg-2);border:1px solid var(--b0);border-radius:16px;padding:28px 32px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
-.ds-patient-name{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--t0);line-height:1.2}
-.ds-patient-meta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:8px;font-family:'JetBrains Mono';font-size:.6rem;color:var(--t2);letter-spacing:.5px}
-.ds-patient-tag{padding:4px 12px;border-radius:6px;font-size:.58rem;font-weight:600;letter-spacing:.3px}
-.ds-patient-tag.teal{background:rgba(6,182,212,.1);color:var(--cyan);border:1px solid rgba(6,182,212,.2)}
-.ds-patient-tag.purple{background:rgba(168,85,247,.1);color:var(--purple);border:1px solid rgba(168,85,247,.2)}
-.ds-dossier{background:var(--bg-3);border:1px solid var(--b1);border-radius:10px;padding:12px 18px;font-family:'JetBrains Mono';font-size:.62rem;color:var(--t2);letter-spacing:.3px;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.ds-dossier-icon{font-size:1rem}
-/* KPI summary row */
-.ds-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-@media(max-width:900px){.ds-kpi-row{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:500px){.ds-kpi-row{grid-template-columns:1fr}}
-.ds-kpi{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:20px 22px;position:relative}
-.ds-kpi-label{font-family:'JetBrains Mono';font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
-.ds-kpi-val-row{display:flex;align-items:baseline;gap:8px}
-.ds-kpi-icon{font-size:1.2rem;margin-right:4px}
-.ds-kpi-big{font-family:'JetBrains Mono';font-size:2rem;font-weight:700;line-height:1}
-.ds-kpi-unit{font-family:'JetBrains Mono';font-size:.6rem;color:var(--t3)}
-.ds-kpi-status{font-family:'JetBrains Mono';font-size:.52rem;margin-top:6px;letter-spacing:.3px}
-/* Charts grid */
-.ds-chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-@media(max-width:800px){.ds-chart-grid{grid-template-columns:1fr}}
-.ds-chart-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:22px 24px;overflow:hidden}
-.ds-chart-title{font-size:.78rem;font-weight:600;color:var(--t0);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.ds-chart-title-icon{font-size:.9rem}
-.ds-chart-wrap{position:relative;width:100%;height:220px}
-.ds-chart-wrap canvas{width:100%!important;height:100%!important}
-/* Full-width table card */
-.ds-table-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:24px 28px;margin-bottom:20px;overflow-x:auto}
-.ds-table-title{font-size:.82rem;font-weight:600;color:var(--t0);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.ds-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono';font-size:.62rem}
-.ds-table th{text-align:left;padding:10px 12px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:1px;font-size:.5rem;border-bottom:1px solid var(--b1)}
-.ds-table td{padding:10px 12px;border-bottom:1px solid var(--b0);color:var(--t1)}
-.ds-table tr:last-child td{border:none;font-weight:700}
-.ds-table .val-high{color:var(--hr)}
-.ds-table .val-warn{color:var(--hw)}
-.ds-table .val-ok{color:var(--t1)}
-/* Alerts row */
-.ds-alerts{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
-.ds-alert{flex:1;min-width:220px;padding:12px 16px;border-radius:10px;font-family:'JetBrains Mono';font-size:.58rem;letter-spacing:.3px;display:flex;align-items:center;gap:8px;line-height:1.4}
-.ds-alert-icon{font-size:.9rem;flex-shrink:0}
-.ds-alert.green{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);color:var(--green)}
-.ds-alert.orange{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);color:var(--orange)}
-.ds-alert.purple{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.15);color:var(--purple)}
-/* Form styles */
-.ds-topbar-btns{display:flex;gap:6px;margin-left:auto}
-.hl-frm{background:var(--bg-2);border:1px solid var(--b1);border-radius:var(--rl);padding:20px;margin-bottom:18px;display:none}
-.hl-frm.open{display:block;animation:mdIn .2s ease}
-.hl-batch-frm{background:var(--bg-2);border:1px solid var(--b1);border-radius:var(--rl);padding:20px;margin-bottom:18px;display:none}
-.hl-batch-frm.open{display:block;animation:mdIn .2s ease}
-.hl-batch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:12px}
-.hl-batch-field label{font-size:.6rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
-.hl-batch-field input{width:100%;padding:7px 10px;background:var(--bg-1);border:1px solid var(--b1);border-radius:6px;color:var(--t0);font-family:'JetBrains Mono';font-size:.72rem;outline:none}
-.hl-batch-field input:focus{border-color:var(--gold)}
-.hl-batch-field input::placeholder{color:var(--t3)}
-/* Subtitle editable */
-.ds-subtitle{font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;cursor:text;transition:border .2s}
-.ds-subtitle[contenteditable="true"]:hover{border-bottom:1px dashed var(--gold)}
-.ds-subtitle[contenteditable="true"]:focus{outline:none;border-bottom:1px solid var(--gold);color:var(--t1)}
+/* ═══════ HEALTH — Pro Medical Dashboard v2 ═══════ */
+:root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13);--hice:#64FFDA}
+/* Pulse keyframes */
+@keyframes hlPulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes hlGlow{0%,100%{box-shadow:0 0 8px rgba(57,255,20,.15)}50%{box-shadow:0 0 22px rgba(57,255,20,.35)}}
+@keyframes hlGlowR{0%,100%{box-shadow:0 0 8px rgba(255,56,100,.12)}50%{box-shadow:0 0 22px rgba(255,56,100,.30)}}
+@keyframes hlGlowW{0%,100%{box-shadow:0 0 8px rgba(255,159,28,.12)}50%{box-shadow:0 0 20px rgba(255,159,28,.28)}}
+@keyframes hlScan{0%{left:0}100%{left:calc(100% - 2px)}}
+@keyframes hlFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes hlBarGrow{from{width:0}to{width:var(--bw)}}
+
+/* KPI row — 3 cards */
+.hl-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px}
+@media(max-width:900px){.hl-kpi-row{grid-template-columns:1fr}}
+.hl-kpi{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:24px 26px;position:relative;overflow:hidden;animation:hlFadeUp .5s ease both}
+.hl-kpi:nth-child(2){animation-delay:.08s}.hl-kpi:nth-child(3){animation-delay:.16s}
+.hl-kpi-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.hl-kpi-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--t2);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
+.hl-kpi-date{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--t3);white-space:nowrap}
+.hl-kpi-val{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.hl-kpi-num{font-family:'JetBrains Mono',monospace;font-size:2.6rem;font-weight:700;line-height:1}
+.hl-kpi-unit{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--t3);font-weight:500}
+.hl-kpi-sub{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--t2);display:flex;align-items:center;gap:6px}
+.hl-kpi-delta{font-weight:600}
+.hl-kpi-pulse{position:absolute;top:16px;right:18px;width:10px;height:10px;border-radius:50%}
+.hl-kpi-pulse.g{background:var(--hg);animation:hlGlow 2.5s ease-in-out infinite}
+.hl-kpi-pulse.r{background:var(--hr);animation:hlGlowR 1.8s ease-in-out infinite}
+.hl-kpi-pulse.w{background:var(--hw);animation:hlGlowW 2s ease-in-out infinite}
+
+/* Chart cards */
+.hl-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
+@media(max-width:800px){.hl-grid-2{grid-template-columns:1fr}}
+.hl-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:24px 26px;overflow:hidden;animation:hlFadeUp .5s ease both}
+.hl-card-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.hl-card-title{font-family:'Outfit',sans-serif;font-size:.92rem;font-weight:600;color:var(--t0);display:flex;align-items:center;gap:8px}
+.hl-card-subtitle{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--t3);margin-top:3px}
+.hl-card-badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:3px 10px;border-radius:6px;font-weight:600}
+.hl-chart-wrap{position:relative;width:100%;height:240px}
+.hl-chart-wrap canvas{width:100%!important;height:100%!important}
+
+/* CRP annotation strip */
+.hl-crp-annots{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.hl-crp-annot{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:4px 10px;border-radius:6px;background:var(--bg-3);border:1px solid var(--b1);color:var(--t2)}
+.hl-crp-annot .av{font-weight:700;margin-left:4px}
+
+/* Gym heatmap */
+.hl-heatmap{display:grid;grid-template-columns:repeat(52,1fr);gap:2px;margin-top:10px}
+.hl-hm-cell{aspect-ratio:1;border-radius:2px;background:var(--bg-3);transition:background .2s}
+.hl-hm-cell.l1{background:rgba(57,255,20,.15)}.hl-hm-cell.l2{background:rgba(57,255,20,.30)}
+.hl-hm-cell.l3{background:rgba(57,255,20,.50)}.hl-hm-cell.l4{background:var(--hg)}
+.hl-hm-legend{display:flex;align-items:center;gap:6px;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--t3)}
+.hl-hm-legend-box{width:10px;height:10px;border-radius:2px}
+.hl-hm-months{display:flex;gap:0;margin-bottom:3px;font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--t3)}
+.hl-hm-months span{flex:1;text-align:center;min-width:0}
+.hl-hm-days{display:flex;flex-direction:column;gap:2px;margin-right:4px;font-family:'JetBrains Mono',monospace;font-size:.45rem;color:var(--t3);justify-content:space-between}
+.hl-hm-wrap{display:flex;align-items:flex-start}
+.hl-hm-grid-wrap{flex:1;overflow:hidden}
+.hl-hm-row{display:grid;grid-template-columns:repeat(52,1fr);gap:2px}
+.hl-hm-stat{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--t1);margin-top:10px;display:flex;gap:18px}
+.hl-hm-stat strong{color:var(--hg);font-weight:700}
+
+/* Calprotectin growth indicator */
+.hl-calpro-growth{display:flex;align-items:center;gap:14px;margin-top:14px;padding:14px 18px;background:var(--bg-3);border-radius:10px;border:1px solid var(--b1)}
+.hl-calpro-pct{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700}
+.hl-calpro-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--t3)}
+.hl-calpro-bar{flex:1;height:6px;background:var(--bg-1);border-radius:3px;overflow:hidden;position:relative}
+.hl-calpro-fill{height:100%;border-radius:3px;transition:width 1.2s ease}
+
+/* Body composition */
+.hl-bodycomp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+@media(max-width:600px){.hl-bodycomp-grid{grid-template-columns:1fr}}
+.hl-bc-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-3);border-radius:8px;border:1px solid var(--b0)}
+.hl-bc-icon{font-size:1rem;flex-shrink:0;width:28px;text-align:center}
+.hl-bc-info{flex:1;min-width:0}
+.hl-bc-name{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.8px}
+.hl-bc-val{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--t0)}
+.hl-bc-bar{height:4px;background:var(--bg-1);border-radius:2px;margin-top:4px;overflow:hidden}
+.hl-bc-fill{height:100%;border-radius:2px;animation:hlBarGrow 1.2s ease both}
+
+/* Scanline for CRP card */
+.hl-scanline{position:absolute;top:0;left:0;width:2px;height:100%;background:linear-gradient(180deg,transparent,var(--hr),transparent);opacity:.5;animation:hlScan 4s linear infinite;pointer-events:none;z-index:2}
+
+/* Form modals for health */
+.hl-form-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.65);backdrop-filter:blur(8px)}
+.hl-form-modal.open{display:flex;animation:mdIn .2s ease}
+.hl-form-box{background:var(--bg-2);border:1px solid var(--b1);border-radius:16px;padding:28px 30px;max-width:540px;width:90%;max-height:85vh;overflow-y:auto}
+.hl-form-title{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:var(--t0);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.hl-form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.hl-form-field label{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
+.hl-form-field input,.hl-form-field select{width:100%;padding:8px 12px;background:var(--bg-1);border:1px solid var(--b1);border-radius:8px;color:var(--t0);font-family:'JetBrains Mono',monospace;font-size:.75rem;outline:none}
+.hl-form-field input:focus,.hl-form-field select:focus{border-color:var(--gold)}
+.hl-form-field input::placeholder{color:var(--t3)}
+.hl-form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+/* Health menu in header */
+.hl-menu{position:relative;display:inline-block}
+.hl-menu-btn{background:var(--bg-3);border:1px solid var(--b1);border-radius:8px;padding:6px 12px;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--t2);cursor:pointer;display:flex;align-items:center;gap:5px;transition:var(--tr)}
+.hl-menu-btn:hover{border-color:var(--gold);color:var(--t0)}
+.hl-menu-drop{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg-2);border:1px solid var(--b1);border-radius:10px;padding:6px;min-width:200px;display:none;z-index:10;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.hl-menu-drop.open{display:block;animation:hlFadeUp .15s ease}
+.hl-menu-item{display:block;width:100%;padding:8px 14px;border:none;background:none;color:var(--t1);font-family:'JetBrains Mono',monospace;font-size:.65rem;text-align:left;cursor:pointer;border-radius:6px;transition:var(--tr)}
+.hl-menu-item:hover{background:var(--bg-4);color:var(--t0)}
+
+/* Full-width card */
+.hl-full{margin-bottom:22px}
 
 </style>
 </head>
@@ -777,71 +820,75 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 </div>
 
 <div class="vw" id="v-health">
-  <!-- Buttons bar -->
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-    <button class="nbtn" id="hlLogTgl">+ SAISIE UNIQUE</button>
-    <button class="nbtn" id="hlBatchTgl" style="background:var(--gold-d);color:var(--gold);border-color:var(--gold)">+ AJOUTER BILAN SANGUIN</button>
-  </div>
-  <!-- Single entry form -->
-  <div class="tfrm hl-frm" id="hlFrm">
-    <div class="fr fr2">
-      <div><label class="fl">Métrique</label>
-        <select class="fs" id="hlMetric">
-          <option value="weight">Poids (kg)</option>
-          <option value="calprotectin">Calprotectine fécale (µg/g)</option>
-          <option value="crp">Protéine C réactive (mg/L)</option>
-          <option value="hemoglobin">Hémoglobine (g/dL)</option>
-          <option value="hematocrit">Hématocrite (%)</option>
-          <option value="vitamin_d">Vitamine D (ng/mL)</option>
-          <option value="platelets">Plaquettes (/µL)</option>
-          <option value="neutrophils">Neutrophiles (10³/µL)</option>
-          <option value="leukocytes">Leucocytes (10³/µL)</option>
-          <option value="body_fat">Graisse corporelle (%)</option>
-          <option value="lean_mass">Masse maigre (kg)</option>
-          <option value="creatinine">Créatinine (mg/L)</option>
-          <option value="albumin">Albumine (g/L)</option>
-        </select>
-      </div>
-      <div><label class="fl">Date</label>
-        <div style="display:flex;gap:4px;align-items:center">
-          <input type="date" class="fi" id="hlDate">
-          <button type="button" class="setnow-b" id="hlDateToday">AUJOURD'HUI</button>
-        </div>
-      </div>
-    </div>
-    <div class="fr fr2">
-      <div><label class="fl">Valeur</label><input type="number" class="fi" id="hlVal" placeholder="0" step="0.01"></div>
-      <div><label class="fl">Notes</label><input type="text" class="fi" id="hlNotes" placeholder="Optionnel..."></div>
-    </div>
-    <div class="fac"><button class="btn btn-gh" id="hlFrmCancel">ANNULER</button><button class="btn btn-g" id="hlFrmSave">ENREGISTRER</button></div>
-  </div>
-  <!-- Batch form -->
-  <div class="hl-batch-frm" id="hlBatchFrm">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div style="font-size:.78rem;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:.5px">Saisie groupée — Bilan sanguin</div>
-      <div style="display:flex;gap:6px;align-items:center">
-        <label class="fl" style="margin:0">Date du bilan</label>
-        <input type="date" class="fi" id="hlBatchDate" style="width:150px">
-        <button type="button" class="setnow-b" id="hlBatchDateToday">AUJOURD'HUI</button>
-      </div>
-    </div>
-    <div class="hl-batch-grid" id="hlBatchGrid">
-      <div class="hl-batch-field"><label>CRP (mg/L)</label><input type="number" step="0.01" placeholder="—" data-metric="crp"></div>
-      <div class="hl-batch-field"><label>Calprotectine (µg/g)</label><input type="number" step="1" placeholder="—" data-metric="calprotectin"></div>
-      <div class="hl-batch-field"><label>Hémoglobine (g/dL)</label><input type="number" step="0.1" placeholder="—" data-metric="hemoglobin"></div>
-      <div class="hl-batch-field"><label>Hématocrite (%)</label><input type="number" step="0.1" placeholder="—" data-metric="hematocrit"></div>
-      <div class="hl-batch-field"><label>Plaquettes (/µL)</label><input type="number" step="1" placeholder="—" data-metric="platelets"></div>
-      <div class="hl-batch-field"><label>Neutrophiles (10³/µL)</label><input type="number" step="0.01" placeholder="—" data-metric="neutrophils"></div>
-      <div class="hl-batch-field"><label>Leucocytes (10³/µL)</label><input type="number" step="0.01" placeholder="—" data-metric="leukocytes"></div>
-      <div class="hl-batch-field"><label>Vitamine D (ng/mL)</label><input type="number" step="0.1" placeholder="—" data-metric="vitamin_d"></div>
-      <div class="hl-batch-field"><label>Créatinine (mg/L)</label><input type="number" step="0.1" placeholder="—" data-metric="creatinine"></div>
-      <div class="hl-batch-field"><label>Albumine (g/L)</label><input type="number" step="0.1" placeholder="—" data-metric="albumin"></div>
-      <div class="hl-batch-field"><label>Poids (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="weight"></div>
-    </div>
-    <div class="fac" style="margin-top:14px"><button class="btn btn-gh" id="hlBatchCancel">ANNULER</button><button class="btn btn-g" id="hlBatchSave">ENREGISTRER TOUT</button></div>
-  </div>
   <!-- Dynamic content rendered by JS -->
   <div id="hl-content"></div>
+</div>
+
+<!-- Health Form Modals (triggered from + menu) -->
+<div class="hl-form-modal" id="hlFrmCRP">
+  <div class="hl-form-box">
+    <div class="hl-form-title">CRP — Saisie</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field"><label>Date</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlCRPDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>CRP (mg/L)</label><input type="number" step="0.01" id="hlCRPVal" placeholder="—"></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlCRPSave">ENREGISTRER</button></div>
+  </div>
+</div>
+
+<div class="hl-form-modal" id="hlFrmCalpro">
+  <div class="hl-form-box">
+    <div class="hl-form-title">Calprotectine Fécale — Saisie</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field"><label>Date</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlCalproDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>Calprotectine (µg/g)</label><input type="number" step="1" id="hlCalproVal" placeholder="—"></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlCalproSave">ENREGISTRER</button></div>
+  </div>
+</div>
+
+<div class="hl-form-modal" id="hlFrmGym">
+  <div class="hl-form-box">
+    <div class="hl-form-title">Gym — Log Séance</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field"><label>Date</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlGymDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>Notes (optionnel)</label><input type="text" id="hlGymNotes" placeholder="Push, Pull, Legs..."></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlGymSave">ENREGISTRER</button></div>
+  </div>
+</div>
+
+<div class="hl-form-modal" id="hlFrmBlood">
+  <div class="hl-form-box">
+    <div class="hl-form-title">Bilan Sanguin — Saisie Groupée</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field" style="grid-column:1/-1"><label>Date du bilan</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlBloodDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>Hémoglobine (g/dL)</label><input type="number" step="0.1" placeholder="—" data-metric="hemoglobin"></div>
+      <div class="hl-form-field"><label>Hématocrite (%)</label><input type="number" step="0.1" placeholder="—" data-metric="hematocrit"></div>
+      <div class="hl-form-field"><label>Plaquettes (/µL)</label><input type="number" step="1" placeholder="—" data-metric="platelets"></div>
+      <div class="hl-form-field"><label>Neutrophiles (10³/µL)</label><input type="number" step="0.01" placeholder="—" data-metric="neutrophils"></div>
+      <div class="hl-form-field"><label>Leucocytes (10³/µL)</label><input type="number" step="0.01" placeholder="—" data-metric="leukocytes"></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlBloodSave">ENREGISTRER TOUT</button></div>
+  </div>
+</div>
+
+<div class="hl-form-modal" id="hlFrmBody">
+  <div class="hl-form-box">
+    <div class="hl-form-title">Composition Corporelle — Saisie</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field" style="grid-column:1/-1"><label>Date</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlBodyDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>Poids (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="weight"></div>
+      <div class="hl-form-field"><label>Graisse (%)</label><input type="number" step="0.1" placeholder="—" data-metric="body_fat"></div>
+      <div class="hl-form-field"><label>Masse grasse (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="fat_mass"></div>
+      <div class="hl-form-field"><label>Taux d'eau (%)</label><input type="number" step="0.1" placeholder="—" data-metric="water_pct"></div>
+      <div class="hl-form-field"><label>Masse musculaire (%)</label><input type="number" step="0.1" placeholder="—" data-metric="muscle_pct"></div>
+      <div class="hl-form-field"><label>Masse osseuse (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="bone_mass"></div>
+      <div class="hl-form-field"><label>Protéines (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="protein_mass"></div>
+      <div class="hl-form-field"><label>Masse maigre (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="lean_mass"></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlBodySave">ENREGISTRER TOUT</button></div>
+  </div>
 </div>
 
 <!-- Books Modals -->
@@ -2274,6 +2321,12 @@ const HMETA = {
   albumin:      {label:'Albumine',              unit:'g/L',   refMin:38, refMax:50,  goodDir:'up',   chipFn:(v)=>v>=38?'g':v>=30?'w':'r'},
   neutrophils:  {label:'Neutrophiles',          unit:'10³/µL',refMin:1.5,refMax:7,   goodDir:'norm', chipFn:(v)=>v>=1.5&&v<=7?'g':v<1.5?'r':'w'},
   leukocytes:   {label:'Leucocytes totaux',     unit:'10³/µL',refMin:4,  refMax:10,  goodDir:'norm', chipFn:(v)=>v>=4&&v<=10?'g':v<4?'r':'w'},
+  gym:          {label:'Gym',                    unit:'session',refMin:0,  refMax:1,   goodDir:'up',   chipFn:()=>'g'},
+  fat_mass:     {label:'Masse grasse',           unit:'kg',    refMin:3,  refMax:15,  goodDir:'norm', chipFn:(v)=>v<=15?'g':v<=20?'w':'r'},
+  water_pct:    {label:'Taux d\'eau',            unit:'%',     refMin:50, refMax:70,  goodDir:'norm', chipFn:(v)=>v>=50&&v<=70?'g':v<50?'w':'w'},
+  muscle_pct:   {label:'Masse musculaire',       unit:'%',     refMin:33, refMax:55,  goodDir:'up',   chipFn:(v)=>v>=33?'g':v>=25?'w':'r'},
+  bone_mass:    {label:'Masse osseuse',          unit:'kg',    refMin:2.0,refMax:4.0, goodDir:'norm', chipFn:(v)=>v>=2.0&&v<=4.0?'g':v<2.0?'r':'w'},
+  protein_mass: {label:'Protéines',               unit:'kg',    refMin:8,  refMax:15,  goodDir:'up',   chipFn:(v)=>v>=8?'g':v>=5?'w':'r'},
 };
 
 function hCol(metric, value) {
@@ -2314,211 +2367,355 @@ function hlDaysSince(ds) {
 function hlIsStale(ds, days=180) { return hlDaysSince(ds)>days; }
 /* Chart.js instances cache */
 let hlCharts={};
-function hlMakeChart(canvasId,logs,metric,lineColor){
+function hlMakeChart(canvasId,logs,metric,lineColor,opts){
   const canvas=document.getElementById(canvasId);
-  if(!canvas||!logs.length){if(canvas){canvas.style.display='none';canvas.parentElement.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:\'JetBrains Mono\';font-size:.6rem;color:var(--t3)">Aucune donnée</div>';}return;}
+  if(!canvas){return;}
+  if(!logs.length){canvas.parentElement.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;font-size:.68rem;color:var(--t3)">Aucune donnée</div>';return;}
   if(hlCharts[canvasId]){try{hlCharts[canvasId].destroy();}catch(e){}}
   const m=HMETA[metric];
   const labels=logs.map(l=>{const d=new Date(l.date+'T00:00:00');return d.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});});
   const data=logs.map(l=>l.value);
-  hlCharts[canvasId]=new Chart(canvas,{
+  const cfg={
     type:'line',
-    data:{labels,datasets:[{data,borderColor:lineColor,backgroundColor:lineColor+'18',fill:true,tension:0.35,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:lineColor,pointBorderColor:'transparent',borderWidth:2.5}]},
+    data:{labels,datasets:[{data,borderColor:lineColor,backgroundColor:lineColor+'18',fill:true,tension:0.35,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:lineColor,pointBorderColor:'transparent',borderWidth:2.5}]},
     options:{
       responsive:true,maintainAspectRatio:false,
-      animation:{duration:900,easing:'easeOutQuart'},
+      animation:{duration:1200,easing:'easeOutQuart'},
       plugins:{
         legend:{display:false},
-        tooltip:{backgroundColor:'#121216',titleColor:'#f0eeea',bodyColor:'#c0beb8',borderColor:'#2a2a36',borderWidth:1,padding:10,
-          titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:11},
+        tooltip:{backgroundColor:'#0c0c10ee',titleColor:'#f0eeea',bodyColor:'#c0beb8',borderColor:'#2a2a36',borderWidth:1,padding:12,cornerRadius:8,
+          titleFont:{family:'JetBrains Mono',size:11,weight:'600'},bodyFont:{family:'JetBrains Mono',size:12},
           callbacks:{label:ctx=>`${ctx.parsed.y} ${m?m.unit:''}`}
         }
       },
       scales:{
-        x:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:9},maxRotation:0},grid:{color:'#1e1e2814'},border:{color:'#1e1e28'}},
-        y:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:9}},grid:{color:'#1e1e2830'},border:{color:'#1e1e28'}}
+        x:{ticks:{color:'#8a8898',font:{family:'JetBrains Mono',size:10},maxRotation:0},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'}},
+        y:{ticks:{color:'#8a8898',font:{family:'JetBrains Mono',size:10}},grid:{color:'#1e1e2830'},border:{color:'#1e1e28'}}
       }
     }
-  });
+  };
+  if(opts&&opts.datasets){cfg.data.datasets=opts.datasets;}
+  if(opts&&opts.refLine!=null){
+    cfg.data.datasets.push({data:Array(labels.length).fill(opts.refLine),borderColor:opts.refLineColor||'#5c5a6e44',borderWidth:1,borderDash:[6,4],pointRadius:0,pointHoverRadius:0,fill:false,tension:0,label:opts.refLabel||'Seuil'});
+    cfg.options.plugins.legend={display:true,labels:{color:'#8a8898',font:{family:'JetBrains Mono',size:10},boxWidth:12,padding:16,filter:item=>item.text!=='undefined'}};
+  }
+  hlCharts[canvasId]=new Chart(canvas,cfg);
 }
 
+/* ═══ RENDER HEALTH ═══ */
 function renderHealth(){
   const el=$('hl-content');
   if(!el) return;
   const wLogs=hlLogs('weight'),cpLogs=hlLogs('calprotectin'),crpLogs=hlLogs('crp');
   const hLogs=hlLogs('hemoglobin'),hctLogs=hlLogs('hematocrit');
-  const vdLogs=hlLogs('vitamin_d'),fLogs=hlLogs('body_fat'),lnLogs=hlLogs('lean_mass');
-  const pltLogs=hlLogs('platelets'),creatLogs=hlLogs('creatinine'),albLogs=hlLogs('albumin');
-  const neutLogs=hlLogs('neutrophils'),leuLogs=hlLogs('leukocytes');
-  const latCRP=hlLatest('crp'),latCP=hlLatest('calprotectin');
-  const latVD=hlLatest('vitamin_d'),latHb=hlLatest('hemoglobin');
-  const latNeut=hlLatest('neutrophils'),latCreat=hlLatest('creatinine'),latAlb=hlLatest('albumin');
-  const allLogs=D.healthLogs||[];
-  const allDates=[...new Set(allLogs.map(l=>l.date))].sort();
-  const tableMetrics=['crp','calprotectin','hemoglobin','hematocrit','vitamin_d','platelets','neutrophils','leukocytes','creatinine','albumin'];
+  const gymLogs=hlLogs('gym');
+  const fatLogs=hlLogs('body_fat'),lnLogs=hlLogs('lean_mass');
+  const waterLogs=hlLogs('water_pct'),muscleLogs=hlLogs('muscle_pct'),boneLogs=hlLogs('bone_mass'),proteinLogs=hlLogs('protein_mass'),fatMassLogs=hlLogs('fat_mass');
+  const latW=hlLatest('weight'),latCRP=hlLatest('crp'),latCP=hlLatest('calprotectin'),latHb=hlLatest('hemoglobin');
+  const latFat=hlLatest('body_fat'),latLean=hlLatest('lean_mass'),latWater=hlLatest('water_pct'),latMuscle=hlLatest('muscle_pct'),latBone=hlLatest('bone_mass'),latProtein=hlLatest('protein_mass'),latFatMass=hlLatest('fat_mass');
   let html='';
 
-  /* 1 — Patient header */
-  html+=`<div class="ds-patient">
-    <div>
-      <div class="ds-patient-name">Sami Saif</div>
-      <div class="ds-patient-meta">
-        <span>DDN : 02/07/2002</span>
-        <span class="ds-patient-tag teal">Maladie de Crohn</span>
-        <span class="ds-patient-tag purple">Stomie iléale définitive</span>
+  /* ═══ + MENU BAR ═══ */
+  html+=`<div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <div class="hl-menu" id="hlMenuWrap">
+      <button class="hl-menu-btn" id="hlMenuBtn">+ SAISIE <span style="font-size:.5rem;opacity:.6">▼</span></button>
+      <div class="hl-menu-drop" id="hlMenuDrop">
+        <button class="hl-menu-item" data-form="hlFrmCRP">CRP</button>
+        <button class="hl-menu-item" data-form="hlFrmCalpro">Calprotectine</button>
+        <button class="hl-menu-item" data-form="hlFrmGym">Gym</button>
+        <button class="hl-menu-item" data-form="hlFrmBlood">Bilan Sanguin</button>
+        <button class="hl-menu-item" data-form="hlFrmBody">Composition Corporelle</button>
       </div>
     </div>
-    <div class="ds-dossier"><span class="ds-dossier-icon">📋</span>Dossier N° 070218-007</div>
   </div>`;
 
-  /* 2 — KPI row */
-  function kpiCard(icon,label,latest,metric){
-    if(!latest) return `<div class="ds-kpi"><div class="ds-kpi-label">${label}</div><div class="ds-kpi-val-row"><span class="ds-kpi-big" style="color:var(--t3)">—</span></div><div class="ds-kpi-status" style="color:var(--t3)">Aucune donnée</div></div>`;
-    const m=HMETA[metric];
-    const col=hCol(metric,latest.value);
-    const chip=m.chipFn(latest.value);
-    const statusTxt=chip==='g'?'Normal':chip==='w'?'Attention':'Critique';
-    const logs=hlLogs(metric);
-    const delta=hlDelta(logs);
-    const deltaStr=delta!==null?(delta>0?`▲ +${delta}`:`▼ ${Math.abs(delta)}`):'';
-    return `<div class="ds-kpi">
-      <div class="ds-kpi-label">${label}</div>
-      <div class="ds-kpi-val-row">
-        <span class="ds-kpi-icon">${icon}</span>
-        <span class="ds-kpi-big" style="color:${col}">${latest.value}</span>
-        <span class="ds-kpi-unit">${m.unit}</span>
-      </div>
-      <div class="ds-kpi-status" style="color:${col}">${statusTxt}${deltaStr?` · <span style="font-size:.5rem;color:var(--t3)">${deltaStr}</span>`:''}
-      </div>
+  /* ═══ 1. KPI ROW — 3 cards: CRP, Hémoglobine, Poids ═══ */
+  function kpi(label,latest,metric,icon){
+    if(!latest) return `<div class="hl-kpi"><div class="hl-kpi-top"><span class="hl-kpi-label">${label}</span></div><div class="hl-kpi-val"><span class="hl-kpi-num" style="color:var(--t3)">—</span></div><div class="hl-kpi-sub" style="color:var(--t3)">Aucune donnée</div></div>`;
+    const m=HMETA[metric]; const col=hCol(metric,latest.value); const c=m.chipFn(latest.value);
+    const logs=hlLogs(metric); const delta=hlDelta(logs);
+    let deltaHtml='';
+    if(delta!==null){
+      const good=m.goodDir==='down'?(delta<0):(delta>0);
+      const dCol=good?'var(--hg)':'var(--hr)';
+      deltaHtml=`<span class="hl-kpi-delta" style="color:${dCol}">${delta>0?'▲ +'+delta:'▼ '+Math.abs(delta)} ${m.unit}</span>`;
+    }
+    const statusTxt=c==='g'?'Normal':c==='w'?'Attention':'Critique';
+    // For weight KPI, show gain info
+    let extra='';
+    if(metric==='weight'&&logs.length>=2){
+      const first=logs[0],last=logs[logs.length-1];
+      const totalChange=+(last.value-first.value).toFixed(1);
+      extra=totalChange>=0?`<span style="color:var(--hg);font-weight:600">+${totalChange} kg depuis ${hlFmtDate(first.date)}</span>`:`<span style="color:var(--hr);font-weight:600">${totalChange} kg depuis ${hlFmtDate(first.date)}</span>`;
+    }
+    return `<div class="hl-kpi">
+      <div class="hl-kpi-pulse ${c}"></div>
+      <div class="hl-kpi-top"><span class="hl-kpi-label">${icon} ${label}</span><span class="hl-kpi-date">${hlFmtDate(latest.date)}</span></div>
+      <div class="hl-kpi-val"><span class="hl-kpi-num" style="color:${col}">${latest.value}</span><span class="hl-kpi-unit">${m.unit}</span></div>
+      <div class="hl-kpi-sub"><span style="color:${col}">${statusTxt}</span>${deltaHtml}</div>
+      ${extra?`<div style="margin-top:6px;font-family:JetBrains Mono,monospace;font-size:.62rem">${extra}</div>`:''}
     </div>`;
   }
-  html+=`<div class="ds-kpi-row">
-    ${kpiCard('🔬','CRP',latCRP,'crp')}
-    ${kpiCard('🧪','Calprotectine',latCP,'calprotectin')}
-    ${kpiCard('☀','Vitamine D',latVD,'vitamin_d')}
-    ${kpiCard('🩸','Hémoglobine',latHb,'hemoglobin')}
+  html+=`<div class="hl-kpi-row">
+    ${kpi('CRP',latCRP,'crp','🔬')}
+    ${kpi('Hémoglobine',latHb,'hemoglobin','🩸')}
+    ${kpi('Poids',latW,'weight','⚖')}
   </div>`;
 
-  /* 3 — Chart grid 2×2 */
-  html+=`<div class="ds-chart-grid">
-    <div class="ds-chart-card">
-      <div class="ds-chart-title"><span class="ds-chart-title-icon">📈</span> CRP — Inflammation systémique</div>
-      <div class="ds-chart-wrap"><canvas id="hlChartCRP"></canvas></div>
+  /* ═══ 2. ROW: Weight Chart (left) + CRP Chart (right) ═══ */
+  // CRP annotations
+  let crpAnnotsHtml='';
+  if(crpLogs.length>=2){
+    crpAnnotsHtml='<div class="hl-crp-annots">';
+    for(let i=1;i<crpLogs.length;i++){
+      const prev=crpLogs[i-1],curr=crpLogs[i];
+      const diff=+(curr.value-prev.value).toFixed(1);
+      const col=diff>0?'var(--hr)':'var(--hg)';
+      crpAnnotsHtml+=`<div class="hl-crp-annot">${hlFmtDate(prev.date)} → ${hlFmtDate(curr.date)}<span class="av" style="color:${col}">${diff>0?'+'+diff:diff}</span></div>`;
+    }
+    crpAnnotsHtml+='</div>';
+  }
+  html+=`<div class="hl-grid-2">
+    <div class="hl-card" style="animation-delay:.2s">
+      <div class="hl-card-hdr"><div><div class="hl-card-title">⚖ Poids — Évolution</div><div class="hl-card-subtitle">Trajectoire sur ${wLogs.length} mesures</div></div></div>
+      <div class="hl-chart-wrap"><canvas id="hlChartWeight"></canvas></div>
     </div>
-    <div class="ds-chart-card">
-      <div class="ds-chart-title"><span class="ds-chart-title-icon">🔬</span> Neutrophiles</div>
-      <div class="ds-chart-wrap"><canvas id="hlChartNeut"></canvas></div>
-    </div>
-    <div class="ds-chart-card">
-      <div class="ds-chart-title"><span class="ds-chart-title-icon">🩸</span> Hémoglobine</div>
-      <div class="ds-chart-wrap"><canvas id="hlChartHb"></canvas></div>
-    </div>
-    <div class="ds-chart-card">
-      <div class="ds-chart-title"><span class="ds-chart-title-icon">🧪</span> Calprotectine fécale</div>
-      <div class="ds-chart-wrap"><canvas id="hlChartCalpro"></canvas></div>
-    </div>
-  </div>`;
-
-  /* 4 — Chart row 2-col: Créatinine & Albumine */
-  html+=`<div class="ds-chart-grid">
-    <div class="ds-chart-card">
-      <div class="ds-chart-title"><span class="ds-chart-title-icon">🫘</span> Créatinine — Fonction rénale</div>
-      <div class="ds-chart-wrap"><canvas id="hlChartCreat"></canvas></div>
-    </div>
-    <div class="ds-chart-card">
-      <div class="ds-chart-title"><span class="ds-chart-title-icon">💧</span> Albumine — Nutrition</div>
-      <div class="ds-chart-wrap"><canvas id="hlChartAlb"></canvas></div>
+    <div class="hl-card" style="animation-delay:.3s;position:relative;overflow:hidden">
+      <div class="hl-scanline"></div>
+      <div class="hl-card-hdr"><div><div class="hl-card-title">🔬 CRP — Inflammation Systémique</div><div class="hl-card-subtitle">Objectif &lt; 5 mg/L</div></div>
+        ${latCRP?`<div class="hl-card-badge" style="background:${hCol('crp',latCRP.value)}22;color:${hCol('crp',latCRP.value)};border:1px solid ${hCol('crp',latCRP.value)}44">${latCRP.value} mg/L</div>`:''}</div>
+      <div class="hl-chart-wrap"><canvas id="hlChartCRP"></canvas></div>
+      ${crpAnnotsHtml}
     </div>
   </div>`;
 
-  /* 5 — Data table */
-  const recentDates=allDates.slice(-8);
-  html+=`<div class="ds-table-card">
-    <div class="ds-table-title"><span style="margin-right:6px">📊</span> Évolution des biomarqueurs clés</div>
-    <table class="ds-table"><thead><tr><th>Biomarqueur</th>`;
-  recentDates.forEach(d=>{html+=`<th>${hlFmtDate(d)}</th>`;});
-  html+=`</tr></thead><tbody>`;
-  tableMetrics.forEach(metric=>{
-    const m=HMETA[metric]; if(!m) return;
-    const logs=hlLogs(metric); if(!logs.length) return;
-    html+=`<tr><td>${m.label} <span style="color:var(--t3)">(${m.unit})</span></td>`;
-    recentDates.forEach(d=>{
-      const entry=logs.find(l=>l.date===d);
-      if(entry){const c=m.chipFn(entry.value);const cls=c==='r'?'val-high':c==='w'?'val-warn':'val-ok';html+=`<td class="${cls}">${entry.value}</td>`;}
-      else{html+=`<td style="color:var(--b2)">—</td>`;}
-    });
-    html+=`</tr>`;
-  });
-  html+=`</tbody></table></div>`;
+  /* ═══ 3. ROW: Hemoglobin+Hematocrit (left) + Calprotectin (right) ═══ */
+  // Calprotectin growth
+  let calproGrowth='';
+  if(cpLogs.length>=2){
+    const first=cpLogs[0],last=cpLogs[cpLogs.length-1];
+    const pctChange=first.value!==0?+(((last.value-first.value)/first.value)*100).toFixed(0):0;
+    const col=pctChange>0?'var(--hr)':'var(--hg)';
+    const barW=Math.min(100,Math.abs(pctChange)/20*100);
+    calproGrowth=`<div class="hl-calpro-growth"><div><div class="hl-calpro-pct" style="color:${col}">${pctChange>0?'+':''}${pctChange}%</div><div class="hl-calpro-label">depuis ${hlFmtDate(first.date)}</div></div><div class="hl-calpro-bar"><div class="hl-calpro-fill" style="width:${barW}%;background:${col}"></div></div><div style="font-family:JetBrains Mono,monospace;font-size:.7rem;color:var(--t2);white-space:nowrap">${first.value} → ${last.value} µg/g</div></div>`;
+  }
+  html+=`<div class="hl-grid-2">
+    <div class="hl-card" style="animation-delay:.35s">
+      <div class="hl-card-hdr"><div><div class="hl-card-title">🩸 Hémoglobine & Hématocrite</div><div class="hl-card-subtitle">Dual — Oxygénation sanguine</div></div></div>
+      <div class="hl-chart-wrap"><canvas id="hlChartHbHct"></canvas></div>
+    </div>
+    <div class="hl-card" style="animation-delay:.4s">
+      <div class="hl-card-hdr"><div><div class="hl-card-title">🧪 Calprotectine Fécale</div><div class="hl-card-subtitle">Marqueur d'inflammation intestinale</div></div>
+        ${latCP?`<div class="hl-card-badge" style="background:${hCol('calprotectin',latCP.value)}22;color:${hCol('calprotectin',latCP.value)};border:1px solid ${hCol('calprotectin',latCP.value)}44">${latCP.value} µg/g</div>`:''}</div>
+      <div class="hl-chart-wrap"><canvas id="hlChartCalpro"></canvas></div>
+      ${calproGrowth}
+    </div>
+  </div>`;
 
-  /* 6 — Alerts */
-  const alerts=[];
-  if(latCRP){const c=HMETA.crp.chipFn(latCRP.value);if(c==='g')alerts.push({type:'green',icon:'✓',text:`CRP ${latCRP.value} mg/L — Inflammation systémique contrôlée`});else alerts.push({type:'orange',icon:'⚠',text:`CRP ${latCRP.value} mg/L — ${c==='w'?'Surveillance recommandée':'Inflammation élevée, consultez votre médecin'}`});}
-  if(latVD){const c=HMETA.vitamin_d.chipFn(latVD.value);if(c!=='g')alerts.push({type:'orange',icon:'☀',text:`Vit. D ${latVD.value} ng/mL — ${c==='r'?'Carence sévère':'Insuffisant'} · supplémentation nécessaire`});if(hlIsStale(latVD.date))alerts.push({type:'purple',icon:'📅',text:`Dernière Vit. D : ${hlFmtDate(latVD.date)} — Contrôle recommandé (> 6 mois)`});}
-  if(latHb){const c=HMETA.hemoglobin.chipFn(latHb.value);if(c==='r')alerts.push({type:'orange',icon:'🩸',text:`Hémoglobine ${latHb.value} g/dL — Risque d'anémie ferriprive`});else if(c==='g')alerts.push({type:'green',icon:'✓',text:`Hémoglobine ${latHb.value} g/dL — Dans les normes`});}
-  if(latCP){const c=HMETA.calprotectin.chipFn(latCP.value);if(c==='r')alerts.push({type:'orange',icon:'🔥',text:`Calprotectine ${latCP.value} µg/g — Inflammation intestinale active`});else if(c==='g')alerts.push({type:'green',icon:'✓',text:`Calprotectine ${latCP.value} µg/g — Rémission endoscopique`});}
-  if(!alerts.length)alerts.push({type:'green',icon:'✓',text:'Tous les marqueurs dans les normes — Bonne stabilité clinique'});
-  html+=`<div class="ds-alerts">`;
-  alerts.forEach(a=>{html+=`<div class="ds-alert ${a.type}"><span class="ds-alert-icon">${a.icon}</span> ${a.text}</div>`;});
-  html+=`</div>`;
+  /* ═══ 4. ROW: Gym Heatmap (left) + Body Composition (right) ═══ */
+  // Build gym heatmap - 52 weeks × 7 days
+  const now=new Date();
+  const oneYearAgo=new Date(now);oneYearAgo.setFullYear(now.getFullYear()-1);
+  const gymDates=new Set(gymLogs.map(l=>l.date));
+  let gymCount=0;
+  let hmCells='';
+  const startDay=oneYearAgo.getDay();
+  // Build 7 rows × 52 cols
+  let hmRows='';
+  const dayLabels=['','L','','M','','V',''];
+  for(let row=0;row<7;row++){
+    let rowCells='';
+    for(let col=0;col<52;col++){
+      const dayOffset=col*7+row;
+      const cellDate=new Date(oneYearAgo);cellDate.setDate(oneYearAgo.getDate()+dayOffset);
+      const ds=cellDate.toISOString().slice(0,10);
+      const active=gymDates.has(ds);
+      if(active) gymCount++;
+      rowCells+=`<div class="hl-hm-cell${active?' l3':''}" title="${ds}"></div>`;
+    }
+    hmRows+=`<div class="hl-hm-row">${rowCells}</div>`;
+  }
+  // Month labels
+  let monthLabels='';
+  const months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  for(let i=0;i<12;i++){
+    const m=new Date(oneYearAgo);m.setMonth(oneYearAgo.getMonth()+i);
+    monthLabels+=`<span>${months[m.getMonth()]}</span>`;
+  }
+  const streakDays=gymCount;
+
+  // Body comp data
+  function bcItem(icon,name,val,unit,color,pct){
+    if(!val)return '';
+    return `<div class="hl-bc-item"><div class="hl-bc-icon">${icon}</div><div class="hl-bc-info"><div class="hl-bc-name">${name}</div><div class="hl-bc-val" style="color:${color||'var(--t0)'}">${val} <span style="font-size:.7rem;color:var(--t3)">${unit}</span></div>${pct!=null?`<div class="hl-bc-bar"><div class="hl-bc-fill" style="--bw:${Math.min(100,pct)}%;background:${color||'var(--hg)'}"></div></div>`:''}</div></div>`;
+  }
+  const HEIGHT=181;
+  const bmi=latW?+(latW.value/((HEIGHT/100)**2)).toFixed(1):null;
+
+  html+=`<div class="hl-grid-2">
+    <div class="hl-card" style="animation-delay:.45s">
+      <div class="hl-card-hdr"><div><div class="hl-card-title">💪 Gym — Activité</div><div class="hl-card-subtitle">Heatmap des 12 derniers mois</div></div>
+        <div class="hl-card-badge" style="background:var(--hg1);color:var(--hg);border:1px solid var(--hg2)">${gymCount} séances</div></div>
+      <div class="hl-hm-months">${monthLabels}</div>
+      <div class="hl-hm-wrap">
+        <div class="hl-hm-days">${dayLabels.map(d=>`<span>${d}</span>`).join('')}</div>
+        <div class="hl-hm-grid-wrap">${hmRows}</div>
+      </div>
+      <div class="hl-hm-stat"><span><strong>${gymCount}</strong> séances cette année</span></div>
+      <div class="hl-hm-legend"><span>Moins</span><div class="hl-hm-legend-box" style="background:var(--bg-3)"></div><div class="hl-hm-legend-box" style="background:rgba(57,255,20,.15)"></div><div class="hl-hm-legend-box" style="background:rgba(57,255,20,.35)"></div><div class="hl-hm-legend-box" style="background:var(--hg)"></div><span>Plus</span></div>
+    </div>
+    <div class="hl-card" style="animation-delay:.5s">
+      <div class="hl-card-hdr"><div><div class="hl-card-title">📐 Composition Corporelle</div><div class="hl-card-subtitle">Taille : ${HEIGHT} cm${bmi?' · IMC : '+bmi:''}</div></div></div>
+      <div class="hl-bodycomp-grid">
+        ${bcItem('⚖','Poids',latW?latW.value:null,'kg','var(--t0)',null)}
+        ${bcItem('🔥','Graisse',latFat?latFat.value:null,'%','var(--hw)',latFat?latFat.value*4.5:null)}
+        ${bcItem('🥩','Masse grasse',latFatMass?latFatMass.value:null,'kg','var(--hr)',latFatMass&&latW?((latFatMass.value/latW.value)*100):null)}
+        ${bcItem('💧','Eau',latWater?latWater.value:null,'%','var(--hice)',latWater?latWater.value:null)}
+        ${bcItem('💪','Muscle',latMuscle?latMuscle.value:null,'%','var(--hg)',latMuscle?latMuscle.value:null)}
+        ${bcItem('🦴','Os',latBone?latBone.value:null,'kg','#c0beb8',latBone&&latW?((latBone.value/latW.value)*200):null)}
+        ${bcItem('🧬','Protéines',latProtein?latProtein.value:null,'kg','var(--purple)',latProtein&&latW?((latProtein.value/latW.value)*100):null)}
+        ${bcItem('🏋','Masse maigre',latLean?latLean.value:null,'kg','var(--hg)',latLean&&latW?((latLean.value/latW.value)*100):null)}
+      </div>
+    </div>
+  </div>`;
 
   el.innerHTML=html;
 
-  /* Init Chart.js */
+  /* ═══ INIT CHARTS ═══ */
   setTimeout(()=>{
-    hlMakeChart('hlChartCRP',crpLogs,'crp','#FF3864');
-    hlMakeChart('hlChartNeut',neutLogs,'neutrophils','#39FF14');
-    hlMakeChart('hlChartHb',hLogs,'hemoglobin','#FF9F1C');
-    hlMakeChart('hlChartCalpro',cpLogs,'calprotectin','#f59e0b');
-    hlMakeChart('hlChartCreat',creatLogs,'creatinine','#64FFDA');
-    hlMakeChart('hlChartAlb',albLogs,'albumin','#a855f7');
-  },60);
+    // Weight chart — area gradient
+    hlMakeChart('hlChartWeight',wLogs,'weight','var(--hg)',{refLine:65,refLabel:'Objectif',refLineColor:'#39FF1444'});
+
+    // CRP chart with ref line at 10 (normal max)
+    hlMakeChart('hlChartCRP',crpLogs,'crp','#FF3864',{refLine:10,refLabel:'Seuil',refLineColor:'#FF386444'});
+
+    // Hemoglobin + Hematocrit dual-axis
+    if(hLogs.length||hctLogs.length){
+      const canvas=document.getElementById('hlChartHbHct');
+      if(canvas){
+        if(hlCharts['hlChartHbHct']){try{hlCharts['hlChartHbHct'].destroy();}catch(e){}}
+        const allDates=[...new Set([...hLogs,...hctLogs].map(l=>l.date))].sort();
+        const labels=allDates.map(d=>{const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});});
+        const hbData=allDates.map(d=>{const e=hLogs.find(l=>l.date===d);return e?e.value:null;});
+        const hctData=allDates.map(d=>{const e=hctLogs.find(l=>l.date===d);return e?e.value:null;});
+        hlCharts['hlChartHbHct']=new Chart(canvas,{
+          type:'line',
+          data:{labels,datasets:[
+            {label:'Hémoglobine (g/dL)',data:hbData,borderColor:'#FF9F1C',backgroundColor:'#FF9F1C18',fill:true,tension:0.35,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:'#FF9F1C',pointBorderColor:'transparent',borderWidth:2.5,yAxisID:'y'},
+            {label:'Hématocrite (%)',data:hctData,borderColor:'#64FFDA',backgroundColor:'#64FFDA18',fill:true,tension:0.35,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:'#64FFDA',pointBorderColor:'transparent',borderWidth:2.5,yAxisID:'y1'}
+          ]},
+          options:{
+            responsive:true,maintainAspectRatio:false,
+            animation:{duration:1200},
+            plugins:{
+              legend:{display:true,labels:{color:'#8a8898',font:{family:'JetBrains Mono',size:10},boxWidth:12,padding:16}},
+              tooltip:{backgroundColor:'#0c0c10ee',titleColor:'#f0eeea',bodyColor:'#c0beb8',borderColor:'#2a2a36',borderWidth:1,padding:12,cornerRadius:8,
+                titleFont:{family:'JetBrains Mono',size:11},bodyFont:{family:'JetBrains Mono',size:12}}
+            },
+            scales:{
+              x:{ticks:{color:'#8a8898',font:{family:'JetBrains Mono',size:10},maxRotation:0},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'}},
+              y:{type:'linear',position:'left',ticks:{color:'#FF9F1C',font:{family:'JetBrains Mono',size:10}},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'},title:{display:true,text:'g/dL',color:'#FF9F1C88',font:{family:'JetBrains Mono',size:9}}},
+              y1:{type:'linear',position:'right',ticks:{color:'#64FFDA',font:{family:'JetBrains Mono',size:10}},grid:{display:false},border:{color:'#1e1e28'},title:{display:true,text:'%',color:'#64FFDA88',font:{family:'JetBrains Mono',size:9}}}
+            }
+          }
+        });
+      }
+    }
+
+    // Calprotectin
+    hlMakeChart('hlChartCalpro',cpLogs,'calprotectin','#f59e0b',{refLine:50,refLabel:'Rémission',refLineColor:'#22c55e44'});
+
+  },80);
 }
 
-/* ── HEALTH EVENT HANDLERS ── */
-$('hlLogTgl').onclick=()=>{const f=$('hlFrm');f.classList.toggle('open');$('hlBatchFrm').classList.remove('open');if(f.classList.contains('open')){$('hlDate').value=td();$('hlVal').focus()}};
-$('hlFrmCancel').onclick=()=>$('hlFrm').classList.remove('open');
-$('hlDateToday').onclick=()=>{$('hlDate').value=td()};
-$('hlFrmSave').onclick=()=>{
-  const metric=$('hlMetric').value;
-  const date=$('hlDate').value;
-  const val=parseFloat($('hlVal').value);
+/* ═══ HEALTH EVENT HANDLERS ═══ */
+/* + menu toggle */
+document.addEventListener('click',e=>{
+  const wrap=$('hlMenuWrap');if(!wrap)return;
+  const drop=$('hlMenuDrop');if(!drop)return;
+  if(e.target.closest('#hlMenuBtn')){drop.classList.toggle('open');return;}
+  if(!e.target.closest('#hlMenuDrop'))drop.classList.remove('open');
+});
+document.addEventListener('click',e=>{
+  const item=e.target.closest('.hl-menu-item[data-form]');
+  if(!item)return;
+  const formId=item.dataset.form;
+  const modal=$(formId);if(!modal)return;
+  $('hlMenuDrop').classList.remove('open');
+  modal.classList.add('open');
+  // Set today's date for all date inputs in this modal
+  modal.querySelectorAll('input[type="date"]').forEach(inp=>inp.value=td());
+});
+/* Close modal on backdrop click */
+document.querySelectorAll('.hl-form-modal').forEach(modal=>{
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open')});
+});
+
+/* CRP save */
+$('hlCRPSave')?.addEventListener('click',()=>{
+  const date=$('hlCRPDate').value,val=parseFloat($('hlCRPVal').value);
   if(!date){toast('SÉLECTIONNEZ UNE DATE','rd');return}
   if(isNaN(val)){toast('ENTREZ UNE VALEUR','rd');return}
-  const m=HMETA[metric];
-  pH('saisie santé');
-  D.healthLogs.push({id:D.hid++,date,metric,value:val,unit:m?m.unit:'',notes:$('hlNotes').value.trim(),createdAt:nowI()});
-  ['hlVal','hlNotes'].forEach(i=>$(i).value='');
-  $('hlDate').value=td();
-  $('hlFrm').classList.remove('open');
-  renderHealth();
-  scheduleSave();
-};
-
-$('hlBatchTgl').onclick=()=>{const f=$('hlBatchFrm');f.classList.toggle('open');$('hlFrm').classList.remove('open');if(f.classList.contains('open')){$('hlBatchDate').value=td()}};
-$('hlBatchCancel').onclick=()=>$('hlBatchFrm').classList.remove('open');
-$('hlBatchDateToday').onclick=()=>{$('hlBatchDate').value=td()};
-$('hlBatchSave').onclick=()=>{
-  const date=$('hlBatchDate').value;
+  pH('saisie CRP');
+  D.healthLogs.push({id:D.hid++,date,metric:'crp',value:val,unit:'mg/L',notes:'',createdAt:nowI()});
+  $('hlCRPVal').value='';$('hlFrmCRP').classList.remove('open');
+  renderHealth();scheduleSave();
+});
+/* Calprotectin save */
+$('hlCalproSave')?.addEventListener('click',()=>{
+  const date=$('hlCalproDate').value,val=parseFloat($('hlCalproVal').value);
   if(!date){toast('SÉLECTIONNEZ UNE DATE','rd');return}
-  const fields=document.querySelectorAll('#hlBatchGrid input[data-metric]');
+  if(isNaN(val)){toast('ENTREZ UNE VALEUR','rd');return}
+  pH('saisie calprotectine');
+  D.healthLogs.push({id:D.hid++,date,metric:'calprotectin',value:val,unit:'µg/g',notes:'',createdAt:nowI()});
+  $('hlCalproVal').value='';$('hlFrmCalpro').classList.remove('open');
+  renderHealth();scheduleSave();
+});
+/* Gym save */
+$('hlGymSave')?.addEventListener('click',()=>{
+  const date=$('hlGymDate').value;
+  if(!date){toast('SÉLECTIONNEZ UNE DATE','rd');return}
+  pH('saisie gym');
+  D.healthLogs.push({id:D.hid++,date,metric:'gym',value:1,unit:'session',notes:$('hlGymNotes')?.value||'',createdAt:nowI()});
+  if($('hlGymNotes'))$('hlGymNotes').value='';$('hlFrmGym').classList.remove('open');
+  renderHealth();scheduleSave();
+});
+/* Blood panel save */
+$('hlBloodSave')?.addEventListener('click',()=>{
+  const date=$('hlBloodDate').value;
+  if(!date){toast('SÉLECTIONNEZ UNE DATE','rd');return}
+  const fields=document.querySelectorAll('#hlFrmBlood input[data-metric]');
   let count=0;
-  pH('bilan sanguin groupé');
+  pH('bilan sanguin');
   fields.forEach(inp=>{
-    const val=parseFloat(inp.value);
-    if(isNaN(val)) return;
-    const metric=inp.dataset.metric;
-    const m=HMETA[metric];
-    D.healthLogs.push({id:D.hid++,date,metric,value:val,unit:m?m.unit:'',notes:'Bilan groupé',createdAt:nowI()});
-    inp.value='';
-    count++;
+    const val=parseFloat(inp.value);if(isNaN(val))return;
+    const metric=inp.dataset.metric;const m=HMETA[metric];
+    D.healthLogs.push({id:D.hid++,date,metric,value:val,unit:m?m.unit:'',notes:'Bilan',createdAt:nowI()});
+    inp.value='';count++;
   });
   if(!count){toast('REMPLISSEZ AU MOINS UN CHAMP','rd');return}
-  $('hlBatchFrm').classList.remove('open');
+  $('hlFrmBlood').classList.remove('open');
   toast(`${count} MESURE${count>1?'S':''} ENREGISTRÉE${count>1?'S':''}`, 'gld');
-  renderHealth();
-  scheduleSave();
-};
+  renderHealth();scheduleSave();
+});
+/* Body comp save */
+$('hlBodySave')?.addEventListener('click',()=>{
+  const date=$('hlBodyDate').value;
+  if(!date){toast('SÉLECTIONNEZ UNE DATE','rd');return}
+  const fields=document.querySelectorAll('#hlFrmBody input[data-metric]');
+  let count=0;
+  pH('composition corporelle');
+  fields.forEach(inp=>{
+    const val=parseFloat(inp.value);if(isNaN(val))return;
+    const metric=inp.dataset.metric;const m=HMETA[metric];
+    D.healthLogs.push({id:D.hid++,date,metric,value:val,unit:m?m.unit:'',notes:'Composition',createdAt:nowI()});
+    inp.value='';count++;
+  });
+  if(!count){toast('REMPLISSEZ AU MOINS UN CHAMP','rd');return}
+  $('hlFrmBody').classList.remove('open');
+  toast(`${count} MESURE${count>1?'S':''} ENREGISTRÉE${count>1?'S':''}`, 'gld');
+  renderHealth();scheduleSave();
+});
 
 /* ═══════ FULL RENDER ═══════ */
 function fullR(){
@@ -2532,6 +2729,7 @@ function fullR(){
 }
 
 /* ═══════ RESIZE ═══════ */
+
 
 
 /* ═══════ SEED HEALTH DATA (if empty) ═══════ */
@@ -2580,6 +2778,38 @@ function seedHealthData(){
     {date:'2025-11-06',metric:'body_fat',value:7.2,unit:'%'},
     /* Lean mass */
     {date:'2025-11-06',metric:'lean_mass',value:50.1,unit:'kg'},
+    /* Fat mass */
+    {date:'2025-11-06',metric:'fat_mass',value:3.9,unit:'kg'},
+    /* Water */
+    {date:'2025-11-06',metric:'water_pct',value:63.7,unit:'%'},
+    /* Muscle */
+    {date:'2025-11-06',metric:'muscle_pct',value:44,unit:'%'},
+    /* Bone */
+    {date:'2025-11-06',metric:'bone_mass',value:2.6,unit:'kg'},
+    /* Protein */
+    {date:'2025-11-06',metric:'protein_mass',value:10.5,unit:'kg'},
+    /* Gym sessions */
+    {date:'2026-01-06',metric:'gym',value:1,unit:'session',notes:'Push'},
+    {date:'2026-01-08',metric:'gym',value:1,unit:'session',notes:'Pull'},
+    {date:'2026-01-10',metric:'gym',value:1,unit:'session',notes:'Legs'},
+    {date:'2026-01-13',metric:'gym',value:1,unit:'session',notes:'Push'},
+    {date:'2026-01-15',metric:'gym',value:1,unit:'session',notes:'Pull'},
+    {date:'2026-01-17',metric:'gym',value:1,unit:'session',notes:'Legs'},
+    {date:'2026-01-20',metric:'gym',value:1,unit:'session',notes:'Push'},
+    {date:'2026-01-22',metric:'gym',value:1,unit:'session',notes:'Pull'},
+    {date:'2026-01-24',metric:'gym',value:1,unit:'session',notes:'Legs'},
+    {date:'2026-02-03',metric:'gym',value:1,unit:'session',notes:'Push'},
+    {date:'2026-02-05',metric:'gym',value:1,unit:'session',notes:'Pull'},
+    {date:'2026-02-07',metric:'gym',value:1,unit:'session',notes:'Legs'},
+    {date:'2026-02-10',metric:'gym',value:1,unit:'session',notes:'Push'},
+    {date:'2026-02-12',metric:'gym',value:1,unit:'session',notes:'Pull'},
+    {date:'2026-02-17',metric:'gym',value:1,unit:'session',notes:'Push'},
+    {date:'2026-02-19',metric:'gym',value:1,unit:'session',notes:'Pull'},
+    {date:'2026-02-24',metric:'gym',value:1,unit:'session',notes:'Push'},
+    {date:'2026-02-26',metric:'gym',value:1,unit:'session',notes:'Pull'},
+    {date:'2026-03-03',metric:'gym',value:1,unit:'session',notes:'Push'},
+    {date:'2026-03-05',metric:'gym',value:1,unit:'session',notes:'Pull'},
+    {date:'2026-03-07',metric:'gym',value:1,unit:'session',notes:'Legs'},
     /* Neutrophils */
     {date:'2021-07-09',metric:'neutrophils',value:4.2,unit:'10³/µL'},
     {date:'2021-11-26',metric:'neutrophils',value:5.1,unit:'10³/µL'},
