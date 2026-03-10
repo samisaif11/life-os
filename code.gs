@@ -256,7 +256,7 @@ function doGet(e) {
     data.healthLogs = readSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS).map(row => ({
       id: toNum(row.id),
       date: normalizeDate(str(row.date)),
-      metric: str(row.metric),
+      metric: str(row.metric).toLowerCase().replace(/\s+/g, '_'),
       value: toNum(row.value),
       unit: str(row.unit),
       category: str(row.category),
@@ -436,7 +436,7 @@ function parseTask(row) {
     person:      str(row.person),
     partner:     str(row.partner),
     priority:    toNum(row.priority) || 3,
-    due:         str(row.due) || null,
+    due:         normalizeDate(str(row.due)) || null,
     done:        toBool(row.done),
     blocked:     toBool(row.blocked),
     blockedBy:   str(row.blockedBy) || null,
@@ -444,7 +444,7 @@ function parseTask(row) {
     notes:       str(row.notes),
     createdAt:   str(row.createdAt) || null,
     completedAt: str(row.completedAt) || null,
-    doneDate:    str(row.doneDate) || null,
+    doneDate:    normalizeDate(str(row.doneDate)) || null,
     subtasks:    subs
   };
 }

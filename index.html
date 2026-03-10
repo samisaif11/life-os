@@ -1145,22 +1145,22 @@ async function loadFromSheet(manual = false) {
     if (data.people) D.people = data.people;
     if (data.monthly && data.monthly.length > 0) D.monthly = data.monthly;
     if (data.projDone) D.projDone = data.projDone;
-    if (data.nid) D.nid = data.nid;
-    if (data.dlid) D.dlid = data.dlid;
+    if (data.nid != null) D.nid = data.nid;
+    if (data.dlid != null) D.dlid = data.dlid;
     if (data.savedAt) _lastSavedAt = data.savedAt;
     if (data.invoices) D.invoices = data.invoices;
     if (data.bankAccounts) D.bankAccounts = data.bankAccounts;
     if (data.clients) D.clients = data.clients;
-    if (data.invid) D.invid = data.invid;
+    if (data.invid != null) D.invid = data.invid;
     if (data.groceries) D.groceries = data.groceries;
     if (data.groceryLocations && data.groceryLocations.length) D.groceryLocations = data.groceryLocations;
-    if (data.gid) D.gid = data.gid;
+    if (data.gid != null) D.gid = data.gid;
     if (data.books) D.books = data.books;
-    if (data.booksGoal) D.booksGoal = data.booksGoal;
+    if (data.booksGoal != null) D.booksGoal = data.booksGoal;
     if (data.booksQueue) D.booksQueue = data.booksQueue;
-    if (data.bkid) D.bkid = data.bkid;
+    if (data.bkid != null) D.bkid = data.bkid;
     if (data.healthLogs) D.healthLogs = data.healthLogs;
-    if (data.hid) D.hid = data.hid;
+    if (data.hid != null) D.hid = data.hid;
     // Apply color maps
     if (data.partners) {
       Object.keys(PA).forEach(k => delete PA[k]); Object.assign(PA, data.partners);
@@ -2231,7 +2231,7 @@ function hChip(metric, value) {
   return `<span class="hl-chip hl-chip-${m.chipFn(value)}">${value >= m.refMax ? (m.goodDir==='down'?'HIGH':'ABOVE') : value <= m.refMin ? (m.goodDir==='down'?'REMISSION':'LOW') : 'NORMAL'}</span>`;
 }
 function hlLogs(metric) {
-  return (D.healthLogs||[]).filter(l=>l.metric===metric).sort((a,b)=>a.date.localeCompare(b.date));
+  return (D.healthLogs||[]).filter(l=>(l.metric||'').toLowerCase().replace(/\s+/g,'_')===metric).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
 }
 function hlLatest(metric) { const l=hlLogs(metric); return l.length?l[l.length-1]:null; }
 function hlDelta(logs) { return logs.length<2?null:+(logs[logs.length-1].value-logs[logs.length-2].value).toFixed(2); }
@@ -2555,7 +2555,7 @@ function renderHealth() {
   const vdLogs=hlLogs('vitamin_d'); const fLogs=hlLogs('body_fat'); const lnLogs=hlLogs('lean_mass');
   const latestW=wLogs.length?wLogs[wLogs.length-1].value:null;
   const latestF=fLogs.length?fLogs[fLogs.length-1].value:null;
-  const allLogs=[...(D.healthLogs||[])].sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const allLogs=[...(D.healthLogs||[])].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
   const lastD=allLogs.length?fD(allLogs[0].date):'';
   $('hlLastLog').textContent=lastD?`LAST LOG: ${lastD} · 181 CM · CROHN'S`:"181 CM · CROHN'S DISEASE";
   lft.innerHTML=renderWeightCard(wLogs)+renderCRPCard(crpLogs)+renderCalproCard(cpLogs);
