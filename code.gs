@@ -49,9 +49,11 @@ const PPLCOLOR_COLS  = ['code','color','bgColor'];
 const INVOICE_COLS    = ['id','invoiceNumber','date','client','project','description','montantHT','tvaRate','montantTTC','catchupHT','catchupTVA','catchupTTC','status','pdfUrl','emailSentDate','bankAccountId','notes','clientAddress','clientSIREN','clientCostCenter','clientDealRef'];
 const BANKACCT_COLS   = ['id','name','ribImageFileId'];
 const CLIENT_COLS     = ['name','address','siren','defaultCostCenter'];
-const BOOK_COLS       = ['id','title','author','cover','progress','rating','status','genre','createdAt','updatedAt','notes','imageUrl'];
+const BOOK_COLS       = ['id','title','author','cover','metric','total','current','progress','rating','status','genre','createdAt','updatedAt','notes','imageUrl'];
 const BOOK_QUEUE_COLS = ['id','title','author','genre','priority','addedAt','notes'];
-const GROCERY_COLS    = ['id','item','location','category','quantity','unit','priority','purchased','createdAt','updatedAt','notes'];
+const GROCERY_COLS    = ['id','name','location','needsRefill','typicalPrice','lastPurchased','notes','createdAt','updatedAt'];
+const LEGACY_BOOK_COLS    = ['id','title','author','cover','progress','rating','status','genre','createdAt','updatedAt','notes','imageUrl'];
+const LEGACY_GROCERY_COLS = ['id','item','location','category','quantity','unit','priority','purchased','createdAt','updatedAt','notes'];
 const HEALTH_LOG_COLS = ['id','date','metric','value','unit','category','notes','createdAt'];
 
 // ═══════════════════════════════════════════════════════════════
@@ -174,52 +176,80 @@ function doGet(e) {
     data.invid = toNum(meta.invid) || 1;
 
     // --- Books ---
-    data.books = readSheet(ss, SHEETS.BOOKS, BOOK_COLS).map(row => ({
-      id: toNum(row.id),
-      title: str(row.title),
-      author: str(row.author),
-      cover: str(row.cover),
-      progress: toNum(row.progress),
-      rating: toNum(row.rating),
-      status: str(row.status),
-      genre: str(row.genre),
-      createdAt: str(row.createdAt),
-      updatedAt: str(row.updatedAt),
-      notes: str(row.notes),
-      imageUrl: str(row.imageUrl)
-    }));
+    const bookHeaders = getHeaders(ss, SHEETS.BOOKS);
+    const bookRows = bookHeaders.includes('metric')
+      ? readSheet(ss, SHEETS.BOOKS, BOOK_COLS).map(row => ({
+          id: toNum(row.id),
+          title: str(row.title),
+          author: str(row.author),
+          cover: str(row.cover),
+          metric: str(row.metric) || 'pages',
+          total: toNum(row.total),
+          current: toNum(row.current),
+          progress: toNum(row.progress),
+          rating: toNum(row.rating),
+          status: str(row.status),
+          genre: str(row.genre),
+          createdAt: str(row.createdAt),
+          updatedAt: str(row.updatedAt),
+          notes: str(row.notes),
+          imageUrl: str(row.imageUrl)
+        }))
+      : readSheet(ss, SHEETS.BOOKS, LEGACY_BOOK_COLS).map(row => ({
+          id: toNum(row.id),
+          title: str(row.title),
+          author: str(row.author),
+          cover: str(row.cover),
+          metric: 'pages',
+          total: 0,
+          current: 0,
+          progress: toNum(row.progress),
+          rating: toNum(row.rating),
+          status: str(row.status),
+          genre: str(row.genre),
+          createdAt: str(row.createdAt),
+          updatedAt: str(row.updatedAt),
+          notes: str(row.notes),
+          imageUrl: str(row.imageUrl)
+        }));
+    data.books = bookRows;
 
     // --- Books Queue ---
-    data.booksQueue = readSheet(ss, SHEETS.BOOKS_QUEUE, BOOK_QUEUE_COLS).map(row => ({
-      id: toNum(row.id),
-      title: str(row.title),
-      author: str(row.author),
-      genre: str(row.genre),
-      priority: toNum(row.priority),
-      addedAt: str(row.addedAt),
-      notes: str(row.notes)
-    }));
+    data.booksQueue = readSheet(ss, SHEETS.BOOKS_QUEUE, BOOK_QUEUE_COLS)
+      .map(row => str(row.title))
+      .filter(Boolean);
 
     data.bkid = toNum(meta.bkid) || 1;
     data.booksGoal = toNum(meta.booksGoal) || 30;
 
     // --- Groceries ---
-    data.groceries = readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS).map(row => ({
-      id: toNum(row.id),
-      item: str(row.item),
-      location: str(row.location),
-      category: str(row.category),
-      quantity: str(row.quantity),
-      unit: str(row.unit),
-      priority: toNum(row.priority),
-      purchased: toBool(row.purchased),
-      createdAt: str(row.createdAt),
-      updatedAt: str(row.updatedAt),
-      notes: str(row.notes)
-    }));
+    const groceryHeaders = getHeaders(ss, SHEETS.GROCERIES);
+    data.groceries = groceryHeaders.includes('name')
+      ? readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS).map(row => ({
+          id: toNum(row.id),
+          name: str(row.name),
+          location: str(row.location),
+          needsRefill: toBool(row.needsRefill),
+          typicalPrice: row.typicalPrice === '' ? null : toNum(row.typicalPrice),
+          lastPurchased: str(row.lastPurchased),
+          createdAt: str(row.createdAt),
+          updatedAt: str(row.updatedAt),
+          notes: str(row.notes)
+        }))
+      : readSheet(ss, SHEETS.GROCERIES, LEGACY_GROCERY_COLS).map(row => ({
+          id: toNum(row.id),
+          name: str(row.item),
+          location: str(row.location),
+          needsRefill: false,
+          typicalPrice: null,
+          lastPurchased: '',
+          createdAt: str(row.createdAt),
+          updatedAt: str(row.updatedAt),
+          notes: str(row.notes)
+        }));
 
     data.gid = toNum(meta.gid) || 1;
-    data.groceryLocations = [];
+    data.groceryLocations = [...new Set(data.groceries.map(g => g.location).filter(Boolean))];
 
     // --- Health Logs ---
     data.healthLogs = readSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS).map(row => ({
@@ -330,23 +360,26 @@ function doPost(e) {
     // --- Books ---
     writeSheet(ss, SHEETS.BOOKS, BOOK_COLS,
       (D.books || []).map(b => [
-        b.id, b.title, b.author, b.cover, b.progress || 0, b.rating || 0,
-        b.status || '', b.genre || '', b.createdAt || '', b.updatedAt || '',
-        b.notes || '', b.imageUrl || ''
+        b.id, b.title, b.author, b.cover,
+        b.metric || 'pages', b.total || 0, b.current || 0,
+        b.progress || 0, b.rating || 0, b.status || '', b.genre || '',
+        b.createdAt || '', b.updatedAt || '', b.notes || '', b.imageUrl || ''
       ]));
 
     // --- Books Queue ---
     writeSheet(ss, SHEETS.BOOKS_QUEUE, BOOK_QUEUE_COLS,
       (D.booksQueue || []).map(bq => [
-        bq.id, bq.title, bq.author, bq.genre || '', bq.priority || 0, bq.addedAt || '', bq.notes || ''
+        '',
+        typeof bq === 'string' ? bq : str(bq && bq.title),
+        '', '', '', '', ''
       ]));
 
     // --- Groceries ---
     writeSheet(ss, SHEETS.GROCERIES, GROCERY_COLS,
       (D.groceries || []).map(g => [
-        g.id, g.item, g.location || '', g.category || '', g.quantity || '',
-        g.unit || '', g.priority || 0, g.purchased ? 'TRUE' : 'FALSE',
-        g.createdAt || '', g.updatedAt || '', g.notes || ''
+        g.id, g.name, g.location || '', g.needsRefill ? 'TRUE' : 'FALSE',
+        g.typicalPrice === null || g.typicalPrice === undefined ? '' : g.typicalPrice,
+        g.lastPurchased || '', g.notes || '', g.createdAt || '', g.updatedAt || ''
       ]));
 
     // --- Health Logs ---
@@ -486,6 +519,13 @@ function toBool(v) {
   return s === 'true' || s === '1' || s === 'yes';
 }
 
+function getHeaders(ss, sheetName) {
+  const sh = ss.getSheetByName(sheetName);
+  if (!sh || sh.getLastRow() < 1) return [];
+  const width = Math.max(1, sh.getLastColumn());
+  return sh.getRange(1, 1, 1, width).getValues()[0].map(str);
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  SETUP — Run this once to create all sheets with headers
 // ═══════════════════════════════════════════════════════════════
@@ -577,16 +617,14 @@ function scanMissingData() {
   const queue = readSheet(ss, SHEETS.BOOKS_QUEUE, BOOK_QUEUE_COLS);
   queue.forEach(q => {
     if (!str(q.title)) issues.push('📥 Queue item missing title');
-    if (!str(q.author)) issues.push('📥 Queue item missing author');
   });
 
   // Check Groceries
   const groceries = readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS);
   groceries.forEach(g => {
-    if (!str(g.item)) issues.push('🛒 Grocery missing item name');
-    if (!str(g.location)) issues.push('🛒 Grocery missing location: ' + str(g.item));
-    if (!str(g.category)) issues.push('🛒 Grocery missing category: ' + str(g.item));
-    if (!g.createdAt) issues.push('🛒 Grocery missing createdAt: ' + str(g.item));
+    if (!str(g.name)) issues.push('🛒 Grocery missing item name');
+    if (!str(g.location)) issues.push('🛒 Grocery missing location: ' + str(g.name));
+    if (!g.createdAt) issues.push('🛒 Grocery missing createdAt: ' + str(g.name));
   });
 
   // Check Health Logs
@@ -625,7 +663,7 @@ function countMissingData() {
 
   // Groceries without location
   readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS).forEach(g => {
-    if (str(g.item) && !str(g.location)) count++;
+    if (str(g.name) && !str(g.location)) count++;
   });
 
   // Health logs without date
