@@ -1139,7 +1139,7 @@ async function loadFromSheet(manual = false) {
     if (data.tasks) D.tasks = data.tasks;
     if (data.completed) D.completed = data.completed;
     if (data.deadlines) D.deadlines = data.deadlines;
-    if (data.projects) D.projects = data.projects;
+    if (data.projects) { D.projects = data.projects; D.projects.forEach(p=>{if(!p.category)p.category=p.status==='personal'?'personal':'film'}); }
     if (data.closed) D.closed = data.closed;
     if (data.posters) D.posters = data.posters;
     if (data.people) D.people = data.people;
@@ -1306,7 +1306,7 @@ document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){
 const td=()=>new Date().toISOString().split('T')[0];
 const nowI=()=>new Date().toISOString();
 const dB=s=>{if(!s)return null;const n=new Date();n.setHours(0,0,0,0);const d=new Date(s+'T00:00:00');return isNaN(d)?null:Math.ceil((d-n)/864e5)};
-const fD=s=>{if(!s)return'';const d=new Date(s+'T00:00:00');return isNaN(d)?'':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}).toUpperCase()};
+const fD=s=>{if(!s)return'';const d=/^\d{4}-\d{2}-\d{2}$/.test(s)?new Date(s+'T00:00:00'):new Date(s);return isNaN(d)?'':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}).toUpperCase()};
 function toast(m,t='grn'){const e=$('toast');e.textContent=m;e.className='toast '+t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2e3)}
 // Preload audio on first user interaction to unlock browser autoplay
 const _sndSuccess=new Audio('assets/sounds/success.mp3');
@@ -1333,6 +1333,7 @@ document.querySelectorAll('.nav-tab').forEach(t=>t.addEventListener('click',()=>
   if(t.dataset.v==='projects')renderProj();
   if(t.dataset.v==='groceries')renderGrc();
   if(t.dataset.v==='books')renderBooks();
+  if(t.dataset.v==='health')renderHealth();
 }));
 
 /* ═══════ AUTO-SUGGEST ═══════ */
@@ -1814,7 +1815,7 @@ $('edDDel').onclick=()=>{if(eDLid===null)return;pH('delete deadline');D.deadline
 /* ═══════════════════════════════════════════════════════════════
    PROJECTS
    ═══════════════════════════════════════════════════════════════ */
-let _projShowAll=false;
+let _projShowAll=true;
 /* ═══════ INVOICES ═══════ */
 function renderProj(){
   const el=$('pSecs');el.innerHTML='';
@@ -2235,7 +2236,9 @@ function hlLogs(metric) {
 function hlLatest(metric) { const l=hlLogs(metric); return l.length?l[l.length-1]:null; }
 function hlDelta(logs) { return logs.length<2?null:+(logs[logs.length-1].value-logs[logs.length-2].value).toFixed(2); }
 function hlMonth(ds) {
-  if(!ds) return ''; const d=new Date(ds+'T00:00:00'); if(isNaN(d)) return '';
+  if(!ds) return '';
+  const d=/^\d{4}-\d{2}-\d{2}$/.test(ds)?new Date(ds+'T00:00:00'):new Date(ds);
+  if(isNaN(d)) return '';
   return ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()];
 }
 function hlCoords(logs, W, H, minV, maxV, px=44, py=18) {
