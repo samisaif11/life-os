@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sami SIR EL KHATIM · Health dashboard</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for animated graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #f4f7fc;
+            padding: 2rem 1.5rem;
+            color: #1e293b;
+        }
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        /* header + patient badge */
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .patient-info {
+            background: white;
+            border-radius: 40px;
+            padding: 0.6rem 1.8rem;
+            box-shadow: 0 8px 20px rgba(0,20,50,0.04);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+        .patient-info i {
+            color: #2d6a4f;
+            font-size: 1.3rem;
+        }
+        .badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .title-section h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(145deg, #0b3b2c, #1e5f4a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
+        }
+        .sub {
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sub i {
+            color: #0f172a;
+        }
+        /* card grid for key indicators */
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0 2rem;
+        }
+        .metric-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(6px);
+            background: white;
+            border-radius: 32px;
+            padding: 1.5rem 1.2rem;
+            box-shadow: 0 15px 30px -12px rgba(0,32,64,0.12);
+            transition: all 0.2s;
+            border: 1px solid rgba(205, 222, 235, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .metric-icon {
+            width: 52px;
+            height: 52px;
+            background: #d9f0ec;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #0d5e4a;
+        }
+        .metric-content h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+        }
+        .metric-value {
+            font-size: 2.1rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .metric-unit {
+            font-size: 0.8rem;
+            color: #475569;
+            margin-left: 4px;
+        }
+        .trend-badge {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            background: #f1f5f9;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        /* chart panels */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 30px;
+            padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+            box-shadow: 0 20px 35px -10px rgba(15, 50, 70, 0.1);
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: 0.15s;
+        }
+        .chart-card.full-width {
+            grid-column: span 2;
+        }
+        .chart-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #1a4b3a;
+        }
+        .chart-header i {
+            font-size: 1.3rem;
+        }
+        canvas {
+            max-height: 230px;
+            width: 100% !important;
+        }
+        /* recent labs table */
+        .recent-panel {
+            background: white;
+            border-radius: 30px;
+            padding: 1.8rem;
+            margin-top: 2rem;
+            box-shadow: 0 20px 30px -10px rgba(0,40,50,0.06);
+        }
+        .recent-panel h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        th {
+            text-align: left;
+            padding: 0.8rem 0.5rem;
+            color: #475569;
+            font-weight: 500;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        td {
+            padding: 0.7rem 0.5rem;
+            border-bottom: 1px solid #ecf1f6;
+        }
+        .highlight {
+            background: #fef9e7;
+            font-weight: 600;
+            color: #b45309;
+        }
+        .normal-range {
+            color: #2b6e4f;
+            font-size: 0.8rem;
+        }
+        .footer-note {
+            margin-top: 2.5rem;
+            text-align: right;
+            font-size: 0.85rem;
+            color: #6b7a8f;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 1.5rem;
+        }
+        .footer-note i {
+            color: #2c6e49;
+        }
+        @media (max-width: 800px) {
+            .chart-grid { grid-template-columns: 1fr; }
+            .chart-card.full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- top bar with identity -->
+    <div class="top-bar">
+        <div class="title-section">
+            <h1>Sami SIR EL KHATIM</h1>
+            <div class="sub">
+                <i class="fas fa-birthday-cake"></i> 19 août 1996 (29 ans)
+                <span class="badge" style="margin-left: 1rem;"><i class="fas fa-diagnoses"></i> Maladie de Crohn A2L3B3p</span>
+                <span class="badge" style="background: #e6f7ec; color: #1f7042;"><i class="fas fa-stethoscope"></i> iléo-colique fistulisant / sténosant</span>
+            </div>
+        </div>
+        <div class="patient-info">
+            <i class="fas fa-hospital-user"></i> Dossier n° 070218-007 · Stomie iléale définitive
+        </div>
+    </div>
+
+    <!-- current snapshot cards -->
+    <div class="key-metrics">
+        <div class="metric-card">
+            <div class="metric-icon" style="background: #ffe8d9; color:#b23c1c;"><i class="fas fa-fire"></i></div>
+            <div class="metric-content">
+                <h3>CRP (actuelle)</h3>
+                <span class="metric-value">30.40 <span class="metric-unit">mg/L</span></span>
+                <div class="trend-badge"><i class="fas fa-arrow-up" style="color:#b91c1c;"></i> élevée · seuil <10</div>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon" style="background: #f1e0ff; color:#6840a3;"><i class="fas fa-poop"></i></div>
+            <div class="metric-content">
+                <h3>Calprotectine fécale</h3>
+                <span class="metric-value">>1000 <span class="metric-unit">µg/g</span></span>
+                <div class="trend-badge" style="background:#fce7e7; color:#a12b2b;"><i class="fas fa-exclamation-triangle"></i> très élevé · N<50</div>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon" style="background: #ffe3c6; color:#a5541b;"><i class="fas fa-sun"></i></div>
+            <div class="metric-content">
+                <h3>Vitamine D</h3>
+                <span class="metric-value">14.3 <span class="metric-unit">ng/mL</span></span>
+                <div class="trend-badge"><i class="fas fa-arrow-down" style="color:#b45309;"></i> insuffisant · 30-100</div>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon" style="background: #d3f0f0; color:#1f6d6d;"><i class="fas fa-tint"></i></div>
+            <div class="metric-content">
+                <h3>Hémoglobine</h3>
+                <span class="metric-value">13.0 <span class="metric-unit">g/dL</span></span>
+                <div class="trend-badge" style="background: #e9f3ee;">stable (2021)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- animated charts row -->
+    <div class="chart-grid">
+        <!-- CRP timeline -->
+        <div class="chart-card">
+            <div class="chart-header"><i class="fas fa-chart-line" style="color:#c2410c;"></i> Protéine C réactive (CRP) · mg/L</div>
+            <canvas id="crpChart"></canvas>
+        </div>
+        <!-- Neutrophiles / leucocytes -->
+        <div class="chart-card">
+            <div class="chart-header"><i class="fas fa-blood" style="color:#1f5e8c;"></i> Neutrophiles & leucocytes · 10³/µL</div>
+            <canvas id="wbcChart"></canvas>
+        </div>
+        <!-- Hb + plaquettes ? on sépare ? plutôt hémoglobine seule -->
+        <div class="chart-card">
+            <div class="chart-header"><i class="fas fa-heartbeat" style="color:#9b1d4b;"></i> Hémoglobine (g/dL) · objectif >13</div>
+            <canvas id="hbChart"></canvas>
+        </div>
+        <!-- Calprotectine (barre unique) -->
+        <div class="chart-card">
+            <div class="chart-header"><i class="fas fa-chart-bar" style="color:#a14574;"></i> Calprotectine fécale · µg/g (seuil <50)</div>
+            <canvas id="calproChart"></canvas>
+        </div>
+    </div>
+
+    <!-- seconde ligne : fonction rénale / vitamines / albumine (petit tableau + graph) -->
+    <div class="chart-grid" style="margin-top: -1rem;">
+        <div class="chart-card">
+            <div class="chart-header"><i class="fas fa-flask"></i> Créatinine (mg/L) · tendance</div>
+            <canvas id="creatChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <div class="chart-header"><i class="fas fa-chart-pie"></i> Albumine (g/L) · normal 38‑50</div>
+            <canvas id="albChart"></canvas>
+        </div>
+    </div>
+
+    <!-- recent lab results table (most meaningful) -->
+    <div class="recent-panel">
+        <h3><i class="fas fa-notes-medical" style="color:#2e6b4b;"></i> Évolution des biomarqueurs clés</h3>
+        <table>
+            <thead><tr><th>Date</th><th>CRP (mg/L)</th><th>Calprotectine (µg/g)</th><th>Hb (g/dL)</th><th>Neutrophiles (/µL)</th><th>Vit D (ng/mL)</th><th>Céatinine (mg/L)</th></tr></thead>
+            <tbody>
+                <tr><td>09/08/2017</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td>07/02/2018</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td>03/04/2021</td><td class="highlight">28.4</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10.0</td></tr>
+                <tr><td>09/07/2021</td><td>3.8</td><td>—</td><td>12.5</td><td>1504</td><td>—</td><td>9.0</td></tr>
+                <tr><td>26/11/2021</td><td>3.28</td><td>—</td><td>13.0</td><td>1400</td><td>—</td><td>—</td></tr>
+                <tr><td>23/06/2021</td><td>27.0</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td style="font-weight:700;">06/11/2025</td><td class="highlight">30.40</td><td class="highlight">>1000</td><td>—</td><td>—</td><td class="highlight">14.3</td><td class="highlight">12.0</td></tr>
+            </tbody>
+        </table>
+        <div style="margin-top: 1rem; display: flex; gap: 2rem; flex-wrap: wrap;">
+            <div><i class="fas fa-check-circle" style="color:#1f8b4c;"></i> <strong>Déficit en Vitamine D</strong> (supplémentation nécessaire)</div>
+            <div><i class="fas fa-exclamation-triangle" style="color:#b45309;"></i> <strong>Inflammation biologique active</strong> malgré IRM normale</div>
+            <div><i class="fas fa-capsules" style="color:#3b6e9b;"></i> Traitement : Upadacitinib (initié fin 2025)</div>
+        </div>
+    </div>
+
+    <!-- footer / automation note -->
+    <div class="footer-note">
+        <i class="fas fa-robot"></i> Données actualisées automatiquement via make.com – intégration comptes‑rendus de laboratoire <br>
+        <span style="opacity:0.6;">Tableau de bord généré le 06 mars 2026 · objectif suivi maladie de Crohn</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---- DATA (triée) ----
+        const datesCRP = ['2021-04-03', '2021-06-23', '2021-07-09', '2021-11-26', '2025-11-06'];
+        const crpValues = [28.4, 27.0, 3.8, 3.28, 30.40];
+
+        // neutrophils (x10^3/µL) -> same dates subset
+        const datesWBC = ['2021-07-09', '2021-11-26'];
+        const neutroValues = [1.504, 1.40];  // en 10^3/µL
+        const wbcTotal = [3.2, 3.48];
+
+        // hémoglobine
+        const datesHb = ['2021-07-09', '2021-11-26'];
+        const hbValues = [12.5, 13.0];
+
+        // calprotectine (une seule valeur récente, on met une barre)
+        const calproDates = ['2025-11-06'];
+        const calproValues = [1000]; // >1000, on utilise 1000 comme seuil haut
+
+        // créatinine (mg/L)
+        const datesCreat = ['2021-04-03', '2021-07-09', '2025-11-06'];
+        const creatValues = [10.0, 9.0, 12.0];
+
+        // albumine (g/L)
+        const datesAlb = ['2021-07-09', '2025-11-06'];
+        const albValues = [47, 47]; // identiques
+
+        // helper pour formater dates en 'MM/YY'
+        const formatDate = (dateStr) => {
+            const d = new Date(dateStr);
+            return `${d.getMonth()+1}/${d.getFullYear().toString().slice(2)}`;
+        };
+
+        // ---- CRP CHART ----
+        new Chart(document.getElementById('crpChart'), {
+            type: 'line',
+            data: {
+                labels: datesCRP.map(d => formatDate(d)),
+                datasets: [{
+                    label: 'CRP (mg/L)',
+                    data: crpValues,
+                    borderColor: '#b45309',
+                    backgroundColor: 'rgba(245, 138, 67, 0.1)',
+                    tension: 0.2,
+                    pointBackgroundColor: '#c2410c',
+                    pointBorderColor: 'white',
+                    borderWidth: 3,
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 1500, easing: 'easeOutQuart' },
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, grid: { color: '#e9eef3' } } }
+            }
+        });
+
+        // ---- WBC + NEUTROPHILES (2 datasets) ----
+        new Chart(document.getElementById('wbcChart'), {
+            type: 'line',
+            data: {
+                labels: datesWBC.map(d => formatDate(d)),
+                datasets: [
+                    { label: 'Neutrophiles (10³/µL)', data: neutroValues, borderColor: '#1e5180', backgroundColor: 'transparent', borderWidth: 2.5, pointStyle: 'circle' },
+                    { label: 'Leucocytes totaux (10³/µL)', data: wbcTotal, borderColor: '#6b8c9f', borderDash: [5,3], borderWidth: 2, pointStyle: 'rect' }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, animation: { duration: 1400 },
+                plugins: { legend: { position: 'top', labels: { boxWidth:12 } } }
+            }
+        });
+
+        // ---- HEMOGLOBINE ----
+        new Chart(document.getElementById('hbChart'), {
+            type: 'line',
+            data: {
+                labels: datesHb.map(d => formatDate(d)),
+                datasets: [{
+                    label: 'Hémoglobine (g/dL)',
+                    data: hbValues,
+                    borderColor: '#a12b5a',
+                    backgroundColor: 'rgba(176, 56, 96, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#9e2a5a',
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, animation: { duration: 1300 },
+                plugins: { legend: { display: false } },
+                scales: { y: { min: 11, max: 14, grid: { color: '#f0eef2' } } }
+            }
+        });
+
+        // ---- CALPROTECTINE (barre unique) ----
+        new Chart(document.getElementById('calproChart'), {
+            type: 'bar',
+            data: {
+                labels: calproDates.map(d => formatDate(d)),
+                datasets: [{
+                    label: 'Calprotectine (µg/g)',
+                    data: calproValues,
+                    backgroundColor: '#b9896e',
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, animation: { duration: 1600 },
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, max: 1200, grid: { color: '#dadfe6' } } }
+            }
+        });
+
+        // ---- CREATININE ----
+        new Chart(document.getElementById('creatChart'), {
+            type: 'line',
+            data: {
+                labels: datesCreat.map(d => formatDate(d)),
+                datasets: [{
+                    label: 'Créatinine (mg/L)',
+                    data: creatValues,
+                    borderColor: '#4f6d7f',
+                    backgroundColor: 'rgba(79,109,127,0.08)',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#234c66',
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, animation: { duration: 1200 },
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // ---- ALBUMINE (petit graph) ----
+        new Chart(document.getElementById('albChart'), {
+            type: 'line',
+            data: {
+                labels: datesAlb.map(d => formatDate(d)),
+                datasets: [{
+                    label: 'Albumine (g/L)',
+                    data: albValues,
+                    borderColor: '#2f855a',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#1f6e43',
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, animation: { duration: 1250 },
+                plugins: { legend: { display: false } },
+                scales: { y: { min: 35, max: 55 } }
+            }
+        });
+
+    })();
+</script>
+
+<!-- small note: some data are extracted from OCR reports, automated pipeline will refresh values -->
+</body>
+</html>
