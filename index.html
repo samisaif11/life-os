@@ -577,9 +577,9 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
 /* ═══════ HEALTH ═══════ */
 :root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13)}
-.hl-topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;padding:14px 16px;border:1px solid var(--b1);border-radius:22px;background:linear-gradient(140deg,var(--bg-2),rgba(255,255,255,.02));box-shadow:0 16px 30px -22px rgba(0,0,0,.55)}
-.hl-title{font-size:1.2rem;font-weight:800;letter-spacing:.6px;color:var(--t0);text-transform:uppercase}
-.hl-subtitle{font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-left:auto;cursor:text;transition:border .2s;background:var(--bg-1);border:1px solid var(--b1);border-radius:999px;padding:7px 12px}
+.hl-topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.hl-title{font-size:1.05rem;font-weight:700;letter-spacing:.3px;color:var(--t0)}
+.hl-subtitle{font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-left:auto;cursor:text;transition:border .2s}
 .hl-subtitle[contenteditable="true"]:hover{border-bottom:1px dashed var(--gold)}
 .hl-subtitle[contenteditable="true"]:focus{outline:none;border-bottom:1px solid var(--gold);color:var(--t1)}
 .hl-frm{background:var(--bg-2);border:1px solid var(--b1);border-radius:var(--rl);padding:20px;margin-bottom:18px;display:none}
@@ -591,42 +591,50 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .hl-batch-field input{width:100%;padding:7px 10px;background:var(--bg-1);border:1px solid var(--b1);border-radius:6px;color:var(--t0);font-family:'JetBrains Mono';font-size:.72rem;outline:none}
 .hl-batch-field input:focus{border-color:var(--gold)}
 .hl-batch-field input::placeholder{color:var(--t3)}
-.hl-grid{display:grid;grid-template-columns:1fr 148px 1fr;gap:14px;align-items:start}
-@media(max-width:1100px){.hl-grid{grid-template-columns:1fr 110px 1fr}}
-@media(max-width:680px){.hl-grid{grid-template-columns:1fr}.hl-avatar-col{display:none!important}}
-.hl-col{display:flex;flex-direction:column;gap:14px}
-.hl-avatar-col{display:flex;flex-direction:column;align-items:center;padding-top:8px}
-.hl-card{background:linear-gradient(165deg,var(--bg-2),rgba(255,255,255,.01));border:1px solid var(--b0);border-radius:22px;overflow:hidden;position:relative;box-shadow:0 20px 34px -28px rgba(0,0,0,.7)}
-.hl-card-pad{padding:18px 20px}
+/* DeepSeek-style: single-column stacked sections */
+.hl-sections{display:flex;flex-direction:column;gap:36px}
+.hl-sec{position:relative}
+.hl-sec-label{font-family:'JetBrains Mono';font-size:.5rem;letter-spacing:4px;text-transform:uppercase;color:var(--t3);margin-bottom:12px;padding-left:2px}
+.hl-sec-label em{font-style:normal;color:var(--hg);margin-right:6px}
+/* Avatar floating sidebar on desktop, hidden on mobile */
+.hl-layout{display:grid;grid-template-columns:1fr 148px;gap:20px;align-items:start}
+@media(max-width:900px){.hl-layout{grid-template-columns:1fr}.hl-avatar-float{display:none!important}}
+.hl-avatar-float{position:sticky;top:80px}
+/* Two-column grid for smaller cards */
+.hl-duo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.hl-duo{grid-template-columns:1fr}}
+.hl-card{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;overflow:hidden;position:relative}
+.hl-card-pad{padding:22px 28px}
 .hl-card-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.hl-card-title{font-size:.74rem;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:.5px}
+.hl-card-title{font-size:.82rem;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:.5px}
 .hl-card-sub{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
 .hl-card-date{font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3);letter-spacing:.5px;margin-top:4px;opacity:.6;display:block}
 .hl-card-val{text-align:right}
-.hl-big-val{font-family:'JetBrains Mono';font-size:2rem;font-weight:700;line-height:1}
+.hl-big-val{font-family:'JetBrains Mono';font-size:2.2rem;font-weight:700;line-height:1}
 .hl-val-unit{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
-.hl-chip{font-family:'JetBrains Mono';font-size:.52rem;padding:2px 8px;border-radius:10px;font-weight:700;letter-spacing:.3px;display:inline-block;margin-left:4px}
+.hl-chip{font-family:'JetBrains Mono';font-size:.52rem;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.3px;display:inline-block;margin-left:4px}
 .hl-chip-g{background:var(--hg1);color:var(--hg);border:1px solid rgba(57,255,20,.18)}
 .hl-chip-w{background:var(--hw1);color:var(--hw);border:1px solid rgba(255,159,28,.18)}
 .hl-chip-r{background:var(--hr1);color:var(--hr);border:1px solid rgba(255,56,100,.18)}
 .hl-chip-stale{background:rgba(92,90,110,.08);color:var(--t3);border:1px solid rgba(92,90,110,.18);font-style:italic}
-.hl-comp-bars{display:flex;flex-direction:column;gap:10px;min-width:220px;flex:1}
-.hl-comp-row{display:grid;grid-template-columns:84px 1fr auto;gap:8px;align-items:center}
-.hl-comp-row label{font-family:'JetBrains Mono';font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
-.hl-comp-track{height:8px;background:var(--bg-4);border:1px solid var(--b1);border-radius:999px;overflow:hidden}
-.hl-comp-fill{height:100%;width:var(--w);background:linear-gradient(90deg,var(--c),rgba(255,255,255,.32));box-shadow:0 0 12px color-mix(in srgb,var(--c) 30%, transparent)}
-.hl-comp-val{font-family:'JetBrains Mono';font-size:.58rem;font-weight:700;color:var(--t1)}
-.hl-history{padding:10px 20px;border-top:1px solid var(--b0);display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.hl-history{padding:12px 28px;border-top:1px solid var(--b0);display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
 .hl-history::-webkit-scrollbar{display:none}
-.hl-h-item{flex-shrink:0;padding:0 10px;border-right:1px solid var(--b0);text-align:center;min-width:52px}
+.hl-h-item{flex-shrink:0;padding:0 14px;border-right:1px solid var(--b0);text-align:center;min-width:60px}
 .hl-h-item:last-child{border:none}
 .hl-h-item .hd{font-family:'JetBrains Mono';font-size:.52rem;color:var(--t3);letter-spacing:.5px}
 .hl-h-item .hv{font-family:'JetBrains Mono';font-size:.72rem;font-weight:700;margin-top:2px}
 .hl-h-item .hdt{font-family:'JetBrains Mono';font-size:.52rem;margin-top:1px}
 .hl-empty{text-align:center;padding:28px 16px;font-family:'JetBrains Mono';font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;opacity:.45}
-.hl-bottom{margin-top:14px}
-.hl-bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:800px){.hl-bottom-grid{grid-template-columns:1fr}}
+.hl-note{font-family:'JetBrains Mono';font-size:.56rem;color:var(--t3);margin-top:14px;letter-spacing:.3px;line-height:1.7;padding:0 28px 20px}
+.hl-note .ng{color:var(--hg)} .hl-note .nw{color:var(--hw)} .hl-note .nr{color:var(--hr)}
+/* Body comp stat rows */
+.hl-comp-stats{display:flex;flex-direction:column;gap:0}
+.hl-comp-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--b0)}
+.hl-comp-row:last-child{border:none;padding-bottom:0}
+.hl-comp-label{font-size:.72rem;color:var(--t2)}
+.hl-comp-val{font-family:'JetBrains Mono';font-size:.92rem;font-weight:600;text-align:right}
+.hl-comp-bar{height:3px;background:var(--b0);border-radius:2px;overflow:hidden;margin-top:6px}
+.hl-comp-bar-fill{height:100%;border-radius:2px;width:0;animation:hlBar 1.5s ease-out forwards}
 @keyframes hlDraw{to{stroke-dashoffset:0}}
 @keyframes hlFill{to{opacity:1}}
 @keyframes hlDot{to{opacity:1}}
@@ -648,7 +656,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <button class="nav-tab" data-v="projects">Projects</button>
     <button class="nav-tab" data-v="books">Books</button>
     <button class="nav-tab" data-v="groceries">Groceries</button>
-    <button class="nav-tab" data-v="health">HEALTH</button>
+    <button class="nav-tab" data-v="health">Health</button>
   </nav>
   <div class="hdr-r">
     <div class="clk" id="clk"></div>
@@ -834,12 +842,10 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     </div>
     <div class="fac" style="margin-top:14px"><button class="btn btn-gh" id="hlBatchCancel">ANNULER</button><button class="btn btn-g" id="hlBatchSave">ENREGISTRER TOUT</button></div>
   </div>
-  <div class="hl-grid">
-    <div class="hl-col" id="hl-left"></div>
-    <div class="hl-avatar-col" id="hl-center"></div>
-    <div class="hl-col" id="hl-right"></div>
+  <div class="hl-layout">
+    <div class="hl-sections" id="hl-sections"></div>
+    <div class="hl-avatar-float" id="hl-center"></div>
   </div>
-  <div class="hl-bottom" id="hl-bottom"></div>
 </div>
 
 <!-- Books Modals -->
@@ -2518,7 +2524,7 @@ function renderTubesCard(logs) {
   </div></div>`;
 }
 
-/* ── BODY COMPOSITION MATRIX (ring-free) ── */
+/* ── BODY COMPOSITION — HORIZONTAL BARS + STATS (no rings) ── */
 function renderBodyCompCard(weightLogs, fatLogs, leanLogs) {
   const latestW=weightLogs.length?weightLogs[weightLogs.length-1].value:null;
   const latestF=fatLogs.length?fatLogs[fatLogs.length-1].value:null;
@@ -2527,41 +2533,35 @@ function renderBodyCompCard(weightLogs, fatLogs, leanLogs) {
   const bc=BODY_COMP;
   const fatPct=latestF||bc.fatPct;
   const fatCol=hCol('body_fat',fatPct);
-  const musclePct=bc.musclePct;
-  const waterPct=bc.waterPct;
   const bmiCol=bmi?(bmi<18.5?'var(--hr)':bmi<25?'var(--hg)':'var(--hw)'):'var(--t3)';
-  const metrics=[
-    {label:'Graisse',     val:`${fatPct}%`,          sub:`${bc.fatMass} kg`, col:fatCol},
-    {label:'Muscle',      val:`${musclePct}%`,       sub:'', col:'var(--hg)'},
-    {label:'Eau',         val:`${waterPct}%`,        sub:'', col:'var(--blue)'},
-    {label:'Os',          val:`${bc.boneMass} kg`,   sub:'', col:'var(--t2)'},
-    {label:'Protéines',   val:`${bc.protein} kg`,    sub:'', col:'var(--purple)'},
-    {label:'Âge corporel',val:`${bc.bodyAge} ans`,   sub:'', col:'var(--gold)'},
+  const rows=[
+    {label:'Graisse corporelle',val:`${fatPct}%`, sub:`${bc.fatMass} kg`,col:fatCol, pct:Math.min(100,fatPct*2.5)},
+    {label:'Masse musculaire',  val:`${bc.musclePct}%`,sub:'',col:'var(--hg)',  pct:Math.min(100,bc.musclePct*1.5)},
+    {label:'Taux d\'eau',       val:`${bc.waterPct}%`, sub:'',col:'var(--blue)', pct:Math.min(100,bc.waterPct)},
+    {label:'Masse osseuse',     val:`${bc.boneMass} kg`,sub:'',col:'var(--t2)',  pct:Math.min(100,bc.boneMass*15)},
+    {label:'Protéines',         val:`${bc.protein} kg`,sub:'',col:'var(--purple)',pct:Math.min(100,bc.protein*5)},
+    {label:'Âge estimé du corps',val:`${bc.bodyAge} ans`,sub:'',col:'var(--gold)',pct:Math.min(100,(bc.bodyAge/40)*100)},
+    {label:'IMC',               val:bmi||'—',   sub:bmi?(bmi<18.5?'Sous-poids':bmi<25?'Normal':'Surpoids'):'', col:bmiCol, pct:bmi?Math.min(100,(bmi/35)*100):0},
   ];
   return `<div class="hl-card"><div class="hl-card-pad">
     <div class="hl-card-hdr">
-      <div><div class="hl-card-title">Composition Corporelle</div><div class="hl-card-sub">181 CM · GUERRIER CROHN</div></div>
-      <span class="hl-chip ${fatPct>=10&&fatPct<=22?'hl-chip-g':'hl-chip-w'}">${fatPct>=10&&fatPct<=22?'PLAGE SAINE':'À SURVEILLER'}</span>
-    </div>
-    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center">
-      <div class="hl-comp-bars">
-        <div class="hl-comp-row"><label>Eau</label><div class="hl-comp-track"><div class="hl-comp-fill" style="--w:${Math.max(0,Math.min(100,waterPct)).toFixed(1)}%;--c:var(--blue)"></div></div><div class="hl-comp-val">${waterPct}%</div></div>
-        <div class="hl-comp-row"><label>Muscle</label><div class="hl-comp-track"><div class="hl-comp-fill" style="--w:${Math.max(0,Math.min(100,musclePct)).toFixed(1)}%;--c:var(--hg)"></div></div><div class="hl-comp-val">${musclePct}%</div></div>
-        <div class="hl-comp-row"><label>Graisse</label><div class="hl-comp-track"><div class="hl-comp-fill" style="--w:${Math.max(0,Math.min(100,fatPct)).toFixed(1)}%;--c:${fatCol}"></div></div><div class="hl-comp-val">${fatPct}%</div></div>
-      </div>
-      <div style="flex:1;min-width:170px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        ${metrics.map(m=>`<div style="background:rgba(255,255,255,.02);border:1px solid var(--b0);border-radius:8px;padding:8px 10px;text-align:center">
-          <div style="font-family:'JetBrains Mono';font-size:.88rem;font-weight:700;color:${m.col};line-height:1">${m.val}</div>
-          ${m.sub?`<div style="font-family:'JetBrains Mono';font-size:.44rem;color:var(--t3);margin-top:1px">${m.sub}</div>`:''}
-          <div style="font-size:.5rem;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:3px">${m.label}</div>
-        </div>`).join('')}
+      <div><div class="hl-card-title">Composition Corporelle</div><div class="hl-card-sub">181 CM · Ce dont vous êtes fait</div></div>
+      <div class="hl-card-val">
+        <div class="hl-big-val" style="color:${fatCol};font-size:2rem">${fatPct}<span style="font-size:.8rem;color:var(--t3)">%</span></div>
+        <div class="hl-val-unit">Graisse corporelle ${fatPct>=10&&fatPct<=22?'<span class="hl-chip hl-chip-g">PLAGE SAINE</span>':'<span class="hl-chip hl-chip-w">À SURVEILLER</span>'}</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-top:14px;justify-content:center;font-family:'JetBrains Mono';font-size:.48rem">
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:3px;background:var(--blue);border-radius:2px"></span><span style="color:var(--t3)">Eau</span></span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:3px;background:var(--hg);border-radius:2px"></span><span style="color:var(--t3)">Muscle</span></span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:3px;background:${fatCol};border-radius:2px"></span><span style="color:var(--t3)">Graisse</span></span>
-      <span style="color:var(--t3);margin-left:auto">IMC <span style="color:${bmiCol};font-weight:700">${bmi||'—'}</span></span>
+    <div class="hl-comp-stats">
+      ${rows.map((r,i)=>`<div class="hl-comp-row">
+        <div style="flex:1;min-width:0">
+          <div class="hl-comp-label">${r.label}</div>
+          <div class="hl-comp-bar"><div class="hl-comp-bar-fill" style="--w:${r.pct.toFixed(1)}%;background:${r.col};box-shadow:0 0 8px ${r.col}28;animation-delay:${(i*0.1).toFixed(2)}s"></div></div>
+        </div>
+        <div style="text-align:right;margin-left:16px;flex-shrink:0">
+          <div class="hl-comp-val" style="color:${r.col}">${r.val}</div>
+          ${r.sub?`<div style="font-family:'JetBrains Mono';font-size:.48rem;color:var(--t3);margin-top:1px">${r.sub}</div>`:''}
+        </div>
+      </div>`).join('')}
     </div>
   </div></div>`;
 }
@@ -2702,10 +2702,10 @@ function renderAvatarHTML(weight, bodyFat) {
   </div>`;
 }
 
-/* ── MAIN RENDER ── */
+/* ── MAIN RENDER (DeepSeek-style stacked sections) ── */
 function renderHealth() {
-  const lft=$('hl-left'); const ctr=$('hl-center'); const rgt=$('hl-right'); const bot=$('hl-bottom');
-  if(!lft) return;
+  const sec=$('hl-sections'); const ctr=$('hl-center');
+  if(!sec) return;
   const wLogs=hlLogs('weight'); const cpLogs=hlLogs('calprotectin'); const crpLogs=hlLogs('crp');
   const hLogs=hlLogs('hemoglobin'); const hctLogs=hlLogs('hematocrit');
   const vdLogs=hlLogs('vitamin_d'); const fLogs=hlLogs('body_fat'); const lnLogs=hlLogs('lean_mass');
@@ -2714,27 +2714,41 @@ function renderHealth() {
   const latestF=fLogs.length?fLogs[fLogs.length-1].value:null;
   const allLogs=[...(D.healthLogs||[])].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
   const lastD=allLogs.length?hlFmtDate(allLogs[0].date):'';
-  /* Don't overwrite if user has edited the subtitle */
   const sub=$('hlLastLog');
   if(!sub.dataset.edited){
     sub.textContent=lastD?`DERNIER BILAN : ${lastD} · 181 CM · CROHN`:"181 CM · MALADIE DE CROHN · DOSSIER N° 070218-007 · STOMIE ILÉALE DÉFINITIVE";
   }
-  lft.innerHTML=renderWeightCard(wLogs)+renderCRPCard(crpLogs)+renderCalproCard(cpLogs);
+  /* Avatar sidebar */
   ctr.innerHTML=renderAvatarHTML(latestW,latestF);
-  rgt.innerHTML=renderOxygenCard(hLogs,hctLogs)+renderTubesCard(hLogs)+renderBodyCompCard(wLogs,fLogs,lnLogs);
-  /* Bottom section: Vitamin D + Platelets + extra metrics */
-  let botHtml='<div class="hl-bottom-grid">';
-  botHtml+=renderVitDCard(vdLogs);
-  botHtml+=renderPlateletsCard(pltLogs);
-  botHtml+='</div>';
-  /* Additional metric cards if data exists */
-  if(creatLogs.length||albLogs.length){
-    botHtml+='<div class="hl-bottom-grid" style="margin-top:14px">';
-    if(creatLogs.length) botHtml+=renderSimpleLineCard('creatinine',creatLogs);
-    if(albLogs.length) botHtml+=renderSimpleLineCard('albumin',albLogs);
-    botHtml+='</div>';
+  /* Build numbered sections */
+  let n=1, html='';
+  function addSec(label,content){
+    html+=`<div class="hl-sec"><div class="hl-sec-label"><em>${String(n).padStart(2,'0')}</em> ${label}</div>${content}</div>`;
+    n++;
   }
-  bot.innerHTML=botHtml;
+  /* 01 — Calprotectin */
+  addSec('Calprotectine Fécale', renderCalproCard(cpLogs));
+  /* 02 — CRP */
+  addSec('Protéine C Réactive', renderCRPCard(crpLogs));
+  /* 03 — Hemoglobin & Hematocrit */
+  addSec('Hémoglobine & Hématocrite', renderOxygenCard(hLogs,hctLogs)+renderTubesCard(hLogs));
+  /* 04 — Vitamin D */
+  addSec('Vitamine D', renderVitDCard(vdLogs));
+  /* 05 — Weight */
+  addSec('Poids', renderWeightCard(wLogs));
+  /* 06 — Body Composition */
+  addSec('Composition Corporelle', renderBodyCompCard(wLogs,fLogs,lnLogs));
+  /* 07 — Platelets */
+  addSec('Plaquettes', renderPlateletsCard(pltLogs));
+  /* 08/09 — Extra metrics in a two-column grid */
+  if(creatLogs.length||albLogs.length){
+    let duo='<div class="hl-duo">';
+    if(creatLogs.length) duo+=renderSimpleLineCard('creatinine',creatLogs);
+    if(albLogs.length) duo+=renderSimpleLineCard('albumin',albLogs);
+    duo+='</div>';
+    addSec('Fonction Rénale & Nutrition', duo);
+  }
+  sec.innerHTML=html;
 }
 
 /* ── HEALTH EVENT HANDLERS ── */
