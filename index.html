@@ -80,13 +80,13 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .tier-critical .kb-tier-count{background:var(--red-d);color:var(--red)}
 .tier-medium .kb-tier-count{background:var(--gold-d);color:var(--gold)}
 .tier-minimal .kb-tier-count{background:var(--blue-d);color:var(--blue)}
-.kb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;min-height:60px}
-@media(min-width:1400px){.kb-grid{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}}
+.kb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px;min-height:60px}
+@media(min-width:1400px){.kb-grid{grid-template-columns:repeat(auto-fill,minmax(500px,1fr))}}
 .kb-empty{grid-column:1/-1;display:flex;align-items:center;justify-content:center;padding:20px;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);opacity:.4;border:1px dashed var(--b1);border-radius:12px}
 
 /* Task Card */
-.tsk{position:relative;border-radius:16px;padding:24px 28px;background:rgba(18,18,22,.7);backdrop-filter:blur(16px);border:1px solid var(--b0);cursor:grab;user-select:none;transition:all .25s cubic-bezier(.4,0,.2,1);overflow:hidden;display:flex;flex-direction:column;gap:14px}
-@media(min-width:1200px){.tsk{padding:28px 32px;gap:16px}}
+.tsk{position:relative;border-radius:16px;padding:14px 20px;background:rgba(18,18,22,.7);backdrop-filter:blur(16px);border:1px solid var(--b0);cursor:grab;user-select:none;transition:all .25s cubic-bezier(.4,0,.2,1);overflow:hidden;display:flex;flex-direction:column;gap:8px}
+@media(min-width:1200px){.tsk{padding:16px 22px;gap:10px}}
 .tsk::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;opacity:.8;border-radius:16px 16px 0 0}
 .tsk.p1::before,.tsk.p2::before{background:linear-gradient(90deg,var(--red),var(--orange))}
 .tsk.p3::before{background:linear-gradient(90deg,var(--gold),rgba(212,175,55,.4))}
@@ -116,8 +116,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .tc{width:30px;height:30px;min-width:30px;border-radius:50%;border:2.5px solid var(--b2);cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;font-size:16px;color:transparent;font-weight:800;flex-shrink:0;margin-top:3px}
 .tc:hover{border-color:var(--green);background:rgba(34,197,94,.12)}
 .tb{flex:1;min-width:0}
-.tsk-txt{font-size:1.25rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px;line-height:1.3;word-break:break-word;color:var(--t0)}
-@media(min-width:1200px){.tsk-txt{font-size:1.4rem}}
+.tsk-txt{font-size:1.35rem;font-weight:400;text-transform:uppercase;letter-spacing:.3px;line-height:1.25;word-break:break-word;color:var(--t0)}
+@media(min-width:1200px){.tsk-txt{font-size:1.5rem}}
 .tsk-proj{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;padding:4px 12px;border-radius:5px;display:inline-block;margin-bottom:8px}
 .tm{display:flex;gap:6px;flex-wrap:wrap;align-items:center;opacity:.7;margin-top:4px}
 .tag{font-size:.7rem;padding:4px 12px;border-radius:5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
@@ -471,7 +471,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .fr6{grid-template-columns:1fr 1fr!important}
 .tfrm{padding:14px}
 .kb-grid{grid-template-columns:1fr}
-.tsk{padding:14px 12px}
+.tsk{padding:10px 14px}
 .tsk-txt{font-size:.9rem}
 .tact{gap:4px}
 .tbb,.tedb{opacity:.6;font-size:14px;padding:4px}
@@ -978,7 +978,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
       </div>
     </div>
   </div>
-  <div class="mdla"><button class="btn btn-gh" id="ePrjCn">CANCEL</button><button class="btn btn-g" id="ePrjSv">SAVE</button></div>
+  <div class="mdla" style="justify-content:space-between"><button class="btn" id="ePrjDel" style="background:var(--red-d);color:var(--red);border:1px solid rgba(239,68,68,.25)">🗑 DELETE</button><div style="display:flex;gap:8px"><button class="btn btn-gh" id="ePrjCn">CANCEL</button><button class="btn btn-g" id="ePrjSv">SAVE</button></div></div>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -1985,6 +1985,21 @@ function openEPrj(title,ci,isClosed){
   $('ePrjMdl').classList.add('op');$('epN').focus()
 }
 $('ePrjCn').onclick=()=>{$('ePrjMdl').classList.remove('op');_ePrjTitle=null;_ePrjCi=null};
+$('ePrjDel').onclick=()=>{
+  if(!_ePrjTitle)return;
+  if(!confirm(`Delete project "${_ePrjTitle}"? This cannot be undone.`))return;
+  pH('delete project');
+  if(_ePrjClosed){
+    D.closed=D.closed.filter((_,i)=>i!==_ePrjCi);
+  } else {
+    D.projects=D.projects.filter(p=>p.title!==_ePrjTitle);
+  }
+  if(PC[_ePrjTitle])delete PC[_ePrjTitle];
+  if(D.posters&&D.posters[_ePrjTitle])delete D.posters[_ePrjTitle];
+  toast(_ePrjTitle+' DELETED','rd');
+  $('ePrjMdl').classList.remove('op');_ePrjTitle=null;_ePrjCi=null;
+  renderProj();fillDD();renderT();
+};
 $('epCat').onchange=()=>{const isP=$('epCat').value==='personal';$('epFilmFields').style.display=isP?'none':'';$('epStat').disabled=isP||_ePrjClosed};
 $('epPosterDel').onclick=()=>{
   if(!_ePrjTitle)return;
@@ -2399,7 +2414,8 @@ function hlMakeChart(canvasId,logs,metric,lineColor,opts){
     cfg.data.datasets.push({data:Array(labels.length).fill(opts.refLine),borderColor:opts.refLineColor||'#5c5a6e44',borderWidth:1,borderDash:[6,4],pointRadius:0,pointHoverRadius:0,fill:false,tension:0,label:opts.refLabel||'Seuil'});
     cfg.options.plugins.legend={display:true,labels:{color:'#8a8898',font:{family:'JetBrains Mono',size:10},boxWidth:12,padding:16,filter:item=>item.text!=='undefined'}};
   }
-  hlCharts[canvasId]=new Chart(canvas,cfg);
+  const extraPlugins=(opts&&opts.extraPlugins)||[];
+  hlCharts[canvasId]=new Chart(canvas,{...cfg,plugins:extraPlugins});
 }
 
 /* ═══ RENDER HEALTH ═══ */
@@ -2441,19 +2457,11 @@ function renderHealth(){
       deltaHtml=`<span class="hl-kpi-delta" style="color:${dCol}">${delta>0?'▲ +'+delta:'▼ '+Math.abs(delta)} ${m.unit}</span>`;
     }
     const statusTxt=c==='g'?'Normal':c==='w'?'Attention':'Critique';
-    // For weight KPI, show gain info
-    let extra='';
-    if(metric==='weight'&&logs.length>=2){
-      const first=logs[0],last=logs[logs.length-1];
-      const totalChange=+(last.value-first.value).toFixed(1);
-      extra=totalChange>=0?`<span style="color:var(--hg);font-weight:600">+${totalChange} kg depuis ${hlFmtDate(first.date)}</span>`:`<span style="color:var(--hr);font-weight:600">${totalChange} kg depuis ${hlFmtDate(first.date)}</span>`;
-    }
     return `<div class="hl-kpi">
       <div class="hl-kpi-pulse ${c}"></div>
       <div class="hl-kpi-top"><span class="hl-kpi-label">${icon} ${label}</span><span class="hl-kpi-date">${hlFmtDate(latest.date)}</span></div>
       <div class="hl-kpi-val"><span class="hl-kpi-num" style="color:${col}">${latest.value}</span><span class="hl-kpi-unit">${m.unit}</span></div>
       <div class="hl-kpi-sub"><span style="color:${col}">${statusTxt}</span>${deltaHtml}</div>
-      ${extra?`<div style="margin-top:6px;font-family:JetBrains Mono,monospace;font-size:.62rem">${extra}</div>`:''}
     </div>`;
   }
   html+=`<div class="hl-kpi-row">
@@ -2463,18 +2471,6 @@ function renderHealth(){
   </div>`;
 
   /* ═══ 2. ROW: Weight Chart (left) + CRP Chart (right) ═══ */
-  // CRP annotations
-  let crpAnnotsHtml='';
-  if(crpLogs.length>=2){
-    crpAnnotsHtml='<div class="hl-crp-annots">';
-    for(let i=1;i<crpLogs.length;i++){
-      const prev=crpLogs[i-1],curr=crpLogs[i];
-      const diff=+(curr.value-prev.value).toFixed(1);
-      const col=diff>0?'var(--hr)':'var(--hg)';
-      crpAnnotsHtml+=`<div class="hl-crp-annot">${hlFmtDate(prev.date)} → ${hlFmtDate(curr.date)}<span class="av" style="color:${col}">${diff>0?'+'+diff:diff}</span></div>`;
-    }
-    crpAnnotsHtml+='</div>';
-  }
   html+=`<div class="hl-grid-2">
     <div class="hl-card" style="animation-delay:.2s">
       <div class="hl-card-hdr"><div><div class="hl-card-title">⚖ Poids — Évolution</div><div class="hl-card-subtitle">Trajectoire sur ${wLogs.length} mesures</div></div></div>
@@ -2485,7 +2481,6 @@ function renderHealth(){
       <div class="hl-card-hdr"><div><div class="hl-card-title">🔬 CRP — Inflammation Systémique</div><div class="hl-card-subtitle">Objectif &lt; 5 mg/L</div></div>
         ${latCRP?`<div class="hl-card-badge" style="background:${hCol('crp',latCRP.value)}22;color:${hCol('crp',latCRP.value)};border:1px solid ${hCol('crp',latCRP.value)}44">${latCRP.value} mg/L</div>`:''}</div>
       <div class="hl-chart-wrap"><canvas id="hlChartCRP"></canvas></div>
-      ${crpAnnotsHtml}
     </div>
   </div>`;
 
@@ -2576,6 +2571,7 @@ function renderHealth(){
         ${bcItem('🧬','Protéines',latProtein?latProtein.value:null,'kg','var(--purple)',latProtein&&latW?((latProtein.value/latW.value)*100):null)}
         ${bcItem('🏋','Masse maigre',latLean?latLean.value:null,'kg','var(--hg)',latLean&&latW?((latLean.value/latW.value)*100):null)}
       </div>
+      ${(wLogs.length>1||fatLogs.length>1||lnLogs.length>1)?`<div style="margin-top:12px;border-top:1px solid var(--b0);padding-top:10px"><div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:8px">Évolution</div><div class="hl-chart-wrap" style="height:140px"><canvas id="hlChartBodyComp"></canvas></div></div>`:''}
     </div>
   </div>`;
 
@@ -2584,10 +2580,27 @@ function renderHealth(){
   /* ═══ INIT CHARTS ═══ */
   setTimeout(()=>{
     // Weight chart — area gradient
-    hlMakeChart('hlChartWeight',wLogs,'weight','var(--hg)',{refLine:65,refLabel:'Objectif',refLineColor:'#39FF1444'});
+    hlMakeChart('hlChartWeight',wLogs,'weight','#39FF14',{refLine:65,refLabel:'Objectif',refLineColor:'#39FF1444'});
 
-    // CRP chart with ref line at 10 (normal max)
-    hlMakeChart('hlChartCRP',crpLogs,'crp','#FF3864',{refLine:10,refLabel:'Seuil',refLineColor:'#FF386444'});
+    // CRP chart with delta labels on each dot
+    hlMakeChart('hlChartCRP',crpLogs,'crp','#FF3864',{refLine:10,refLabel:'Seuil',refLineColor:'#FF386444',
+      extraPlugins:[{id:'crpDeltaLabels',afterDatasetsDraw(chart){
+        const {ctx}=chart;
+        const meta=chart.getDatasetMeta(0);
+        const vals=crpLogs.map(l=>l.value);
+        ctx.save();
+        meta.data.forEach((pt,i)=>{
+          if(i===0)return;
+          const diff=+(vals[i]-vals[i-1]).toFixed(1);
+          const sign=diff>0?'+':'';
+          ctx.fillStyle=diff>0?'#FF3864':'#39FF14';
+          ctx.font='bold 9px JetBrains Mono,monospace';
+          ctx.textAlign='center';
+          ctx.fillText(sign+diff,pt.x,pt.y-10);
+        });
+        ctx.restore();
+      }}]
+    });
 
     // Hemoglobin + Hematocrit dual-axis
     if(hLogs.length||hctLogs.length){
@@ -2601,8 +2614,8 @@ function renderHealth(){
         hlCharts['hlChartHbHct']=new Chart(canvas,{
           type:'line',
           data:{labels,datasets:[
-            {label:'Hémoglobine (g/dL)',data:hbData,borderColor:'#FF9F1C',backgroundColor:'#FF9F1C18',fill:true,tension:0.35,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:'#FF9F1C',pointBorderColor:'transparent',borderWidth:2.5,yAxisID:'y'},
-            {label:'Hématocrite (%)',data:hctData,borderColor:'#64FFDA',backgroundColor:'#64FFDA18',fill:true,tension:0.35,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:'#64FFDA',pointBorderColor:'transparent',borderWidth:2.5,yAxisID:'y1'}
+            {label:'Hémoglobine (g/dL)',data:hbData,spanGaps:true,borderColor:'#FF9F1C',backgroundColor:'#FF9F1C18',fill:true,tension:0.35,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:'#FF9F1C',pointBorderColor:'transparent',borderWidth:2.5,yAxisID:'y'},
+            {label:'Hématocrite (%)',data:hctData,spanGaps:true,borderColor:'#64FFDA',backgroundColor:'#64FFDA18',fill:true,tension:0.35,pointRadius:5,pointHoverRadius:9,pointBackgroundColor:'#64FFDA',pointBorderColor:'transparent',borderWidth:2.5,yAxisID:'y1'}
           ]},
           options:{
             responsive:true,maintainAspectRatio:false,
@@ -2624,6 +2637,35 @@ function renderHealth(){
 
     // Calprotectin
     hlMakeChart('hlChartCalpro',cpLogs,'calprotectin','#f59e0b',{refLine:50,refLabel:'Rémission',refLineColor:'#22c55e44'});
+
+    // Body composition evolution chart
+    const bcCanvas=document.getElementById('hlChartBodyComp');
+    if(bcCanvas){
+      if(hlCharts['hlChartBodyComp']){try{hlCharts['hlChartBodyComp'].destroy();}catch(e){}}
+      const bcAllDates=[...new Set([...wLogs,...fatLogs,...lnLogs].map(l=>l.date))].sort();
+      if(bcAllDates.length>1){
+        const bcLabels=bcAllDates.map(d=>{const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});});
+        hlCharts['hlChartBodyComp']=new Chart(bcCanvas,{
+          type:'line',
+          data:{labels:bcLabels,datasets:[
+            {label:'Poids (kg)',data:bcAllDates.map(d=>{const e=wLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#f0eeea',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yW'},
+            {label:'Graisse (%)',data:bcAllDates.map(d=>{const e=fatLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#FF9F1C',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yP'},
+            {label:'Masse maigre (kg)',data:bcAllDates.map(d=>{const e=lnLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#39FF14',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yW'}
+          ]},
+          options:{
+            responsive:true,maintainAspectRatio:false,
+            animation:{duration:800},
+            plugins:{legend:{display:true,labels:{color:'#8a8898',font:{family:'JetBrains Mono',size:9},boxWidth:10,padding:10}},
+              tooltip:{backgroundColor:'#0c0c10ee',titleColor:'#f0eeea',bodyColor:'#c0beb8',borderColor:'#2a2a36',borderWidth:1,padding:8,cornerRadius:6,titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:10}}},
+            scales:{
+              x:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:8},maxRotation:0},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'}},
+              yW:{type:'linear',position:'left',ticks:{color:'#8a8898',font:{family:'JetBrains Mono',size:8}},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'}},
+              yP:{type:'linear',position:'right',ticks:{color:'#FF9F1C88',font:{family:'JetBrains Mono',size:8}},grid:{display:false},border:{color:'#1e1e28'}}
+            }
+          }
+        });
+      }
+    }
 
   },80);
 }
