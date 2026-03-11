@@ -135,6 +135,9 @@ function doGet(e) {
     data.dlid = toNum(meta.dlid) || 1;
     data.savedAt = meta.savedAt || '';
 
+    // --- Posters (stored as JSON blob in meta) ---
+    try { data.posters = meta.posters ? JSON.parse(meta.posters) : {}; } catch(_) { data.posters = {}; }
+
     // --- Project Colors (PC object) ---
     const pcRows = readSheet(ss, SHEETS.PROJCOLORS, PROJCOLOR_COLS);
     const PC = {};
@@ -399,7 +402,8 @@ function doPost(e) {
       ['booksGoal',  D.booksGoal || 30],
       ['gid',        D.gid || 1],
       ['hid',        D.hid || 1],
-      ['savedAt',    now]
+      ['savedAt',    now],
+      ['posters',    JSON.stringify(D.posters || {})]
     ]);
 
     // --- Project Colors ---
@@ -429,14 +433,23 @@ function parseTask(row) {
   try {
     if (row.subtasks) subs = JSON.parse(row.subtasks);
   } catch (_) {}
+
+  // Migration: backup restore misaligned columns — partner field may contain original due date
+  let due = normalizeDate(str(row.due)) || null;
+  let partner = str(row.partner);
+  if (!due && partner && /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) /.test(partner)) {
+    const migrated = normalizeDate(partner);
+    if (migrated) { due = migrated; partner = ''; }
+  }
+
   return {
     id:          toNum(row.id),
     name:        str(row.name),
     project:     str(row.project),
     person:      str(row.person),
-    partner:     str(row.partner),
+    partner:     partner,
     priority:    toNum(row.priority) || 3,
-    due:         normalizeDate(str(row.due)) || null,
+    due:         due,
     done:        toBool(row.done),
     blocked:     toBool(row.blocked),
     blockedBy:   str(row.blockedBy) || null,
@@ -475,16 +488,16 @@ function readSheet(ss, name, cols) {
   });
 }
 
-/** Write data to a sheet (clears existing data, keeps header) */
+/** Write data to a sheet (clears existing data, always updates header) */
 function writeSheet(ss, name, cols, rows) {
   let sheet = ss.getSheetByName(name);
   if (!sheet) {
     sheet = ss.insertSheet(name);
-    sheet.appendRow(cols);
-    // Bold + freeze header
-    sheet.getRange(1, 1, 1, cols.length).setFontWeight('bold');
     sheet.setFrozenRows(1);
   }
+
+  // Always update header row to ensure it matches current column definitions
+  sheet.getRange(1, 1, 1, cols.length).setValues([cols]).setFontWeight('bold');
 
   // Clear data rows (keep header)
   const lastRow = sheet.getLastRow();
