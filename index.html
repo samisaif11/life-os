@@ -1304,6 +1304,23 @@ function parsePossibleJson(v){
   return v;
 }
 
+function looksLikeJsDateString(v){
+  const s=String(v??'').trim();
+  return /^(mon|tue|wed|thu|fri|sat|sun)\s/i.test(s)&&/gmt/i.test(s);
+}
+
+function normalizeDueValue(raw){
+  const dueRaw=String(raw??'').trim();
+  if(!dueRaw||/^\d+(?:\.\d+)?$/.test(dueRaw))return null;
+  let d=null;
+  if(/^\d{4}-\d{2}-\d{2}/.test(dueRaw))d=new Date(dueRaw.slice(0,10)+'T00:00:00');
+  else d=new Date(dueRaw);
+  if(isNaN(d.getTime()))return null;
+  const y=d.getUTCFullYear();
+  if(y<2024||y>2100)return null;
+  return d.toISOString().slice(0,10);
+}
+
 function normalizeTaskArray(list){
   if(!Array.isArray(list))return [];
 
@@ -1339,20 +1356,19 @@ function normalizeTaskArray(list){
     let notes=String(task.notes??'').trim();
     if(notes.startsWith('[')&&notes.endsWith(']')&&subs.length)notes='';
 
-    let dueRaw=String(task.due??'').trim();
-    let due='';
-    if(dueRaw&&!/^\d+(?:\.\d+)?$/.test(dueRaw)){
-      const d=new Date(dueRaw);
-      if(!isNaN(d.getTime()))due=d.toISOString().slice(0,10);
-      else if(/^\d{4}-\d{2}-\d{2}/.test(dueRaw))due=dueRaw.slice(0,10);
-    }
+    let due=normalizeDueValue(task.due);
     let partner=String(task.partner??'').trim();
-    if(!due&&/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) /.test(partner)){
-      const d=new Date(partner);
-      if(!isNaN(d.getTime())){due=d.toISOString().slice(0,10);partner='';}
+    if(!due&&looksLikeJsDateString(partner)){
+      due=normalizeDueValue(partner);
+      partner='';
     }
 
-    return {...task,subtasks:subs,notes,partner,due:due||null,id:Number(task.id)||ti+1,order:Number(task.order)||0};
+    const peopleRaw=Array.isArray(task.person)?task.person:(task.person?[task.person]:[]);
+    const partnerRaw=Array.isArray(task.partner)?task.partner:(task.partner?[task.partner]:[]);
+    const cleanPeople=peopleRaw.map(x=>String(x??'').trim().toUpperCase()).filter(x=>x&&!looksLikeJsDateString(x)&&!/^\d+(?:\.\d+)?$/.test(x));
+    const cleanPartners=partnerRaw.map(x=>String(x??'').trim().toUpperCase()).filter(x=>x&&!looksLikeJsDateString(x)&&!/^\d+(?:\.\d+)?$/.test(x));
+
+    return {...task,subtasks:subs,notes,person:cleanPeople,partner:cleanPartners,due:due||null,id:Number(task.id)||ti+1,order:Number(task.order)||0};
   });
 }
 
@@ -1503,8 +1519,8 @@ document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){
 /* ═══════ UTILS ═══════ */
 const td=()=>new Date().toISOString().split('T')[0];
 const nowI=()=>new Date().toISOString();
-const dB=s=>{if(!s)return null;const n=new Date();n.setHours(0,0,0,0);const d=new Date(s+'T00:00:00');return isNaN(d)?null:Math.ceil((d-n)/864e5)};
-const fD=s=>{if(!s)return'';const d=/^\d{4}-\d{2}-\d{2}$/.test(s)?new Date(s+'T00:00:00'):new Date(s);return isNaN(d)?'':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}).toUpperCase()};
+const dB=s=>{if(!s)return null;const n=new Date();n.setHours(0,0,0,0);const d=new Date(s+'T00:00:00');if(isNaN(d.getTime()))return null;const y=d.getUTCFullYear();if(y<2024||y>2100)return null;return Math.ceil((d-n)/864e5)};
+const fD=s=>{if(!s)return'';const d=/^\d{4}-\d{2}-\d{2}$/.test(s)?new Date(s+'T00:00:00'):new Date(s);if(isNaN(d.getTime()))return'';const y=d.getUTCFullYear();if(y<2024||y>2100)return'';return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}).toUpperCase()};
 function toast(m,t='grn'){const e=$('toast');e.textContent=m;e.className='toast '+t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2e3)}
 // Preload audio on first user interaction to unlock browser autoplay
 const _sndSuccess=new Audio('assets/sounds/success.mp3');
