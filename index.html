@@ -623,7 +623,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
 /* Gym heatmap */
 .hl-heatmap{display:grid;grid-template-columns:repeat(52,1fr);gap:2px;margin-top:10px}
-.hl-hm-cell{aspect-ratio:1;border-radius:2px;background:var(--bg-3);transition:background .2s}
+.hl-hm-cell{aspect-ratio:1;border-radius:3px;background:var(--bg-3);transition:background .2s;min-height:9px}
 .hl-hm-cell.l1{background:rgba(57,255,20,.15)}.hl-hm-cell.l2{background:rgba(57,255,20,.30)}
 .hl-hm-cell.l3{background:rgba(57,255,20,.50)}.hl-hm-cell.l4{background:var(--hg)}
 .hl-hm-legend{display:flex;align-items:center;gap:6px;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--t3)}
@@ -632,8 +632,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .hl-hm-months span{flex:1;text-align:center;min-width:0}
 .hl-hm-days{display:flex;flex-direction:column;gap:2px;margin-right:4px;font-family:'JetBrains Mono',monospace;font-size:.45rem;color:var(--t3);justify-content:space-between}
 .hl-hm-wrap{display:flex;align-items:flex-start}
-.hl-hm-grid-wrap{flex:1;overflow:hidden}
-.hl-hm-row{display:grid;grid-template-columns:repeat(52,1fr);gap:2px}
+.hl-hm-grid-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:3px}
+.hl-hm-row{display:grid;grid-template-columns:repeat(52,1fr);gap:3px}
 .hl-hm-stat{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--t1);margin-top:10px;display:flex;gap:18px}
 .hl-hm-stat strong{color:var(--hg);font-weight:700}
 
@@ -886,6 +886,10 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
       <div class="hl-form-field"><label>Masse osseuse (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="bone_mass"></div>
       <div class="hl-form-field"><label>Protéines (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="protein_mass"></div>
       <div class="hl-form-field"><label>Masse maigre (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="lean_mass"></div>
+      <div class="hl-form-field"><label>Graisse Viscérale (index)</label><input type="number" step="0.1" placeholder="—" data-metric="visceral_fat"></div>
+      <div class="hl-form-field"><label>Métabolisme de Base (kcal)</label><input type="number" step="1" placeholder="—" data-metric="bmr"></div>
+      <div class="hl-form-field"><label>Âge Métabolique (ans)</label><input type="number" step="1" placeholder="—" data-metric="metabolic_age"></div>
+      <div class="hl-form-field"><label>Score Global (/100)</label><input type="number" step="0.1" placeholder="—" data-metric="overall_score"></div>
     </div>
     <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlBodySave">ENREGISTRER TOUT</button></div>
   </div>
@@ -1464,6 +1468,7 @@ const D = {
   bkid: 1,
   healthLogs: [],
   hid: 1,
+  poidsCible: 65,
 };
 
 // Poster images - relative paths for GitHub Pages
@@ -2458,7 +2463,11 @@ const HMETA = {
   water_pct:    {label:'Taux d\'eau',            unit:'%',     refMin:50, refMax:70,  goodDir:'norm', chipFn:(v)=>v>=50&&v<=70?'g':v<50?'w':'w'},
   muscle_pct:   {label:'Masse musculaire',       unit:'%',     refMin:33, refMax:55,  goodDir:'up',   chipFn:(v)=>v>=33?'g':v>=25?'w':'r'},
   bone_mass:    {label:'Masse osseuse',          unit:'kg',    refMin:2.0,refMax:4.0, goodDir:'norm', chipFn:(v)=>v>=2.0&&v<=4.0?'g':v<2.0?'r':'w'},
-  protein_mass: {label:'Protéines',               unit:'kg',    refMin:8,  refMax:15,  goodDir:'up',   chipFn:(v)=>v>=8?'g':v>=5?'w':'r'},
+  protein_mass:   {label:'Protéines',              unit:'kg',    refMin:8,  refMax:15,  goodDir:'up',   chipFn:(v)=>v>=8?'g':v>=5?'w':'r'},
+  visceral_fat:   {label:'Graisse Viscérale',      unit:'index', refMin:1,  refMax:9,   goodDir:'down', chipFn:(v)=>v<=9?'g':v<=12?'w':'r'},
+  bmr:            {label:'Métabolisme de Base',     unit:'kcal',  refMin:1200,refMax:2200,goodDir:'norm',chipFn:(v)=>v>=1200&&v<=2200?'g':v<1200?'r':'w'},
+  metabolic_age:  {label:'Âge Métabolique',         unit:'ans',   refMin:18, refMax:35,  goodDir:'norm', chipFn:(v)=>v<=35?'g':v<=45?'w':'r'},
+  overall_score:  {label:'Score Global',            unit:'/100',  refMin:70, refMax:100, goodDir:'up',   chipFn:(v)=>v>=80?'g':v>=60?'w':'r'},
 };
 
 function hCol(metric, value) {
@@ -2543,9 +2552,12 @@ function renderHealth(){
   const hLogs=hlLogs('hemoglobin'),hctLogs=hlLogs('hematocrit');
   const gymLogs=hlLogs('gym');
   const fatLogs=hlLogs('body_fat'),lnLogs=hlLogs('lean_mass');
-  const waterLogs=hlLogs('water_pct'),muscleLogs=hlLogs('muscle_pct'),boneLogs=hlLogs('bone_mass'),proteinLogs=hlLogs('protein_mass'),fatMassLogs=hlLogs('fat_mass');
+  const muscleLogs=hlLogs('muscle_pct'),boneLogs=hlLogs('bone_mass'),proteinLogs=hlLogs('protein_mass'),fatMassLogs=hlLogs('fat_mass');
+  const viscFatLogs=hlLogs('visceral_fat'),bmrLogs=hlLogs('bmr'),metAgeLogs=hlLogs('metabolic_age'),scoreLogs=hlLogs('overall_score');
   const latW=hlLatest('weight'),latCRP=hlLatest('crp'),latCP=hlLatest('calprotectin'),latHb=hlLatest('hemoglobin');
-  const latFat=hlLatest('body_fat'),latLean=hlLatest('lean_mass'),latWater=hlLatest('water_pct'),latMuscle=hlLatest('muscle_pct'),latBone=hlLatest('bone_mass'),latProtein=hlLatest('protein_mass'),latFatMass=hlLatest('fat_mass');
+  const latFat=hlLatest('body_fat'),latLean=hlLatest('lean_mass'),latMuscle=hlLatest('muscle_pct'),latBone=hlLatest('bone_mass'),latProtein=hlLatest('protein_mass'),latFatMass=hlLatest('fat_mass');
+  const latViscFat=hlLatest('visceral_fat'),latBMR=hlLatest('bmr'),latMetAge=hlLatest('metabolic_age'),latScore=hlLatest('overall_score');
+  const poidsCible=D.poidsCible||65;
   let html='';
 
   /* ═══ + MENU BAR ═══ */
@@ -2587,13 +2599,56 @@ function renderHealth(){
     ${kpi('Poids',latW,'weight','⚖')}
   </div>`;
 
-  /* ═══ 2. ROW: Weight Chart (left) + CRP Chart (right) ═══ */
+  /* ═══ 2. ROW: Weight Chart (left) + Body Composition (right) ═══ */
+  // Body comp data
+  function bcItem(icon,name,val,unit,color,pct,dateLbl){
+    if(val==null||val===undefined||val==='')return '';
+    return `<div class="hl-bc-item"><div class="hl-bc-icon">${icon}</div><div class="hl-bc-info"><div class="hl-bc-name">${name}</div><div class="hl-bc-val" style="color:${color||'var(--t0)'}">${val} <span style="font-size:.7rem;color:var(--t3)">${unit}</span></div>${dateLbl?`<div style="font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--t3);margin-top:1px">${dateLbl}</div>`:''} ${pct!=null?`<div class="hl-bc-bar"><div class="hl-bc-fill" style="--bw:${Math.min(100,pct)}%;background:${color||'var(--hg)'}"></div></div>`:''}</div></div>`;
+  }
+  const HEIGHT=181;
+  const bmi=latW?+(latW.value/((HEIGHT/100)**2)).toFixed(1):null;
+  // Muscle mass in kg: weight × muscle% / 100
+  const muscleMassKg=(latW&&latMuscle)?+(latW.value*latMuscle.value/100).toFixed(1):null;
+
+  // Body comp multi-metric chart: show muscle%, visceral fat, overall score, BMR over time
+  const bcChartAllLogs=[...muscleLogs,...viscFatLogs,...scoreLogs,...bmrLogs];
+  const bcChartDates=[...new Set(bcChartAllLogs.map(l=>l.date))].sort();
+  const showBcChart=bcChartDates.length>=2;
+
   html+=`<div class="hl-grid-2">
     <div class="hl-card" style="animation-delay:.2s">
-      <div class="hl-card-hdr"><div><div class="hl-card-title">⚖ Poids — Évolution</div><div class="hl-card-subtitle">Trajectoire sur ${wLogs.length} mesures</div></div></div>
+      <div class="hl-card-hdr">
+        <div><div class="hl-card-title">⚖ Poids — Évolution</div><div class="hl-card-subtitle">Trajectoire sur ${wLogs.length} mesures · Objectif : <strong id="hlPoidsObjectifTxt">${poidsCible} kg</strong></div></div>
+        <button id="hlEditCible" title="Modifier l'objectif" style="background:none;border:1px solid var(--b1);border-radius:6px;padding:3px 8px;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--t3);cursor:pointer;transition:var(--tr)" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--t0)'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t3)'">✏ Objectif</button>
+      </div>
       <div class="hl-chart-wrap"><canvas id="hlChartWeight"></canvas></div>
     </div>
-    <div class="hl-card" style="animation-delay:.3s;position:relative;overflow:hidden">
+    <div class="hl-card" style="animation-delay:.3s">
+      <div class="hl-card-hdr"><div><div class="hl-card-title">📐 Composition Corporelle</div><div class="hl-card-subtitle">Taille : ${HEIGHT} cm${bmi?' · IMC : '+bmi:''}</div></div></div>
+      <div class="hl-bodycomp-grid">
+        ${bcItem('🔥','Graisse',latFat?latFat.value:null,'%','var(--hw)',latFat?latFat.value*4.5:null,latFat?hlFmtDate(latFat.date):null)}
+        ${bcItem('🥩','Masse grasse',latFatMass?latFatMass.value:null,'kg','var(--hr)',latFatMass&&latW?(latFatMass.value/latW.value*100):null,latFatMass?hlFmtDate(latFatMass.date):null)}
+        ${bcItem('💪','Muscle',latMuscle?latMuscle.value:null,'%','var(--hg)',latMuscle?latMuscle.value:null,latMuscle?hlFmtDate(latMuscle.date):null)}
+        ${bcItem('🏋','Masse musc. (kg)',muscleMassKg,'kg','var(--hg)',muscleMassKg&&latW?(muscleMassKg/latW.value*100):null,latMuscle?hlFmtDate(latMuscle.date):null)}
+        ${bcItem('🦴','Os',latBone?latBone.value:null,'kg','#c0beb8',latBone&&latW?(latBone.value/latW.value*200):null,latBone?hlFmtDate(latBone.date):null)}
+        ${bcItem('🧬','Protéines',latProtein?latProtein.value:null,'kg','var(--purple)',latProtein&&latW?(latProtein.value/latW.value*100):null,latProtein?hlFmtDate(latProtein.date):null)}
+        ${bcItem('🏋','Masse maigre',latLean?latLean.value:null,'kg','var(--hg)',latLean&&latW?(latLean.value/latW.value*100):null,latLean?hlFmtDate(latLean.date):null)}
+        ${bcItem('🫀','Graisse viscérale',latViscFat?latViscFat.value:null,'index',latViscFat?hCol('visceral_fat',latViscFat.value):'var(--t2)',latViscFat?(Math.min(latViscFat.value,12)/12*100):null,latViscFat?hlFmtDate(latViscFat.date):null)}
+        ${bcItem('⚡','Métabolisme',latBMR?latBMR.value:null,'kcal','#FF9F1C',null,latBMR?hlFmtDate(latBMR.date):null)}
+        ${bcItem('🧠','Âge métabolique',latMetAge?latMetAge.value:null,'ans',latMetAge?hCol('metabolic_age',latMetAge.value):'var(--t2)',null,latMetAge?hlFmtDate(latMetAge.date):null)}
+        ${bcItem('⭐','Score global',latScore?latScore.value:null,'/100',latScore?hCol('overall_score',latScore.value):'var(--t2)',latScore?latScore.value:null,latScore?hlFmtDate(latScore.date):null)}
+      </div>
+      ${showBcChart?`<div style="margin-top:14px;border-top:1px solid var(--b0);padding-top:12px"><div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:8px">Évolution — Composition</div><div class="hl-chart-wrap" style="height:160px"><canvas id="hlChartBodyComp"></canvas></div></div>`:''}
+    </div>
+  </div>`;
+
+  /* ═══ 3. ROW: Hemoglobin+Hematocrit (left) + CRP (right) ═══ */
+  html+=`<div class="hl-grid-2">
+    <div class="hl-card" style="animation-delay:.35s">
+      <div class="hl-card-hdr"><div><div class="hl-card-title">🩸 Hémoglobine & Hématocrite</div><div class="hl-card-subtitle">Dual — Oxygénation sanguine</div></div></div>
+      <div class="hl-chart-wrap"><canvas id="hlChartHbHct"></canvas></div>
+    </div>
+    <div class="hl-card" style="animation-delay:.4s;position:relative;overflow:hidden">
       <div class="hl-scanline"></div>
       <div class="hl-card-hdr"><div><div class="hl-card-title">🔬 CRP — Inflammation Systémique</div><div class="hl-card-subtitle">Objectif &lt; 5 mg/L</div></div>
         ${latCRP?`<div class="hl-card-badge" style="background:${hCol('crp',latCRP.value)}22;color:${hCol('crp',latCRP.value)};border:1px solid ${hCol('crp',latCRP.value)}44">${latCRP.value} mg/L</div>`:''}</div>
@@ -2601,8 +2656,40 @@ function renderHealth(){
     </div>
   </div>`;
 
-  /* ═══ 3. ROW: Hemoglobin+Hematocrit (left) + Calprotectin (right) ═══ */
-  // Calprotectin growth
+  /* ═══ 4. ROW: Gym Heatmap (left) + Calprotectin (right) ═══ */
+  // Build gym heatmap - 52 weeks × 7 days
+  const now=new Date();
+  const oneYearAgo=new Date(now);oneYearAgo.setFullYear(now.getFullYear()-1);
+  const gymDates=new Set(gymLogs.map(l=>l.date));
+  let gymCount=0;
+  // Build 7 rows × 52 cols
+  let hmRows='';
+  const dayLabels=['','L','','M','','V',''];
+  // Monthly counts for bar chart
+  const gymMonthlyCounts=new Array(12).fill(0);
+  for(let row=0;row<7;row++){
+    let rowCells='';
+    for(let col=0;col<52;col++){
+      const dayOffset=col*7+row;
+      const cellDate=new Date(oneYearAgo);cellDate.setDate(oneYearAgo.getDate()+dayOffset);
+      const ds=cellDate.toISOString().slice(0,10);
+      const active=gymDates.has(ds);
+      if(active){gymCount++;const mo=(cellDate.getMonth()-oneYearAgo.getMonth()+12)%12;gymMonthlyCounts[mo<12?mo:11]++;}
+      rowCells+=`<div class="hl-hm-cell${active?' l3':''}" title="${ds}"></div>`;
+    }
+    hmRows+=`<div class="hl-hm-row">${rowCells}</div>`;
+  }
+  // Month labels
+  let monthLabels='';
+  const months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const gymMonthNames=[];
+  for(let i=0;i<12;i++){
+    const m=new Date(oneYearAgo);m.setMonth(oneYearAgo.getMonth()+i);
+    monthLabels+=`<span>${months[m.getMonth()]}</span>`;
+    gymMonthNames.push(months[m.getMonth()]);
+  }
+
+  // Calprotectin growth indicator
   let calproGrowth='';
   if(cpLogs.length>=2){
     const first=cpLogs[0],last=cpLogs[cpLogs.length-1];
@@ -2611,12 +2698,24 @@ function renderHealth(){
     const barW=Math.min(100,Math.abs(pctChange)/20*100);
     calproGrowth=`<div class="hl-calpro-growth"><div><div class="hl-calpro-pct" style="color:${col}">${pctChange>0?'+':''}${pctChange}%</div><div class="hl-calpro-label">depuis ${hlFmtDate(first.date)}</div></div><div class="hl-calpro-bar"><div class="hl-calpro-fill" style="width:${barW}%;background:${col}"></div></div><div style="font-family:JetBrains Mono,monospace;font-size:.7rem;color:var(--t2);white-space:nowrap">${first.value} → ${last.value} µg/g</div></div>`;
   }
+
   html+=`<div class="hl-grid-2">
-    <div class="hl-card" style="animation-delay:.35s">
-      <div class="hl-card-hdr"><div><div class="hl-card-title">🩸 Hémoglobine & Hématocrite</div><div class="hl-card-subtitle">Dual — Oxygénation sanguine</div></div></div>
-      <div class="hl-chart-wrap"><canvas id="hlChartHbHct"></canvas></div>
+    <div class="hl-card hl-gym-card" style="animation-delay:.45s;display:flex;flex-direction:column">
+      <div class="hl-card-hdr"><div><div class="hl-card-title">💪 Gym — Activité</div><div class="hl-card-subtitle">Heatmap des 12 derniers mois</div></div>
+        <div class="hl-card-badge" style="background:var(--hg1);color:var(--hg);border:1px solid var(--hg2)">${gymCount} séances</div></div>
+      <div class="hl-hm-months">${monthLabels}</div>
+      <div class="hl-hm-wrap" style="gap:3px">
+        <div class="hl-hm-days">${dayLabels.map(d=>`<span>${d}</span>`).join('')}</div>
+        <div class="hl-hm-grid-wrap" style="gap:3px">${hmRows}</div>
+      </div>
+      <div class="hl-hm-stat"><span><strong>${gymCount}</strong> séances cette année</span></div>
+      <div class="hl-hm-legend"><span>Moins</span><div class="hl-hm-legend-box" style="background:var(--bg-3)"></div><div class="hl-hm-legend-box" style="background:rgba(57,255,20,.15)"></div><div class="hl-hm-legend-box" style="background:rgba(57,255,20,.35)"></div><div class="hl-hm-legend-box" style="background:var(--hg)"></div><span>Plus</span></div>
+      <div style="margin-top:16px;border-top:1px solid var(--b0);padding-top:12px;flex:1;display:flex;flex-direction:column">
+        <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:8px">Séances par mois</div>
+        <div class="hl-chart-wrap" style="flex:1;min-height:110px"><canvas id="hlChartGymMonthly"></canvas></div>
+      </div>
     </div>
-    <div class="hl-card" style="animation-delay:.4s">
+    <div class="hl-card" style="animation-delay:.5s">
       <div class="hl-card-hdr"><div><div class="hl-card-title">🧪 Calprotectine Fécale</div><div class="hl-card-subtitle">Marqueur d'inflammation intestinale</div></div>
         ${latCP?`<div class="hl-card-badge" style="background:${hCol('calprotectin',latCP.value)}22;color:${hCol('calprotectin',latCP.value)};border:1px solid ${hCol('calprotectin',latCP.value)}44">${latCP.value} µg/g</div>`:''}</div>
       <div class="hl-chart-wrap"><canvas id="hlChartCalpro"></canvas></div>
@@ -2624,80 +2723,45 @@ function renderHealth(){
     </div>
   </div>`;
 
-  /* ═══ 4. ROW: Gym Heatmap (left) + Body Composition (right) ═══ */
-  // Build gym heatmap - 52 weeks × 7 days
-  const now=new Date();
-  const oneYearAgo=new Date(now);oneYearAgo.setFullYear(now.getFullYear()-1);
-  const gymDates=new Set(gymLogs.map(l=>l.date));
-  let gymCount=0;
-  let hmCells='';
-  const startDay=oneYearAgo.getDay();
-  // Build 7 rows × 52 cols
-  let hmRows='';
-  const dayLabels=['','L','','M','','V',''];
-  for(let row=0;row<7;row++){
-    let rowCells='';
-    for(let col=0;col<52;col++){
-      const dayOffset=col*7+row;
-      const cellDate=new Date(oneYearAgo);cellDate.setDate(oneYearAgo.getDate()+dayOffset);
-      const ds=cellDate.toISOString().slice(0,10);
-      const active=gymDates.has(ds);
-      if(active) gymCount++;
-      rowCells+=`<div class="hl-hm-cell${active?' l3':''}" title="${ds}"></div>`;
-    }
-    hmRows+=`<div class="hl-hm-row">${rowCells}</div>`;
-  }
-  // Month labels
-  let monthLabels='';
-  const months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-  for(let i=0;i<12;i++){
-    const m=new Date(oneYearAgo);m.setMonth(oneYearAgo.getMonth()+i);
-    monthLabels+=`<span>${months[m.getMonth()]}</span>`;
-  }
-  const streakDays=gymCount;
-
-  // Body comp data
-  function bcItem(icon,name,val,unit,color,pct){
-    if(!val)return '';
-    return `<div class="hl-bc-item"><div class="hl-bc-icon">${icon}</div><div class="hl-bc-info"><div class="hl-bc-name">${name}</div><div class="hl-bc-val" style="color:${color||'var(--t0)'}">${val} <span style="font-size:.7rem;color:var(--t3)">${unit}</span></div>${pct!=null?`<div class="hl-bc-bar"><div class="hl-bc-fill" style="--bw:${Math.min(100,pct)}%;background:${color||'var(--hg)'}"></div></div>`:''}</div></div>`;
-  }
-  const HEIGHT=181;
-  const bmi=latW?+(latW.value/((HEIGHT/100)**2)).toFixed(1):null;
-
-  html+=`<div class="hl-grid-2">
-    <div class="hl-card" style="animation-delay:.45s">
-      <div class="hl-card-hdr"><div><div class="hl-card-title">💪 Gym — Activité</div><div class="hl-card-subtitle">Heatmap des 12 derniers mois</div></div>
-        <div class="hl-card-badge" style="background:var(--hg1);color:var(--hg);border:1px solid var(--hg2)">${gymCount} séances</div></div>
-      <div class="hl-hm-months">${monthLabels}</div>
-      <div class="hl-hm-wrap">
-        <div class="hl-hm-days">${dayLabels.map(d=>`<span>${d}</span>`).join('')}</div>
-        <div class="hl-hm-grid-wrap">${hmRows}</div>
-      </div>
-      <div class="hl-hm-stat"><span><strong>${gymCount}</strong> séances cette année</span></div>
-      <div class="hl-hm-legend"><span>Moins</span><div class="hl-hm-legend-box" style="background:var(--bg-3)"></div><div class="hl-hm-legend-box" style="background:rgba(57,255,20,.15)"></div><div class="hl-hm-legend-box" style="background:rgba(57,255,20,.35)"></div><div class="hl-hm-legend-box" style="background:var(--hg)"></div><span>Plus</span></div>
-    </div>
-    <div class="hl-card" style="animation-delay:.5s">
-      <div class="hl-card-hdr"><div><div class="hl-card-title">📐 Composition Corporelle</div><div class="hl-card-subtitle">Taille : ${HEIGHT} cm${bmi?' · IMC : '+bmi:''}</div></div></div>
-      <div class="hl-bodycomp-grid">
-        ${bcItem('⚖','Poids',latW?latW.value:null,'kg','var(--t0)',null)}
-        ${bcItem('🔥','Graisse',latFat?latFat.value:null,'%','var(--hw)',latFat?latFat.value*4.5:null)}
-        ${bcItem('🥩','Masse grasse',latFatMass?latFatMass.value:null,'kg','var(--hr)',latFatMass&&latW?((latFatMass.value/latW.value)*100):null)}
-        ${bcItem('💧','Eau',latWater?latWater.value:null,'%','var(--hice)',latWater?latWater.value:null)}
-        ${bcItem('💪','Muscle',latMuscle?latMuscle.value:null,'%','var(--hg)',latMuscle?latMuscle.value:null)}
-        ${bcItem('🦴','Os',latBone?latBone.value:null,'kg','#c0beb8',latBone&&latW?((latBone.value/latW.value)*200):null)}
-        ${bcItem('🧬','Protéines',latProtein?latProtein.value:null,'kg','var(--purple)',latProtein&&latW?((latProtein.value/latW.value)*100):null)}
-        ${bcItem('🏋','Masse maigre',latLean?latLean.value:null,'kg','var(--hg)',latLean&&latW?((latLean.value/latW.value)*100):null)}
-      </div>
-      ${(wLogs.length>1||fatLogs.length>1||lnLogs.length>1)?`<div style="margin-top:12px;border-top:1px solid var(--b0);padding-top:10px"><div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:8px">Évolution</div><div class="hl-chart-wrap" style="height:140px"><canvas id="hlChartBodyComp"></canvas></div></div>`:''}
-    </div>
-  </div>`;
-
   el.innerHTML=html;
+
+  /* ═══ EDIT OBJECTIF HANDLER ═══ */
+  document.getElementById('hlEditCible')?.addEventListener('click',()=>{
+    const cur=D.poidsCible||65;
+    const nv=prompt(`Objectif de poids (kg) — actuel : ${cur} kg`,cur);
+    if(nv===null) return;
+    const parsed=parseFloat(nv);
+    if(isNaN(parsed)||parsed<30||parsed>200){alert('Valeur invalide (entre 30 et 200 kg)');return;}
+    D.poidsCible=parsed;
+    renderHealth();scheduleSave();
+  });
 
   /* ═══ INIT CHARTS ═══ */
   setTimeout(()=>{
-    // Weight chart — area gradient
-    hlMakeChart('hlChartWeight',wLogs,'weight','#39FF14',{refLine:65,refLabel:'Objectif',refLineColor:'#39FF1444'});
+    // Weight chart — area gradient + delta labels
+    const wTarget=D.poidsCible||65;
+    hlMakeChart('hlChartWeight',wLogs,'weight','#39FF14',{refLine:wTarget,refLabel:'Objectif',refLineColor:'#39FF1444',
+      extraPlugins:[{id:'weightDeltaLabels',afterDatasetsDraw(chart){
+        const {ctx}=chart;
+        const meta=chart.getDatasetMeta(0);
+        const vals=wLogs.map(l=>l.value);
+        ctx.save();
+        meta.data.forEach((pt,i)=>{
+          if(i===0)return;
+          const diff=+(vals[i]-vals[i-1]).toFixed(1);
+          const sign=diff>0?'+':'';
+          // Green if change moves toward target, red if moves away
+          const distPrev=Math.abs(vals[i-1]-wTarget);
+          const distCurr=Math.abs(vals[i]-wTarget);
+          const closer=distCurr<distPrev;
+          ctx.fillStyle=closer?'#39FF14':'#FF3864';
+          ctx.font='bold 9px JetBrains Mono,monospace';
+          ctx.textAlign='center';
+          ctx.fillText(sign+diff,pt.x,pt.y-10);
+        });
+        ctx.restore();
+      }}]
+    });
 
     // CRP chart with delta labels on each dot
     hlMakeChart('hlChartCRP',crpLogs,'crp','#FF3864',{refLine:10,refLabel:'Seuil',refLineColor:'#FF386444',
@@ -2755,33 +2819,62 @@ function renderHealth(){
     // Calprotectin
     hlMakeChart('hlChartCalpro',cpLogs,'calprotectin','#f59e0b',{refLine:50,refLabel:'Rémission',refLineColor:'#22c55e44'});
 
-    // Body composition evolution chart
-    const bcCanvas=document.getElementById('hlChartBodyComp');
-    if(bcCanvas){
-      if(hlCharts['hlChartBodyComp']){try{hlCharts['hlChartBodyComp'].destroy();}catch(e){}}
-      const bcAllDates=[...new Set([...wLogs,...fatLogs,...lnLogs].map(l=>l.date))].sort();
-      if(bcAllDates.length>1){
-        const bcLabels=bcAllDates.map(d=>{const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});});
-        hlCharts['hlChartBodyComp']=new Chart(bcCanvas,{
-          type:'line',
-          data:{labels:bcLabels,datasets:[
-            {label:'Poids (kg)',data:bcAllDates.map(d=>{const e=wLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#f0eeea',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yW'},
-            {label:'Graisse (%)',data:bcAllDates.map(d=>{const e=fatLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#FF9F1C',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yP'},
-            {label:'Masse maigre (kg)',data:bcAllDates.map(d=>{const e=lnLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#39FF14',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yW'}
-          ]},
-          options:{
-            responsive:true,maintainAspectRatio:false,
-            animation:{duration:800},
-            plugins:{legend:{display:true,labels:{color:'#8a8898',font:{family:'JetBrains Mono',size:9},boxWidth:10,padding:10}},
-              tooltip:{backgroundColor:'#0c0c10ee',titleColor:'#f0eeea',bodyColor:'#c0beb8',borderColor:'#2a2a36',borderWidth:1,padding:8,cornerRadius:6,titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:10}}},
-            scales:{
-              x:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:8},maxRotation:0},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'}},
-              yW:{type:'linear',position:'left',ticks:{color:'#8a8898',font:{family:'JetBrains Mono',size:8}},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'}},
-              yP:{type:'linear',position:'right',ticks:{color:'#FF9F1C88',font:{family:'JetBrains Mono',size:8}},grid:{display:false},border:{color:'#1e1e28'}}
-            }
+    // Gym monthly bar chart
+    const gymMonCanvas=document.getElementById('hlChartGymMonthly');
+    if(gymMonCanvas){
+      if(hlCharts['hlChartGymMonthly']){try{hlCharts['hlChartGymMonthly'].destroy();}catch(e){}}
+      const maxSessions=Math.max(...gymMonthlyCounts,1);
+      hlCharts['hlChartGymMonthly']=new Chart(gymMonCanvas,{
+        type:'bar',
+        data:{
+          labels:gymMonthNames,
+          datasets:[{
+            data:gymMonthlyCounts,
+            backgroundColor:gymMonthlyCounts.map(v=>v===0?'rgba(57,255,20,.08)':v>=maxSessions*0.75?'rgba(57,255,20,.8)':v>=maxSessions*0.4?'rgba(57,255,20,.45)':'rgba(57,255,20,.22)'),
+            borderColor:'transparent',
+            borderRadius:4,
+            borderSkipped:false
+          }]
+        },
+        options:{
+          responsive:true,maintainAspectRatio:false,
+          animation:{duration:1000},
+          plugins:{legend:{display:false},tooltip:{backgroundColor:'#0c0c10ee',titleColor:'#f0eeea',bodyColor:'#39FF14',borderColor:'#2a2a36',borderWidth:1,padding:10,cornerRadius:6,titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:11},callbacks:{label:ctx=>`${ctx.parsed.y} séance${ctx.parsed.y!==1?'s':''}`}}},
+          scales:{
+            x:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:8},maxRotation:0},grid:{display:false},border:{display:false}},
+            y:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:8},stepSize:1,precision:0},grid:{color:'#1e1e2818'},border:{display:false}}
           }
-        });
-      }
+        }
+      });
+    }
+
+    // Body composition multi-metric evolution chart
+    const bcCanvas=document.getElementById('hlChartBodyComp');
+    if(bcCanvas&&showBcChart){
+      if(hlCharts['hlChartBodyComp']){try{hlCharts['hlChartBodyComp'].destroy();}catch(e){}}
+      const bcLabels=bcChartDates.map(d=>{const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});});
+      hlCharts['hlChartBodyComp']=new Chart(bcCanvas,{
+        type:'line',
+        data:{labels:bcLabels,datasets:[
+          {label:'Muscle (%)',data:bcChartDates.map(d=>{const e=muscleLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#39FF14',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yPct'},
+          {label:'Score (/100)',data:bcChartDates.map(d=>{const e=scoreLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#64FFDA',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yPct'},
+          {label:'Viscérale (idx)',data:bcChartDates.map(d=>{const e=viscFatLogs.find(l=>l.date===d);return e?e.value:null;}),spanGaps:true,borderColor:'#FF9F1C',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,yAxisID:'yIdx'},
+          {label:'BMR (kcal÷20)',data:bcChartDates.map(d=>{const e=bmrLogs.find(l=>l.date===d);return e?+(e.value/20).toFixed(1):null;}),spanGaps:true,borderColor:'#c084fc',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointHoverRadius:6,borderWidth:2,borderDash:[4,3],yAxisID:'yPct'}
+        ]},
+        options:{
+          responsive:true,maintainAspectRatio:false,
+          animation:{duration:800},
+          plugins:{
+            legend:{display:true,labels:{color:'#8a8898',font:{family:'JetBrains Mono',size:8},boxWidth:8,padding:8}},
+            tooltip:{backgroundColor:'#0c0c10ee',titleColor:'#f0eeea',bodyColor:'#c0beb8',borderColor:'#2a2a36',borderWidth:1,padding:8,cornerRadius:6,titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:10}}
+          },
+          scales:{
+            x:{ticks:{color:'#5c5a6e',font:{family:'JetBrains Mono',size:8},maxRotation:0},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'}},
+            yPct:{type:'linear',position:'left',ticks:{color:'#8a8898',font:{family:'JetBrains Mono',size:8}},grid:{color:'#1e1e2818'},border:{color:'#1e1e28'}},
+            yIdx:{type:'linear',position:'right',ticks:{color:'#FF9F1C88',font:{family:'JetBrains Mono',size:8}},grid:{display:false},border:{color:'#1e1e28'},min:0,max:15}
+          }
+        }
+      });
     }
 
   },80);

@@ -268,6 +268,7 @@ function doGet(e) {
     }));
 
     data.hid = toNum(meta.hid) || 1;
+    data.poidsCible = toNum(meta.poidsCible) || 65;
 
     return jsonResponse(data);
   } catch (err) {
@@ -402,6 +403,7 @@ function doPost(e) {
       ['booksGoal',  D.booksGoal || 30],
       ['gid',        D.gid || 1],
       ['hid',        D.hid || 1],
+      ['poidsCible', D.poidsCible || 65],
       ['savedAt',    now],
       ['posters',    JSON.stringify(D.posters || {})]
     ]);
