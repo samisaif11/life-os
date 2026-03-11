@@ -1306,12 +1306,12 @@ function parsePossibleJson(v){
 
 function normalizeTaskArray(list){
   if(!Array.isArray(list))return [];
-  return list.map((t,ti)=>{
-    const task=t&&typeof t==='object'?t:{};
-    let subs=parsePossibleJson(task.subtasks);
-    if(typeof subs==='string')subs=parsePossibleJson(subs);
-    if(!Array.isArray(subs))subs=[];
-    subs=subs.map((sub,si)=>{
+
+  const toSubs=(v)=>{
+    let parsed=parsePossibleJson(v);
+    if(typeof parsed==='string')parsed=parsePossibleJson(parsed);
+    if(!Array.isArray(parsed))return [];
+    return parsed.map((sub,si)=>{
       if(typeof sub==='string'){
         const nm=sub.trim();
         if(!nm)return null;
@@ -1322,7 +1322,37 @@ function normalizeTaskArray(list){
       if(!nm)return null;
       return {id:Number(sub.id)||si+1,name:nm.toUpperCase(),completed:!!sub.completed};
     }).filter(Boolean);
-    return {...task,subtasks:subs,id:Number(task.id)||ti+1,order:Number(task.order)||0};
+  };
+
+  return list.map((t,ti)=>{
+    const task=t&&typeof t==='object'?t:{};
+
+    let subs=toSubs(task.subtasks);
+    if(!subs.length){
+      const candidates=[task.notes,task.blockedBy,task.order,task.createdAt,task.completedAt,task.doneDate,task.partner,task.due,task.person];
+      for(const c of candidates){
+        const recovered=toSubs(c);
+        if(recovered.length){subs=recovered;break;}
+      }
+    }
+
+    let notes=String(task.notes??'').trim();
+    if(notes.startsWith('[')&&notes.endsWith(']')&&subs.length)notes='';
+
+    let dueRaw=String(task.due??'').trim();
+    let due='';
+    if(dueRaw&&!/^\d+(?:\.\d+)?$/.test(dueRaw)){
+      const d=new Date(dueRaw);
+      if(!isNaN(d.getTime()))due=d.toISOString().slice(0,10);
+      else if(/^\d{4}-\d{2}-\d{2}/.test(dueRaw))due=dueRaw.slice(0,10);
+    }
+    let partner=String(task.partner??'').trim();
+    if(!due&&/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) /.test(partner)){
+      const d=new Date(partner);
+      if(!isNaN(d.getTime())){due=d.toISOString().slice(0,10);partner='';}
+    }
+
+    return {...task,subtasks:subs,notes,partner,due:due||null,id:Number(task.id)||ti+1,order:Number(task.order)||0};
   });
 }
 
