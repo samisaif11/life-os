@@ -1233,12 +1233,12 @@ async function loadFromSheet(manual = false) {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     // Apply data
-    if (data.tasks) D.tasks = data.tasks;
-    if (data.completed) D.completed = data.completed;
+    if (data.tasks) D.tasks = normalizeTaskArray(data.tasks);
+    if (data.completed) D.completed = normalizeTaskArray(data.completed);
     if (data.deadlines) D.deadlines = data.deadlines;
     if (data.projects) { D.projects = data.projects; D.projects.forEach(p=>{if(!p.category)p.category=p.status==='personal'?'personal':'film'}); }
     if (data.closed) D.closed = data.closed;
-    if (data.posters) D.posters = data.posters;
+    if (data.posters) D.posters = normalizePostersMap(data.posters);
     if (data.people) D.people = data.people;
     if (data.monthly && data.monthly.length > 0) D.monthly = data.monthly;
     if (data.projDone) D.projDone = data.projDone;
@@ -1252,7 +1252,7 @@ async function loadFromSheet(manual = false) {
     if (data.groceries) D.groceries = data.groceries;
     if (data.groceryLocations && data.groceryLocations.length) D.groceryLocations = data.groceryLocations;
     if (data.gid != null) D.gid = data.gid;
-    if (data.books) D.books = data.books;
+    if (data.books) D.books = normalizeBookArray(data.books);
     if (data.booksGoal != null) D.booksGoal = data.booksGoal;
     if (data.booksQueue) D.booksQueue = data.booksQueue;
     if (data.bkid != null) D.bkid = data.bkid;
@@ -1293,6 +1293,77 @@ const PC = {};
 const PP = {};
 
 const PA = {};
+
+function parsePossibleJson(v){
+  if(typeof v!=='string')return v;
+  const t=v.trim();
+  if(!t)return v;
+  if((t.startsWith('[')&&t.endsWith(']'))||(t.startsWith('{')&&t.endsWith('}'))){
+    try{return JSON.parse(t)}catch(_){return v}
+  }
+  return v;
+}
+
+function normalizeTaskArray(list){
+  if(!Array.isArray(list))return [];
+  return list.map((t,ti)=>{
+    const task=t&&typeof t==='object'?t:{};
+    let subs=parsePossibleJson(task.subtasks);
+    if(typeof subs==='string')subs=parsePossibleJson(subs);
+    if(!Array.isArray(subs))subs=[];
+    subs=subs.map((sub,si)=>{
+      if(typeof sub==='string'){
+        const nm=sub.trim();
+        if(!nm)return null;
+        return {id:si+1,name:nm.toUpperCase(),completed:false};
+      }
+      if(!sub||typeof sub!=='object')return null;
+      const nm=String(sub.name??sub.title??sub.label??'').trim();
+      if(!nm)return null;
+      return {id:Number(sub.id)||si+1,name:nm.toUpperCase(),completed:!!sub.completed};
+    }).filter(Boolean);
+    return {...task,subtasks:subs,id:Number(task.id)||ti+1,order:Number(task.order)||0};
+  });
+}
+
+function normalizePostersMap(v){
+  let posters=parsePossibleJson(v);
+  if(!posters||typeof posters!=='object'||Array.isArray(posters))return {};
+  const out={};
+  Object.entries(posters).forEach(([k,val])=>{
+    const key=String(k||'').trim().toUpperCase();
+    const raw=typeof val==='string'?val.trim():'';
+    if(key&&raw)out[key]=fixPosterUrl(raw);
+  });
+  return out;
+}
+
+function normalizePct(v){
+  if(typeof v==='string'){
+    const t=v.trim();
+    if(t.endsWith('%')){
+      const n=Number(t.slice(0,-1));
+      if(!isNaN(n))return Math.max(0,Math.min(100,Math.round(n)));
+    }
+  }
+  let n=Number(v);
+  if(isNaN(n))n=0;
+  if(n>0&&n<=1)n=n*100;
+  return Math.max(0,Math.min(100,Math.round(n)));
+}
+
+function normalizeBookArray(list){
+  if(!Array.isArray(list))return [];
+  return list.map((b,bi)=>{
+    const book=b&&typeof b==='object'?b:{};
+    const total=Math.max(0,Number(book.total)||0);
+    const current=Math.max(0,Number(book.current)||0);
+    let progress=normalizePct(book.progress);
+    if(total>0&&current>0)progress=normalizePct((current/total)*100);
+    else if(total>0&&progress>0&&current===0)book.current=Math.round((progress/100)*total);
+    return {...book,id:Number(book.id)||bi+1,total,current:Math.max(0,Number(book.current)||0),progress,metric:book.metric==='hours'?'hours':'pages'};
+  });
+}
 
 function hexToRgba(h, a) {
   const r = parseInt(h.slice(1, 3), 16);
@@ -2263,7 +2334,7 @@ $('egLPClear').onclick=()=>{$('egLP').value=''};
 
 /* ═══════ BOOKS ═══════ */
 let eBookId=null, openReadId=null;
-function normPct(v){v=Math.round(Number(v)||0);return Math.max(0,Math.min(100,v));}
+function normPct(v){return normalizePct(v);}
 function calcPct(book){const t=Number(book.total)||0,c=Number(book.current)||0;if(!t)return normPct(book.progress);return normPct((c/t)*100)}
 function upsertBookFromInputs(){
   const title=$('bkTitle').value.trim().toUpperCase();
