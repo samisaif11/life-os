@@ -1,1 +1,0 @@
-id,invoiceNumber,date,client,project,description,montantHT,tvaRate,montantTTC,catchupHT,catchupTVA,catchupTTC,status,pdfUrl,emailSentDate,bankAccountId,notes,clientAddress,clientSIREN,clientCostCenter,clientDealRef
