@@ -429,18 +429,48 @@ function doPost(e) {
 
 /** Parse a task row from the sheet into a task object */
 function parseTask(row) {
-  let subs = [];
-  try {
-    if (row.subtasks) subs = JSON.parse(row.subtasks);
-  } catch (_) {}
+  const parseSubs = v => {
+    if (!v && v !== 0) return [];
+    if (Array.isArray(v)) return normalizeSubtasks(v);
+    if (typeof v === 'string') {
+      const t = v.trim();
+      if (!t) return [];
+      try { return normalizeSubtasks(JSON.parse(t)); } catch (_) { return []; }
+    }
+    return [];
+  };
+
+  let subs = parseSubs(row.subtasks);
+
+  // Migration: some legacy/misaligned rows stored subtasks JSON in other columns.
+  if (!subs.length) {
+    const candidates = [row.notes, row.blockedBy, row.order, row.createdAt, row.completedAt, row.doneDate, row.partner, row.due, row.person];
+    for (let i = 0; i < candidates.length; i++) {
+      const parsed = parseSubs(candidates[i]);
+      if (parsed.length) { subs = parsed; break; }
+    }
+  }
 
   // Migration: backup restore misaligned columns — partner field may contain original due date
-  let due = normalizeDate(str(row.due)) || null;
+  const dueRaw = str(row.due);
+  let due = /^\d+(?:\.\d+)?$/.test(dueRaw) ? null : (normalizeDate(dueRaw) || null);
   let partner = str(row.partner);
   if (!due && partner && /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) /.test(partner)) {
     const migrated = normalizeDate(partner);
     if (migrated) { due = migrated; partner = ''; }
   }
+
+  let createdAt = str(row.createdAt) || null;
+  let blockedBy = str(row.blockedBy) || null;
+  // Migration: createdAt may be shifted into blockedBy.
+  if (!createdAt && blockedBy && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(blockedBy)) {
+    createdAt = blockedBy;
+    blockedBy = null;
+  }
+
+  let notes = str(row.notes);
+  // If notes column accidentally contains subtasks JSON, don't expose raw JSON in UI notes.
+  if (notes && notes.startsWith('[') && notes.endsWith(']') && subs.length) notes = '';
 
   return {
     id:          toNum(row.id),
@@ -452,14 +482,35 @@ function parseTask(row) {
     due:         due,
     done:        toBool(row.done),
     blocked:     toBool(row.blocked),
-    blockedBy:   str(row.blockedBy) || null,
+    blockedBy:   blockedBy,
     order:       toNum(row.order),
-    notes:       str(row.notes),
-    createdAt:   str(row.createdAt) || null,
+    notes:       notes,
+    createdAt:   createdAt,
     completedAt: str(row.completedAt) || null,
     doneDate:    normalizeDate(str(row.doneDate)) || null,
     subtasks:    subs
   };
+}
+
+function normalizeSubtasks(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((sub, index) => {
+      if (typeof sub === 'string') {
+        const name = str(sub);
+        if (!name) return null;
+        return { id: index + 1, name: name, completed: false };
+      }
+      if (!sub || typeof sub !== 'object') return null;
+      const name = str(sub.name || sub.title || sub.label);
+      if (!name) return null;
+      return {
+        id: toNum(sub.id) || index + 1,
+        name: name,
+        completed: toBool(sub.completed)
+      };
+    })
+    .filter(Boolean);
 }
 
 /** Convert a task object to a row array */
@@ -480,10 +531,22 @@ function readSheet(ss, name, cols) {
   if (!sheet) return [];
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return []; // Only header or empty
-  const data = sheet.getRange(2, 1, lastRow - 1, cols.length).getValues();
+  const headers = sheet
+    .getRange(1, 1, 1, Math.max(sheet.getLastColumn(), cols.length))
+    .getValues()[0]
+    .map(str);
+  const colIndexes = cols.map((col, fallbackIndex) => {
+    const idx = headers.indexOf(col);
+    return idx >= 0 ? idx : fallbackIndex;
+  });
+  const width = Math.max(headers.length, cols.length);
+  const data = sheet.getRange(2, 1, lastRow - 1, width).getValues();
   return data.map(row => {
     const obj = {};
-    cols.forEach((col, i) => { obj[col] = row[i]; });
+    cols.forEach((col, i) => {
+      const sourceIdx = colIndexes[i];
+      obj[col] = sourceIdx >= 0 && sourceIdx < row.length ? row[sourceIdx] : '';
+    });
     return obj;
   });
 }
