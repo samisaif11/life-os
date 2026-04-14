@@ -552,29 +552,42 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 /* Books */
 .books-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
 .books-stats{display:flex;gap:14px;font-size:.66rem;color:var(--t3);text-transform:uppercase;letter-spacing:.9px}
-.books-carousel-wrap{display:grid;grid-template-columns:44px 1fr 44px;gap:10px;align-items:center;margin-bottom:16px}
-.books-nav{height:44px;border-radius:50%;border:1px solid var(--b1);background:var(--bg-2);color:var(--t2);cursor:pointer;font-size:22px}
-.books-carousel{display:flex;gap:14px;overflow:auto;padding:14px 8px;scroll-behavior:smooth}
+.books-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:16px;align-items:start}
+.books-main,.books-side{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:14px}
+.books-main{min-width:0}
+.books-side{position:sticky;top:84px}
+.books-carousel-wrap{display:grid;grid-template-columns:44px 1fr 44px;gap:10px;align-items:center}
+.books-nav{height:44px;border-radius:50%;border:1px solid var(--b1);background:var(--bg-3);color:var(--t2);cursor:pointer;font-size:22px}
+.books-carousel{display:flex;gap:14px;overflow:auto;padding:14px 8px;scroll-behavior:smooth;min-height:340px}
 .books-carousel::-webkit-scrollbar{height:6px}.books-carousel::-webkit-scrollbar-thumb{background:var(--b1);border-radius:10px}
-.bk-card{min-width:160px;max-width:160px;background:var(--bg-2);border:1px solid var(--b0);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--tr);position:relative}
+.bk-card{min-width:190px;max-width:190px;background:var(--bg-3);border:1px solid var(--b0);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--tr);position:relative}
 .bk-card:hover{transform:translateY(-2px);border-color:var(--b1)}
 .bk-card.done{opacity:.45;filter:saturate(.55)}
-.bk-cover{height:220px;background:var(--bg-4);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em}
+.bk-cover{height:240px;background:var(--bg-4);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em}
 .bk-cover img{width:100%;height:100%;object-fit:cover}
 .bk-body{padding:10px 10px 12px}.bk-title{font-weight:700;font-size:.8rem;line-height:1.2}.bk-auth{font-size:.62rem;color:var(--t3);margin-top:2px}.bk-meta{font-size:.58rem;color:var(--gold);margin-top:8px}
 .bk-act{position:absolute;top:6px;right:6px;display:flex;gap:4px}.bk-act button{border:1px solid rgba(0,0,0,.25);background:rgba(0,0,0,.55);color:#fff;border-radius:4px;font-size:.55rem;padding:3px 6px;cursor:pointer}
-.books-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.books-panel{background:var(--bg-2);border:1px solid var(--b0);border-radius:10px;padding:14px}
+.books-panels{display:grid;grid-template-columns:1fr;gap:12px}
+.books-panel{background:var(--bg-3);border:1px solid var(--b0);border-radius:10px;padding:14px}
 .books-panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .books-progress{height:10px;border-radius:99px;background:var(--bg-4);overflow:hidden}.books-progress>div{height:100%;background:linear-gradient(90deg,#aa6ce9,#d4af37)}
 .books-goal-line{display:flex;justify-content:space-between;font-size:.66rem;color:var(--t3);margin-bottom:8px}
-#bkQueue .q-item{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:var(--bg-4);border-radius:7px;margin-top:7px;font-size:.7rem}
+#bkQueue{display:flex;flex-direction:column;gap:8px}
+#bkQueue .q-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:9px 10px;background:var(--bg-4);border-radius:8px;font-size:.7rem;border:1px solid transparent;transition:var(--tr)}
+#bkQueue .q-item.drag-over{border-color:var(--gold);box-shadow:0 0 0 1px rgba(212,175,55,.2)}
+#bkQueue .q-item.dragging{opacity:.35}
+.bkq-grab{background:none;border:none;color:var(--t3);cursor:grab;font-size:.85rem;line-height:1;padding:2px 4px}
+.bkq-grab:active{cursor:grabbing}
+.bkq-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bkq-actions{display:flex;gap:4px}
+.bkq-actions button{padding:2px 7px!important}
 .book-open{display:flex;gap:14px;padding:12px;border-radius:10px;border:1px solid var(--b1);background:linear-gradient(90deg,var(--bg-2),var(--bg-3));margin-bottom:12px;transform-origin:left center;animation:openBook .35s ease}
 .book-open-cover{width:110px;height:160px;border-radius:6px;overflow:hidden;background:var(--bg-4);flex-shrink:0}.book-open-cover img{width:100%;height:100%;object-fit:cover}
 .book-open-page{flex:1;background:rgba(255,255,255,.02);border:1px dashed var(--b1);border-radius:8px;padding:10px}
 @keyframes openBook{from{transform:perspective(600px) rotateY(-28deg);opacity:.4}to{transform:none;opacity:1}}
-@media(max-width:900px){.books-panels{grid-template-columns:1fr}.books-carousel-wrap{grid-template-columns:36px 1fr 36px}.bk-card{min-width:132px;max-width:132px}.bk-cover{height:180px}}
-@media(min-width:1200px){.bk-card{min-width:190px;max-width:190px}.bk-cover{height:260px}.books-carousel{gap:18px;padding:16px}}
+@media(max-width:1100px){.books-layout{grid-template-columns:1fr}.books-side{position:static}}
+@media(max-width:900px){.books-carousel-wrap{grid-template-columns:36px 1fr 36px}.bk-card{min-width:132px;max-width:132px}.bk-cover{height:180px}}
+@media(min-width:1200px){.bk-card{min-width:210px;max-width:210px}.bk-cover{height:280px}.books-carousel{gap:18px;padding:16px}}
 
 /* ═══════ HEALTH — Pro Medical Dashboard v2 ═══════ */
 :root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13);--hice:#64FFDA}
@@ -779,20 +792,26 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <button class="nbtn" id="bkAdd">+ ADD BOOK</button>
     <div class="books-stats" id="bkStats"></div>
   </div>
-  <div class="books-carousel-wrap">
-    <button class="books-nav" id="bkPrev">‹</button>
-    <div class="books-carousel" id="bkCarousel"></div>
-    <button class="books-nav" id="bkNext">›</button>
-  </div>
-  <div class="books-panels">
-    <div class="books-panel">
-      <div class="books-panel-head"><strong>Reading Goal</strong><button class="btn btn-gh" id="bkGoalBtn">SET GOAL</button></div>
-      <div class="books-goal-line"><span id="bkGoalTxt"></span><span id="bkGoalPct"></span></div>
-      <div class="books-progress"><div id="bkGoalFill"></div></div>
+  <div class="books-layout">
+    <div class="books-main">
+      <div class="books-carousel-wrap">
+        <button class="books-nav" id="bkPrev">‹</button>
+        <div class="books-carousel" id="bkCarousel"></div>
+        <button class="books-nav" id="bkNext">›</button>
+      </div>
     </div>
-    <div class="books-panel">
-      <div class="books-panel-head"><strong>To Read Next</strong><button class="btn btn-gh" id="bkQueueAdd">+ ITEM</button></div>
-      <div id="bkQueue"></div>
+    <div class="books-side">
+      <div class="books-panels">
+        <div class="books-panel">
+          <div class="books-panel-head"><strong>Reading Goal</strong><button class="btn btn-gh" id="bkGoalBtn">SET GOAL</button></div>
+          <div class="books-goal-line"><span id="bkGoalTxt"></span><span id="bkGoalPct"></span></div>
+          <div class="books-progress"><div id="bkGoalFill"></div></div>
+        </div>
+        <div class="books-panel">
+          <div class="books-panel-head"><strong>To Read Next</strong><button class="btn btn-gh" id="bkQueueAdd">+ ITEM</button></div>
+          <div id="bkQueue"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2384,9 +2403,18 @@ $('egLPClear').onclick=()=>{$('egLP').value=''};
 
 
 /* ═══════ BOOKS ═══════ */
-let eBookId=null, openReadId=null;
+let eBookId=null, openReadId=null, qDragIndex=null;
 function normPct(v){return normalizePct(v);}
 function calcPct(book){const t=Number(book.total)||0,c=Number(book.current)||0;if(!t)return normPct(book.progress);return normPct((c/t)*100)}
+function reorderQueue(from,to){
+  const queue=[...(D.booksQueue||[])];
+  if(from===to||from<0||to<0||from>=queue.length||to>=queue.length)return;
+  const [moved]=queue.splice(from,1);
+  queue.splice(to,0,moved);
+  pH('reorder queue');
+  D.booksQueue=queue;
+  renderBooks();
+}
 function upsertBookFromInputs(){
   const title=$('bkTitle').value.trim().toUpperCase();
   if(!title){toast('BOOK TITLE REQUIRED','rd');return}
@@ -2417,7 +2445,8 @@ function renderBooks(){
   }
   const goal=Math.max(1,Number(D.booksGoal)||30),pct=Math.min(100,Math.round((done/goal)*100));
   $('bkGoalTxt').textContent=`${done} read • ${Math.max(0,goal-done)} to go (goal ${goal})`; $('bkGoalPct').textContent=`${pct}%`; $('bkGoalFill').style.width=pct+'%';
-  $('bkQueue').innerHTML=(D.booksQueue||[]).map((q,i)=>`<div class="q-item"><span>${i+1}. ${q}</span><button class="btn btn-gh" data-qdel="${i}" style="padding:3px 8px;font-size:.55rem">✕</button></div>`).join('')||'<div class="emp">NO BOOKS QUEUED.</div>';
+  const queue=D.booksQueue||[];
+  $('bkQueue').innerHTML=queue.map((q,i)=>`<div class="q-item" data-qidx="${i}" draggable="true"><button class="bkq-grab" title="Drag to reorder">⋮⋮</button><span class="bkq-text">${i+1}. ${q}</span><div class="bkq-actions"><button class="btn btn-gh" data-qup="${i}" style="font-size:.55rem">↑</button><button class="btn btn-gh" data-qdown="${i}" style="font-size:.55rem">↓</button><button class="btn btn-gh" data-qdel="${i}" style="font-size:.55rem">✕</button></div></div>`).join('')||'<div class="emp">NO BOOKS QUEUED.</div>';
 }
 $('bkAdd')?.addEventListener('click',()=>openBookModal());
 $('bkCancel')?.addEventListener('click',()=>{$('bkMdl').classList.remove('op');eBookId=null});
@@ -2425,7 +2454,39 @@ $('bkSave')?.addEventListener('click',upsertBookFromInputs);
 $('bkDel')?.addEventListener('click',()=>{if(!eBookId)return;pH('delete book');D.books=D.books.filter(b=>b.id!==eBookId);$('bkMdl').classList.remove('op');eBookId=null;renderBooks();});
 $('bkGoalBtn')?.addEventListener('click',()=>{const v=prompt('Yearly reading goal (books):',String(D.booksGoal||30));if(v===null)return;const n=Math.max(1,parseInt(v,10)||30);pH('set reading goal');D.booksGoal=n;renderBooks();});
 $('bkQueueAdd')?.addEventListener('click',()=>{const v=prompt('Book title to read next:');if(!v)return;pH('add queue');D.booksQueue=[...(D.booksQueue||[]),v.trim().toUpperCase()];renderBooks();});
-$('bkQueue')?.addEventListener('click',e=>{const b=e.target.closest('[data-qdel]');if(!b)return;pH('remove queue');const i=+b.dataset.qdel;D.booksQueue=D.booksQueue.filter((_,ix)=>ix!==i);renderBooks();});
+$('bkQueue')?.addEventListener('click',e=>{
+  const del=e.target.closest('[data-qdel]');
+  if(del){pH('remove queue');const i=+del.dataset.qdel;D.booksQueue=D.booksQueue.filter((_,ix)=>ix!==i);renderBooks();return;}
+  const up=e.target.closest('[data-qup]');
+  if(up){reorderQueue(+up.dataset.qup,Math.max(0,+up.dataset.qup-1));return;}
+  const down=e.target.closest('[data-qdown]');
+  if(down){const i=+down.dataset.qdown;reorderQueue(i,Math.min((D.booksQueue||[]).length-1,i+1));}
+});
+$('bkQueue')?.addEventListener('dragstart',e=>{
+  const item=e.target.closest('.q-item'); if(!item) return;
+  qDragIndex=Number(item.dataset.qidx);
+  item.classList.add('dragging');
+});
+$('bkQueue')?.addEventListener('dragover',e=>{
+  const item=e.target.closest('.q-item'); if(!item) return;
+  e.preventDefault();
+  document.querySelectorAll('#bkQueue .q-item.drag-over').forEach(n=>n.classList.remove('drag-over'));
+  item.classList.add('drag-over');
+});
+$('bkQueue')?.addEventListener('dragleave',e=>{
+  const item=e.target.closest('.q-item'); if(!item) return;
+  item.classList.remove('drag-over');
+});
+$('bkQueue')?.addEventListener('drop',e=>{
+  const item=e.target.closest('.q-item'); if(!item||qDragIndex===null) return;
+  e.preventDefault();
+  reorderQueue(qDragIndex,Number(item.dataset.qidx));
+  qDragIndex=null;
+});
+$('bkQueue')?.addEventListener('dragend',()=>{
+  qDragIndex=null;
+  document.querySelectorAll('#bkQueue .q-item').forEach(n=>n.classList.remove('drag-over','dragging'));
+});
 $('bkCarousel')?.addEventListener('click',e=>{
   const card=e.target.closest('.bk-card'); if(!card) return; const id=+card.dataset.bid; const act=e.target.dataset.act;
   const b=D.books.find(x=>x.id===id); if(!b) return;
