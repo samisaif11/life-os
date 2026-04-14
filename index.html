@@ -552,7 +552,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 /* Books */
 .books-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
 .books-stats{display:flex;gap:14px;font-size:.66rem;color:var(--t3);text-transform:uppercase;letter-spacing:.9px}
-.books-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:16px;align-items:start}
+.books-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(300px,.95fr);gap:16px;align-items:start}
 .books-main,.books-side{background:var(--bg-2);border:1px solid var(--b0);border-radius:14px;padding:14px}
 .books-main{min-width:0}
 .books-side{position:sticky;top:84px}
@@ -563,25 +563,27 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .books-hint{font-size:.58rem;color:var(--t3);letter-spacing:.06em}
 .books-carousel-wrap{display:grid;grid-template-columns:44px 1fr 44px;gap:10px;align-items:center}
 .books-nav{height:44px;border-radius:50%;border:1px solid var(--b1);background:var(--bg-3);color:var(--t2);cursor:pointer;font-size:22px}
-.books-carousel{display:flex;gap:14px;overflow:auto;padding:14px 8px;scroll-behavior:smooth;min-height:340px}
-.books-carousel.view-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));align-content:start;overflow:auto}
+.books-carousel{display:flex;gap:18px;overflow:auto;padding:18px 12px;scroll-behavior:smooth;min-height:460px}
+.books-carousel.view-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));align-content:start;overflow:auto}
 .books-carousel.view-list{display:flex;flex-direction:column;gap:10px;overflow:auto}
 .books-carousel.view-list .bk-card{display:grid;grid-template-columns:90px 1fr;max-width:none;width:100%;min-width:unset}
 .books-carousel.view-list .bk-cover{height:100%}
 .books-carousel::-webkit-scrollbar{height:6px}.books-carousel::-webkit-scrollbar-thumb{background:var(--b1);border-radius:10px}
-.bk-card{min-width:190px;max-width:190px;background:var(--bg-3);border:1px solid var(--b0);border-radius:10px;overflow:hidden;cursor:pointer;transition:var(--tr);position:relative}
+.bk-card{min-width:250px;max-width:250px;background:var(--bg-3);border:1px solid var(--b0);border-radius:12px;overflow:hidden;cursor:pointer;transition:var(--tr);position:relative}
 .bk-card:hover{transform:translateY(-2px);border-color:var(--b1)}
 .bk-card.done{opacity:.45;filter:saturate(.55)}
-.bk-cover{height:240px;background:var(--bg-4);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em}
+.bk-cover{height:350px;background:var(--bg-4);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em}
 .bk-cover img{width:100%;height:100%;object-fit:cover}
 .bk-body{padding:10px 10px 12px}.bk-title{font-weight:700;font-size:.8rem;line-height:1.2}.bk-auth{font-size:.62rem;color:var(--t3);margin-top:2px}.bk-meta{font-size:.58rem;color:var(--gold);margin-top:8px}
-.bk-act{position:absolute;top:6px;right:6px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:85%}.bk-act button{border:1px solid rgba(0,0,0,.25);background:rgba(0,0,0,.55);color:#fff;border-radius:4px;font-size:.52rem;padding:3px 5px;cursor:pointer}
+.bk-act{position:absolute;inset:auto 8px 8px 8px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;opacity:0;pointer-events:none;transform:translateY(8px);transition:all .2s ease}
+.bk-card:hover .bk-act,.bk-card:focus-within .bk-act{opacity:1;pointer-events:auto;transform:translateY(0)}
+.bk-act button{border:1px solid rgba(0,0,0,.25);background:rgba(8,8,10,.82);backdrop-filter:blur(4px);color:#fff;border-radius:6px;font-size:.55rem;padding:4px 7px;cursor:pointer}
+.bk-card::after{content:'';position:absolute;left:0;right:0;bottom:0;height:80px;background:linear-gradient(to top,rgba(0,0,0,.55),rgba(0,0,0,0));pointer-events:none;opacity:0;transition:opacity .2s}
+.bk-card:hover::after{opacity:1}
 .books-panels{display:grid;grid-template-columns:1fr;gap:12px}
 .books-panel{background:var(--bg-3);border:1px solid var(--b0);border-radius:10px;padding:14px}
 .books-panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .books-mini{font-size:.62rem;color:var(--t2);line-height:1.5}
-.books-preset{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.books-preset button{padding:4px 8px!important;font-size:.53rem!important}
 .books-progress{height:10px;border-radius:99px;background:var(--bg-4);overflow:hidden}.books-progress>div{height:100%;background:linear-gradient(90deg,#aa6ce9,#d4af37)}
 .books-goal-line{display:flex;justify-content:space-between;font-size:.66rem;color:var(--t3);margin-bottom:8px}
 #bkQueue{display:flex;flex-direction:column;gap:8px}
@@ -598,8 +600,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .book-open-page{flex:1;background:rgba(255,255,255,.02);border:1px dashed var(--b1);border-radius:8px;padding:10px}
 @keyframes openBook{from{transform:perspective(600px) rotateY(-28deg);opacity:.4}to{transform:none;opacity:1}}
 @media(max-width:1100px){.books-layout{grid-template-columns:1fr}.books-side{position:static}}
-@media(max-width:900px){.books-carousel-wrap{grid-template-columns:36px 1fr 36px}.bk-card{min-width:132px;max-width:132px}.bk-cover{height:180px}}
-@media(min-width:1200px){.bk-card{min-width:210px;max-width:210px}.bk-cover{height:280px}.books-carousel{gap:18px;padding:16px}}
+@media(max-width:900px){.books-carousel-wrap{grid-template-columns:36px 1fr 36px}.bk-card{min-width:148px;max-width:148px}.bk-cover{height:210px}.books-carousel{min-height:300px}}
+@media(min-width:1200px){.bk-card{min-width:290px;max-width:290px}.bk-cover{height:400px}.books-carousel{gap:20px;padding:20px;min-height:520px}}
 
 /* ═══════ HEALTH — Pro Medical Dashboard v2 ═══════ */
 :root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13);--hice:#64FFDA}
@@ -832,11 +834,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
           <div class="books-panel-head"><strong>To Read Next</strong><div style="display:flex;gap:6px"><button class="btn btn-gh" id="bkSmartSort">SMART SORT</button><button class="btn btn-gh" id="bkQueueAdd">+ ITEM</button></div></div>
           <div class="books-mini" id="bkBestNext" style="margin-bottom:8px"></div>
           <div id="bkQueue"></div>
-          <div class="books-preset">
-            <button class="btn btn-gh" data-bkp="business">BUSINESS PACK</button>
-            <button class="btn btn-gh" data-bkp="fiction">FICTION PACK</button>
-            <button class="btn btn-gh" data-bkp="short">SHORT READS</button>
-          </div>
         </div>
       </div>
     </div>
@@ -2449,10 +2446,10 @@ function scoreQueueItem(title,index){
   return (100-pct)*0.9 + index*1.5 - shortBonus;
 }
 function smartSortQueue(){
-  const queue=[...(D.booksQueue||[])];
-  queue.sort((a,b)=>scoreQueueItem(a,queue.indexOf(a))-scoreQueueItem(b,queue.indexOf(b)));
+  const queue=[...(D.booksQueue||[])].map((title,index)=>({title,index,score:scoreQueueItem(title,index)}));
+  queue.sort((a,b)=>a.score-b.score);
   pH('smart sort queue');
-  D.booksQueue=queue;
+  D.booksQueue=queue.map(x=>x.title);
   renderBooks();
 }
 function updateBooksPace(done,total){
@@ -2486,7 +2483,7 @@ function updateBestNext(){
   const queue=D.booksQueue||[];
   if(!queue.length){$('bkBestNext').textContent='TIP: DOUBLE-CLICK ANY QUEUE TITLE TO EDIT IT.';return;}
   const best=[...queue].sort((a,b)=>scoreQueueItem(a,0)-scoreQueueItem(b,0))[0];
-  $('bkBestNext').textContent=`BEST NEXT: ${best}`;
+  $('bkBestNext').textContent=`BEST NEXT (LOCAL HEURISTIC): ${best}`;
 }
 function reorderQueue(from,to){
   const queue=[...(D.booksQueue||[])];
@@ -2621,19 +2618,6 @@ $('bkUpdSave')?.addEventListener('click',()=>{const b=D.books.find(x=>x.id===ope
 $('bkReadClose')?.addEventListener('click',()=>{$('bkReadMdl').classList.remove('op');openReadId=null});
 $('bkPrev')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:-260,behavior:'smooth'})});
 $('bkNext')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:260,behavior:'smooth'})});
-$('v-books')?.addEventListener('click',e=>{
-  const p=e.target.closest('[data-bkp]'); if(!p) return;
-  const presets={
-    business:['THE PERSONAL MBA','$100M OFFERS','THE LEAN STARTUP'],
-    fiction:['DUNE','THE MIDNIGHT LIBRARY','PROJECT HAIL MARY'],
-    short:['THE ALCHEMIST','SIDDHARTHA','OF MICE AND MEN']
-  };
-  const add=presets[p.dataset.bkp]||[];
-  if(!add.length)return;
-  pH('add queue preset');
-  D.booksQueue=[...(D.booksQueue||[]),...add.filter(t=>!(D.booksQueue||[]).includes(t))];
-  renderBooks();
-});
 document.addEventListener('keydown',e=>{
   const booksActive=$('v-books')?.classList.contains('active');
   if(!booksActive) return;
