@@ -2613,7 +2613,11 @@ $('bkCarousel')?.addEventListener('click',e=>{
   openReadId=id; $('bkReadCard').innerHTML=`<div class="book-open-cover">${b.cover?`<img src="${b.cover}" alt="${b.title}">`:''}</div><div class="book-open-page"><div style="font-size:.8rem;font-weight:700">${b.title}</div><div style="font-size:.62rem;color:var(--t3)">${b.author||''}</div><div style="margin-top:8px;font-size:.66rem">Current progress: <strong>${normPct(b.progress)}%</strong></div><div style="font-size:.62rem;color:var(--t3);margin-top:4px">Last position: ${Math.round((normPct(b.progress)/100)*(b.total||0))} / ${b.total||'—'} ${b.metric==='hours'?'hours':'pages'}</div></div>`;
   $('bkUpdMode').value='percent';$('bkUpdLabel').textContent='Progress (%)';$('bkUpdValue').value=normPct(b.progress);$('bkReadMdl').classList.add('op');
 });
-$('bkUpdMode')?.addEventListener('change',()=>{$('bkUpdLabel').textContent=$('bkUpdMode').value==='percent'?'Progress (%)':'Current '+(($('bkCarousel').querySelector('.bk-card')&&D.books.find(x=>x.id===openReadId)?.metric==='hours')?'Hour':'Page');});
+$('bkUpdMode')?.addEventListener('change',()=>{
+  const activeBook=D.books.find(x=>x.id===openReadId);
+  const unitLabel=activeBook?.metric==='hours'?'Hour':'Page';
+  $('bkUpdLabel').textContent=$('bkUpdMode').value==='percent'?'Progress (%)':`Current ${unitLabel}`;
+});
 $('bkUpdSave')?.addEventListener('click',()=>{const b=D.books.find(x=>x.id===openReadId);if(!b)return;const mode=$('bkUpdMode').value;let pct=normPct(b.progress);if(mode==='percent')pct=normPct($('bkUpdValue').value);else{const cur=Math.max(0,Number($('bkUpdValue').value)||0);b.current=cur;pct=b.total?normPct((cur/b.total)*100):pct;}pH('update book progress');b.progress=pct;if(b.total&&!b.current)b.current=Math.round((pct/100)*b.total);renderBooks();$('bkReadMdl').classList.remove('op');});
 $('bkReadClose')?.addEventListener('click',()=>{$('bkReadMdl').classList.remove('op');openReadId=null});
 $('bkPrev')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:-260,behavior:'smooth'})});
