@@ -1,0 +1,38 @@
+<div class="vw" id="v-books">
+  <div class="books-head">
+    <button class="nbtn" id="bkAdd">+ ADD BOOK</button>
+    <div class="books-stats" id="bkStats"></div>
+  </div>
+  <div class="books-layout">
+    <div class="books-main">
+      <div class="books-toolbar">
+        <div class="books-view">
+          <button class="books-vbtn active" data-bkv="carousel">CAROUSEL</button>
+          <button class="books-vbtn" data-bkv="grid">GRID</button>
+          <button class="books-vbtn" data-bkv="list">LIST</button>
+        </div>
+        <div class="books-hint">SHORTCUTS: J/L NAV • G GRID • C CAROUSEL</div>
+      </div>
+      <div class="books-carousel-wrap">
+        <button class="books-nav" id="bkPrev">‹</button>
+        <div class="books-carousel" id="bkCarousel"></div>
+        <button class="books-nav" id="bkNext">›</button>
+      </div>
+    </div>
+    <div class="books-side">
+      <div class="books-panels">
+        <div class="books-panel">
+          <div class="books-panel-head"><strong>Reading Goal</strong><button class="btn btn-gh" id="bkGoalBtn">SET GOAL</button></div>
+          <div class="books-goal-line"><span id="bkGoalTxt"></span><span id="bkGoalPct"></span></div>
+          <div class="books-progress"><div id="bkGoalFill"></div></div>
+          <div class="books-mini" id="bkPaceTxt" style="margin-top:10px"></div>
+        </div>
+        <div class="books-panel">
+          <div class="books-panel-head"><strong>To Read Next</strong><div style="display:flex;gap:6px"><button class="btn btn-gh" id="bkSmartSort">SMART SORT</button><button class="btn btn-gh" id="bkQueueAdd">+ ITEM</button></div></div>
+          <div class="books-mini" id="bkBestNext" style="margin-bottom:8px"></div>
+          <div id="bkQueue"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

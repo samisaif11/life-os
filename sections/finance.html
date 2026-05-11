@@ -1,0 +1,194 @@
+<div class="vw" id="v-finance">
+  <div class="app">
+    <div class="loader" id="loading">
+    <div style="font-size: 40px; margin-bottom: 4px;">\ud83d\udcb0</div>
+
+    <div id="errorBox" style="display: none;">
+    <div class="loader">
+      <div style="font-size: 40px;">\u26a0\ufe0f</div>
+      <div class="error-box">
+        <p id="errorMsg">Something went wrong</p>
+        <button class="btn" style="margin-top: 8px;" onclick="loadFinanceData()">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+    <div id="dash" style="display: none;">
+    <div class="hdr">
+      <div class="hdr-l">
+        <div class="logo">\ud83d\udc3a</div>
+        <div>
+          <h1>Welcome, Sami.</h1>
+          <div id="wolfQuote" style="font-size: 11px; color: var(--gold); font-style: italic; font-weight: 300; max-width: 400px; line-height: 1.4; margin-top: 2px;"></div>
+          <div class="hdr-sub" style="margin-top: 3px;"><span class="live">LIVE</span> <span id="updated" style="margin-left: 6px;"></span></div>
+        </div>
+      </div>
+      <button class="btn" id="refreshBtn" onclick="loadData()">\u21bb Refresh</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab on" data-tab="overview" onclick="switchTab('overview')">\ud83d\udcca Overview</button>
+      <button class="tab" data-tab="spending" onclick="switchTab('spending')">\ud83d\udcb8 Spending</button>
+      <button class="tab" data-tab="weekly" onclick="switchTab('weekly')">\ud83d\udcc5 Week</button>
+      <button class="tab" data-tab="cnss" onclick="switchTab('cnss')">\ud83c\udfe5 CNSS</button>
+      <button class="tab" data-tab="debts" onclick="switchTab('debts')">\ud83d\udcb3 Debts</button>
+    </div>
+
+    <!-- \u2550\u2550\u2550 OVERVIEW \u2550\u2550\u2550 -->
+    <div class="panel on" id="p-overview">
+      <div class="stat-grid" id="statsGrid"></div>
+
+      
+
+      <div class="card">
+        <div class="card-label">\ud83d\udcc8 Monthly Trend</div>
+        <div style="height: 180px; position: relative;">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-label">\ud83c\udfe5 CNSS Medical</div>
+          <div id="cnssArea"></div>
+        </div>
+        <div class="card">
+          <div class="card-label">\ud83d\udcca Top Spending This Month</div>
+          <div id="topSpendArea"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">\ud83d\udcdd Recent Transactions</div>
+        <div id="txList" style="max-height: 400px; overflow-y: auto;"></div>
+      </div>
+    </div>
+
+    <!-- \u2550\u2550\u2550 SPENDING (with Monthly / All-Time toggle) \u2550\u2550\u2550 -->
+    <div class="panel" id="p-spending">
+      <div class="card">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+          <div class="card-label" style="margin-bottom: 0;" id="spendingTitle">\ud83d\udcca Monthly Spending</div>
+          <div class="sub-toggle" id="spendingToggle">
+            <button class="sub-toggle-btn on" data-mode="monthly" onclick="switchSpendingMode('monthly')">\ud83d\udcc5 This Month</button>
+            <button class="sub-toggle-btn" data-mode="alltime" onclick="switchSpendingMode('alltime')">\ud83d\udcca All-Time</button>
+          </div>
+        </div>
+        <div class="donut-flex" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <div style="width: 220px; height: 220px; position: relative; flex-shrink: 0; margin: 0 auto;">
+            <canvas id="donutChart"></canvas>
+            <div class="donut-center">
+              <div class="donut-center-val" id="donutTotal">\u2014</div>
+              <div class="donut-center-lbl" id="donutLabel">This Month</div>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 180px;" id="spendingLegend"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label" id="barChartLabel">\ud83d\udcca Category Breakdown</div>
+        <div style="height: 240px; position: relative;">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- \u2550\u2550\u2550 WEEKLY \u2550\u2550\u2550 -->
+    <div class="panel" id="p-weekly">
+      <div class="stat-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="stat-card glow-coral">
+          <div class="stat-label" id="weekLabel">This Week</div>
+          <div class="stat-value c-coral" id="weekTotal" style="font-size: 24px;">\u2014</div>
+          <div class="stat-sub">Total spent</div>
+        </div>
+        <div class="stat-card glow-teal">
+          <div class="stat-label">Income</div>
+          <div class="stat-value c-teal" id="weekIncome" style="font-size: 24px;">\u2014</div>
+        </div>
+        <div class="stat-card glow-purple">
+          <div class="stat-label">Net</div>
+          <div class="stat-value c-purple" id="weekNet" style="font-size: 24px;">\u2014</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">\ud83d\udcc5 Weekly Breakdown</div>
+        <div style="height: 200px; position: relative;">
+          <canvas id="weeklyBarChart"></canvas>
+        </div>
+        <div id="weeklyBars" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <!-- \u2550\u2550\u2550 CNSS TAB \u2550\u2550\u2550 -->
+    <div class="panel" id="p-cnss">
+      <div class="stat-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="stat-card glow-purple">
+          <div class="stat-emoji">\ud83d\udcb8</div>
+          <div class="stat-label">Pending Expenses</div>
+          <div class="stat-value c-purple" id="cnssPending" style="font-size: 22px;">\u2014</div>
+          <div class="stat-sub" id="cnssCount">\u2014 expenses</div>
+        </div>
+        <div class="stat-card glow-teal">
+          <div class="stat-emoji">\u2705</div>
+          <div class="stat-label">Refunded</div>
+          <div class="stat-value c-teal" id="cnssRefunded" style="font-size: 22px;">0</div>
+          <div class="stat-sub">from CNSS</div>
+        </div>
+        <div class="stat-card" style="border-color: var(--purple);">
+          <div class="stat-emoji">\ud83d\udcca</div>
+          <div class="stat-label">Reimbursement</div>
+          <div class="stat-value c-purple" id="cnssRate" style="font-size: 22px;">0%</div>
+          <div class="stat-sub" id="cnssRemaining">\u2014 remaining</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">\ud83d\udcc8 Reimbursement Progress</div>
+        <div class="cnss-prog-track">
+          <div class="cnss-prog-fill" id="cnssProg" style="width: 0%;"></div>
+        </div>
+        <div class="cnss-prog-labels">
+          <span id="cnssProgRefunded">0 MAD refunded</span>
+          <span id="cnssProgTotal">of 0 MAD</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">\ud83e\uddfe CNSS Expenses</div>
+        <div id="cnssTxList" style="max-height: 400px; overflow-y: auto;"></div>
+      </div>
+
+      <div class="ref-box" style="margin-top: 10px; background: rgba(139,92,246,.05); border-color: rgba(139,92,246,.15);">
+        <div class="ref-box-title" style="color: var(--purple);">\ud83d\udcdd How CNSS tracking works</div>
+        <p>
+          <strong>Log expense:</strong> Include "CNSS" in your message \u2192 <code style="color:var(--purple);">300 dr kanouni CNSS</code><br>
+          <strong>Log refund:</strong> Say you received from CNSS \u2192 <code style="color:var(--teal);">received 450 from CNSS</code><br>
+          Reimbursement rate updates automatically.
+        </p>
+      </div>
+    </div>
+
+    <!-- \u2550\u2550\u2550 DEBTS \u2550\u2550\u2550 -->
+    <div class="panel" id="p-debts">
+      <div class="stat-grid" style="grid-template-columns: 1fr 1fr;" id="debtStats"></div>
+      <div class="card">
+        <div class="card-label">\ud83d\udcb3 Debt Details</div>
+        <div id="debtEntries"></div>
+        <div class="ref-box">
+          <div class="ref-box-title">\ud83d\udcdd Quick Reference</div>
+          <p>
+            <strong>Borrowed</strong> \u2192 I owe someone money &nbsp;
+            <strong>Payment</strong> \u2192 I paid back what I owed<br>
+            <strong>Lent</strong> \u2192 Someone owes me money &nbsp;
+            <strong>Received</strong> \u2192 They paid me back
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer"><p>PHARAON NOIR FINANCES \u00b7 Telegram + Make.com + Google Sheets</p></div>
+  </div>
+
+  </div>
+</div>
