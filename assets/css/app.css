@@ -509,9 +509,10 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .q-deco.close{align-self:flex-end;margin-top:-clamp(22px,3.5vw,56px)}
 .q-text{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;line-height:1.4;color:var(--t1);text-align:center;letter-spacing:-.02em}
 .q-author{margin-top:clamp(16px,3vw,36px);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:clamp(.62rem,1.1vw,.8rem);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.65}
-.q-footer{position:absolute;bottom:clamp(14px,2.5vw,28px);left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,52px)}
+.q-footer{position:absolute;bottom:clamp(14px,2.5vw,28px);left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 clamp(18px,4vw,52px)}
 .q-greeting{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);opacity:.55}
-.q-skip{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);opacity:.3;background:none;border:none;cursor:pointer;padding:6px 10px;transition:opacity .2s}
+.q-load-status{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);opacity:.62;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.q-skip{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);opacity:.3;background:none;border:none;cursor:pointer;padding:6px 10px;transition:opacity .2s;white-space:nowrap}
 .q-skip:hover{opacity:.65}
 .q-paused-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:0;transition:opacity .2s;pointer-events:none}
 .loading-overlay.paused .q-paused-hint{opacity:.45}
