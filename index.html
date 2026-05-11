@@ -1452,8 +1452,15 @@ const QUOTES = [
 /* ═══════ SPLASH COORDINATION ═══════ */
 window._quoteDone = false;
 window._dataLoaded = false;
+window._loadFallbackTimer = setTimeout(() => {
+  if (window._dataLoaded) return;
+  console.warn('Cloud load timed out; showing dashboard with local/default data.');
+  window._dataLoaded = true;
+  window._tryHide();
+}, 18000);
 window._tryHide = function(){
   if(!window._quoteDone || !window._dataLoaded) return;
+  if(window._loadFallbackTimer){ clearTimeout(window._loadFallbackTimer); window._loadFallbackTimer = null; }
   const ov = document.getElementById('loadOv');
   if(ov){ ov.classList.add('fade-out'); setTimeout(()=>ov.remove(), 500); }
 };
@@ -1524,6 +1531,14 @@ window._tryHide = function(){
 
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
 const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbzAc8V5l2m9EcgIBms0XPttuOfHOhqYHhzySGv6FsWF9sCTxaRdTjy6DwHLo9XW6UfWww/exec';
+const CLOUD_LOAD_TIMEOUT_MS = 15000;
+
+function fetchWithTimeout(url, options = {}, timeoutMs = CLOUD_LOAD_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
+}
 
 /* ═══════ MAKE.COM WEBHOOK ═══════ */
 const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/615fl84ldxqnjo4nzkp66ntu43l2pdd9'; // Paste your Make.com webhook URL here
@@ -1614,7 +1629,7 @@ async function saveToSheet() {
 async function loadFromSheet(manual = false) {
   if (manual) { $('syncBtn').classList.add('spinning'); showSync('loading', 'LOADING...'); }
   try {
-    const res = await fetch(SHEET_API_URL, { method: 'GET', redirect: 'follow' });
+    const res = await fetchWithTimeout(SHEET_API_URL, { method: 'GET', redirect: 'follow' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (data.error) throw new Error(data.error);
@@ -4239,7 +4254,7 @@ function render(d) {
       '<span style="font-family:var(--mo);font-size:12px;font-weight:700;">' + (cnRt * 100).toFixed(0) + '%</span>' +
     '</div>' +
     '<div style="text-align:center;padding-top:6px;border-top:1px solid var(--div);">' +
-      '<a href="#" onclick="switchTab(\\'cnss\\');return false;" style="font-size:10px;color:var(--purple);text-decoration:none;font-weight:600;letter-spacing:.5px;">VIEW FULL TRACKER \u2192</a>' +
+      '<a href="#" onclick="switchTab(&quot;cnss&quot;);return false;" style="font-size:10px;color:var(--purple);text-decoration:none;font-weight:600;letter-spacing:.5px;">VIEW FULL TRACKER \u2192</a>' +
     '</div>';
 
   // \u2500\u2500 TOP SPENDING \u2500\u2500
@@ -4376,7 +4391,7 @@ function renderSpendingCharts(cats, total, mode) {
     var pct = total > 0 ? ((c.value / total) * 100).toFixed(1) : 0;
     legendHtml +=
       '<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-radius:6px;transition:background .2s;cursor:default;" ' +
-        'onmouseenter="this.style.background=\\'var(--card2)\\'" onmouseleave="this.style.background=\\'transparent\\'">' +
+        'onmouseenter="this.style.background=&quot;var(--card2)&quot;" onmouseleave="this.style.background=&quot;transparent&quot;">' +
         '<div style="display:flex;align-items:center;gap:6px;">' +
           '<div style="width:8px;height:8px;border-radius:2px;background:' + (CAT_COLORS[c.name] || '#666') + '"></div>' +
           '<span style="font-size:11px;">' + c.name + '</span>' +
