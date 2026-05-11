@@ -281,6 +281,14 @@ function doGet(e) {
 // ═══════════════════════════════════════════════════════════════
 function doPost(e) {
   try {
+    // ── Telegram webhook: detect and route to Financial Buddy bot ──
+    try {
+      var tgBody = JSON.parse(e.postData.contents);
+      if (tgBody.message || tgBody.edited_message || tgBody.callback_query) {
+        return handleTelegramUpdate(tgBody);
+      }
+    } catch(_) {}
+
     const lock = LockService.getScriptLock();
     lock.waitLock(10000); // Wait up to 10s for exclusive access
 
