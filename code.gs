@@ -12,6 +12,8 @@
  */
 
 // ═══════ SHEET NAMES ═══════
+const SPREADSHEET_ID = '15r_yoPaum9Gzt4XfZf5d9Q1YBsSgocaevipMZbZT4TM';
+
 const SHEETS = {
   TASKS:         'Tasks',
   COMPLETED:     'Completed',
@@ -56,12 +58,19 @@ const LEGACY_BOOK_COLS    = ['id','title','author','cover','progress','rating','
 const LEGACY_GROCERY_COLS = ['id','item','location','category','quantity','unit','priority','purchased','createdAt','updatedAt','notes'];
 const HEALTH_LOG_COLS = ['id','date','metric','value','unit','category','notes','createdAt'];
 
+
+function getLifeOsSpreadsheet() {
+  return SPREADSHEET_ID
+    ? SpreadsheetApp.openById(SPREADSHEET_ID)
+    : SpreadsheetApp.getActiveSpreadsheet();
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  doGet — READ all data from sheets, return as JSON
 // ═══════════════════════════════════════════════════════════════
 function doGet(e) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = getLifeOsSpreadsheet();
     const data = {};
 
     // --- Tasks ---
@@ -292,7 +301,7 @@ function doPost(e) {
     const lock = LockService.getScriptLock();
     lock.waitLock(10000); // Wait up to 10s for exclusive access
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = getLifeOsSpreadsheet();
     const D = JSON.parse(e.postData.contents);
 
     // --- Check for conflicts ---
@@ -633,7 +642,7 @@ function getHeaders(ss, sheetName) {
 //  SETUP — Run this once to create all sheets with headers
 // ═══════════════════════════════════════════════════════════════
 function setupSheets() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getLifeOsSpreadsheet();
 
   const sheetsConfig = [
     { name: SHEETS.TASKS,         cols: TASK_COLS },
@@ -703,7 +712,7 @@ function setupSheets() {
  */
 function scanMissingData() {
   const ui = SpreadsheetApp.getUi();
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getLifeOsSpreadsheet();
 
   const issues = [];
 
@@ -756,7 +765,7 @@ function scanMissingData() {
  * Call from frontend or dashboard to show notification badge
  */
 function countMissingData() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getLifeOsSpreadsheet();
   let count = 0;
 
   // Books without all required fields
@@ -789,7 +798,7 @@ function countMissingData() {
  * 3. Run scanMissingData() to verify
  */
 function restoreFromBackup(sheetData) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getLifeOsSpreadsheet();
 
   if (!sheetData || typeof sheetData !== 'object') {
     return { success: false, error: "Invalid data format" };

@@ -66,9 +66,15 @@ const QUOTES = [
 /* ═══════ SPLASH COORDINATION ═══════ */
 window._quoteDone = false;
 window._dataLoaded = false;
+window._loadStartedAt = Date.now();
+window._setLoadingStatus = function(message){
+  const el = document.getElementById('qLoadStatus');
+  if (el) el.textContent = message;
+};
 window._loadFallbackTimer = setTimeout(() => {
   if (window._dataLoaded) return;
   console.warn('Cloud load timed out; showing dashboard with local/default data.');
+  window._setLoadingStatus('Google Sheet timed out after 18s — opening dashboard with local defaults.');
   window._dataLoaded = true;
   window._tryHide();
 }, 18000);
@@ -107,6 +113,16 @@ window._tryHide = function(){
   const dur = readTime(q.t);
 
   let startTime=null, elapsed=0, rafId=null, paused=false, done=false;
+  const statusTimer = setInterval(() => {
+    if (window._dataLoaded) {
+      window._setLoadingStatus('Google Sheet loaded — finishing quote…');
+      clearInterval(statusTimer);
+      return;
+    }
+    const secs = Math.max(0, Math.round((Date.now() - window._loadStartedAt) / 1000));
+    const remaining = Math.max(0, 18 - secs);
+    window._setLoadingStatus(`Loading Google Sheet… ${secs}s elapsed${remaining ? ` · offline fallback in ${remaining}s` : ''}`);
+  }, 500);
   function tick(ts){
     if(done) return;
     if(!startTime) startTime=ts;
@@ -119,8 +135,10 @@ window._tryHide = function(){
   function finish(){
     if(done) return;
     done = true;
+    clearInterval(statusTimer);
     cancelAnimationFrame(rafId);
     window._quoteDone = true;
+    if (!window._dataLoaded) window._setLoadingStatus('Quote finished — still waiting for Google Sheet…');
     window._tryHide();
   }
   function pause(){ if(paused||done) return; paused=true; cancelAnimationFrame(rafId); ov.classList.add('paused'); }
@@ -241,12 +259,16 @@ async function saveToSheet() {
 }
 
 async function loadFromSheet(manual = false) {
+  window._loadStartedAt = Date.now();
+  window._setLoadingStatus?.('Connecting to Google Sheet…');
   if (manual) { $('syncBtn').classList.add('spinning'); showSync('loading', 'LOADING...'); }
   try {
     const res = await fetchWithTimeout(SHEET_API_URL, { method: 'GET', redirect: 'follow' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (data.error) throw new Error(data.error);
+    const loadedCounts = summarizeCloudPayload(data);
+    window._setLoadingStatus?.(loadedCounts ? `Google Sheet loaded: ${loadedCounts}.` : 'Google Sheet loaded, but no rows were returned.');
     // Apply data
     if (data.tasks) D.tasks = normalizeTaskArray(data.tasks);
     if (data.completed) D.completed = normalizeTaskArray(data.completed);
@@ -288,12 +310,29 @@ async function loadFromSheet(manual = false) {
     if (manual) { showSync('saved', '✓ SYNCED', 2000); toast('SYNCED FROM CLOUD', 'gld'); }
   } catch (err) {
     console.error('Load failed:', err);
+    window._setLoadingStatus?.(`Google Sheet failed: ${err.message}. Opening local defaults.`);
     if (manual) { showSync('error', '✕ LOAD FAILED'); toast('SYNC FAILED: ' + err.message, 'rd'); }
     else console.warn('Using local defaults (cloud unavailable).');
   } finally {
     $('syncBtn')?.classList.remove('spinning');
     hideLoading();
   }
+}
+
+function summarizeCloudPayload(data) {
+  const parts = [];
+  [
+    ['tasks', 'tasks'],
+    ['deadlines', 'deadlines'],
+    ['projects', 'projects'],
+    ['books', 'books'],
+    ['groceries', 'groceries'],
+    ['healthLogs', 'health logs']
+  ].forEach(([key, label]) => {
+    const value = data && data[key];
+    if (Array.isArray(value) && value.length) parts.push(`${value.length} ${label}`);
+  });
+  return parts.slice(0, 4).join(', ');
 }
 
 function hideLoading() {
