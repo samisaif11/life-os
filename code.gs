@@ -13,6 +13,7 @@
 
 // ═══════ SHEET NAMES ═══════
 const SPREADSHEET_ID = '15r_yoPaum9Gzt4XfZf5d9Q1YBsSgocaevipMZbZT4TM';
+const BACKEND_VERSION = 'life-os-sheets-v2-2026-05-11';
 
 const SHEETS = {
   TASKS:         'Tasks',
@@ -71,7 +72,7 @@ function getLifeOsSpreadsheet() {
 function doGet(e) {
   try {
     const ss = getLifeOsSpreadsheet();
-    const data = {};
+    const data = { _diagnostics: getSpreadsheetDiagnostics(ss) };
 
     // --- Tasks ---
     data.tasks = readSheet(ss, SHEETS.TASKS, TASK_COLS).map(parseTask);
@@ -281,7 +282,15 @@ function doGet(e) {
 
     return jsonResponse(data);
   } catch (err) {
-    return jsonResponse({ error: err.message, stack: err.stack }, 500);
+    return jsonResponse({
+      error: err.message,
+      stack: err.stack,
+      _diagnostics: {
+        backendVersion: BACKEND_VERSION,
+        configuredSpreadsheetId: SPREADSHEET_ID || '',
+        hint: 'If this says getActiveSpreadsheet is null or permissions failed, paste the latest code.gs into Apps Script and deploy a new Web App version.'
+      }
+    }, 500);
   }
 }
 
@@ -597,6 +606,25 @@ function writeSheet(ss, name, cols, rows) {
     });
     sheet.getRange(2, 1, padded.length, cols.length).setValues(padded);
   }
+}
+
+
+function getSpreadsheetDiagnostics(ss) {
+  const sheetNames = ss.getSheets().map(sheet => sheet.getName());
+  const rowCounts = {};
+  Object.keys(SHEETS).forEach(key => {
+    const name = SHEETS[key];
+    const sheet = ss.getSheetByName(name);
+    rowCounts[name] = sheet ? Math.max(0, sheet.getLastRow() - 1) : null;
+  });
+  return {
+    backendVersion: BACKEND_VERSION,
+    configuredSpreadsheetId: SPREADSHEET_ID || '',
+    openedSpreadsheetId: ss.getId(),
+    openedSpreadsheetName: ss.getName(),
+    sheetNames,
+    rowCounts
+  };
 }
 
 /** Build a JSON response */

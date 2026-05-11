@@ -79,15 +79,15 @@ window._loadFallbackTimer = setTimeout(() => {
   window._tryHide();
 }, 18000);
 window._tryHide = function(){
-  if(!window._quoteDone || !window._dataLoaded) return;
+  if(!window._quoteDone) return;
   if(window._loadFallbackTimer){ clearTimeout(window._loadFallbackTimer); window._loadFallbackTimer = null; }
   const ov = document.getElementById('loadOv');
   if(ov){ ov.classList.add('fade-out'); setTimeout(()=>ov.remove(), 500); }
 };
 
 (function(){
-  const WPM = 170;
-  const MIN_MS = 3500, MAX_MS = 14000;
+  const WPM = 240;
+  const MIN_MS = 1800, MAX_MS = 9000;
   function readTime(text){ return Math.min(MAX_MS, Math.max(MIN_MS, Math.round((text.split(/\s+/).length / WPM) * 60000))); }
 
   const gi = id => document.getElementById(id);
@@ -138,7 +138,10 @@ window._tryHide = function(){
     clearInterval(statusTimer);
     cancelAnimationFrame(rafId);
     window._quoteDone = true;
-    if (!window._dataLoaded) window._setLoadingStatus('Quote finished — still waiting for Google Sheet…');
+    if (!window._dataLoaded) {
+      window._setLoadingStatus('Quote finished — loading Google Sheet in background…');
+      showSync?.('loading', 'LOADING DATA...');
+    }
     window._tryHide();
   }
   function pause(){ if(paused||done) return; paused=true; cancelAnimationFrame(rafId); ov.classList.add('paused'); }
@@ -162,7 +165,9 @@ window._tryHide = function(){
 })();
 
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
-const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbzAc8V5l2m9EcgIBms0XPttuOfHOhqYHhzySGv6FsWF9sCTxaRdTjy6DwHLo9XW6UfWww/exec';
+// Use the full deployed Web App /exec URL here, not just the deployment ID.
+const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwbkpvNcmo7v2LPfu29bsSfQKRuE4fjvfKC3-iSccU4L0KmqhAPPCiNFApOkgiwwBoftQ/exec';
+const EXPECTED_BACKEND_VERSION = 'life-os-sheets-v2-2026-05-11';
 const CLOUD_LOAD_TIMEOUT_MS = 15000;
 
 function fetchWithTimeout(url, options = {}, timeoutMs = CLOUD_LOAD_TIMEOUT_MS) {
@@ -170,6 +175,11 @@ function fetchWithTimeout(url, options = {}, timeoutMs = CLOUD_LOAD_TIMEOUT_MS) 
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   return fetch(url, { ...options, signal: controller.signal })
     .finally(() => clearTimeout(timer));
+}
+
+function withCacheBust(url) {
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}_=${Date.now()}`;
 }
 
 /* ═══════ MAKE.COM WEBHOOK ═══════ */
@@ -211,6 +221,7 @@ function showSync(state, msg, duration = 0) {
   ind.className = 'sync-indicator visible ' + state;
   txt.textContent = msg || state.toUpperCase();
   if (state === 'error') ind.onclick = () => { saveToSheet(); ind.onclick = null; };
+  else ind.onclick = null;
   if (duration > 0) setTimeout(() => ind.classList.remove('visible'), duration);
 }
 
@@ -261,12 +272,15 @@ async function saveToSheet() {
 async function loadFromSheet(manual = false) {
   window._loadStartedAt = Date.now();
   window._setLoadingStatus?.('Connecting to Google Sheet…');
-  if (manual) { $('syncBtn').classList.add('spinning'); showSync('loading', 'LOADING...'); }
+  showSync('loading', manual ? 'LOADING...' : 'LOADING DATA...');
+  if (manual) $('syncBtn').classList.add('spinning');
   try {
-    const res = await fetchWithTimeout(SHEET_API_URL, { method: 'GET', redirect: 'follow' });
+    const res = await fetchWithTimeout(withCacheBust(SHEET_API_URL), { method: 'GET', redirect: 'follow' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
+    const data = await parseCloudJson(res);
+    if (data.error) throw new Error(formatCloudError(data));
+    const cloudWarning = getCloudDataWarning(data);
+    if (cloudWarning) throw new Error(cloudWarning);
     const loadedCounts = summarizeCloudPayload(data);
     window._setLoadingStatus?.(loadedCounts ? `Google Sheet loaded: ${loadedCounts}.` : 'Google Sheet loaded, but no rows were returned.');
     // Apply data
@@ -307,16 +321,61 @@ async function loadFromSheet(manual = false) {
     }
     _loaded = true;
     fullR(); initSug();
-    if (manual) { showSync('saved', '✓ SYNCED', 2000); toast('SYNCED FROM CLOUD', 'gld'); }
+    showSync('saved', '✓ SYNCED', 2000);
+    if (manual) toast('SYNCED FROM CLOUD', 'gld');
   } catch (err) {
     console.error('Load failed:', err);
     window._setLoadingStatus?.(`Google Sheet failed: ${err.message}. Opening local defaults.`);
-    if (manual) { showSync('error', '✕ LOAD FAILED'); toast('SYNC FAILED: ' + err.message, 'rd'); }
-    else console.warn('Using local defaults (cloud unavailable).');
+    showSync('error', '✕ LOAD FAILED');
+    const ind = $('syncInd');
+    if (ind) ind.onclick = () => loadFromSheet(true);
+    toast('SYNC FAILED: ' + err.message, 'rd');
+    if (!manual) console.warn('Using local defaults (cloud unavailable).');
   } finally {
     $('syncBtn')?.classList.remove('spinning');
     hideLoading();
   }
+}
+
+async function parseCloudJson(res) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    const preview = text.trim().slice(0, 120) || 'empty response';
+    throw new Error(`Cloud API did not return JSON. Preview: ${preview}`);
+  }
+}
+
+function formatCloudError(data) {
+  const diag = data && data._diagnostics;
+  const hint = diag && diag.hint ? ` ${diag.hint}` : '';
+  return `${data.error}${hint}`;
+}
+
+function getCloudDataWarning(data) {
+  const diag = data && data._diagnostics;
+  const payloadCount = getCloudPayloadCount(data);
+  if (diag && diag.backendVersion && diag.backendVersion !== EXPECTED_BACKEND_VERSION) {
+    return `Wrong Apps Script deployment (${diag.backendVersion}). Deploy latest code.gs, expected ${EXPECTED_BACKEND_VERSION}.`;
+  }
+  if (!diag && payloadCount === 0) {
+    return 'Cloud API returned no dashboard rows and no diagnostics. This usually means the deployed Apps Script is stale or points at the wrong spreadsheet.';
+  }
+  if (diag && payloadCount === 0) {
+    const sheetRows = diag.rowCounts || {};
+    const totalRows = Object.values(sheetRows).reduce((sum, n) => sum + (Number(n) || 0), 0);
+    if (totalRows > 0) {
+      return `Cloud API opened ${diag.openedSpreadsheetName || 'the spreadsheet'} but parsed 0 dashboard rows from ${totalRows} sheet rows. Check that the latest Apps Script code is deployed.`;
+    }
+  }
+  return '';
+}
+
+function getCloudPayloadCount(data) {
+  if (!data || typeof data !== 'object') return 0;
+  return ['tasks','completed','deadlines','projects','closed','people','invoices','bankAccounts','clients','books','booksQueue','groceries','healthLogs']
+    .reduce((sum, key) => sum + (Array.isArray(data[key]) ? data[key].length : 0), 0);
 }
 
 function summarizeCloudPayload(data) {
