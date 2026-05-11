@@ -12,6 +12,9 @@
  */
 
 // ═══════ SHEET NAMES ═══════
+const SPREADSHEET_ID = '15r_yoPaum9Gzt4XfZf5d9Q1YBsSgocaevipMZbZT4TM';
+const BACKEND_VERSION = 'life-os-sheets-v2-2026-05-11';
+
 const SHEETS = {
   TASKS:         'Tasks',
   COMPLETED:     'Completed',
@@ -56,13 +59,20 @@ const LEGACY_BOOK_COLS    = ['id','title','author','cover','progress','rating','
 const LEGACY_GROCERY_COLS = ['id','item','location','category','quantity','unit','priority','purchased','createdAt','updatedAt','notes'];
 const HEALTH_LOG_COLS = ['id','date','metric','value','unit','category','notes','createdAt'];
 
+
+function getLifeOsSpreadsheet() {
+  return SPREADSHEET_ID
+    ? SpreadsheetApp.openById(SPREADSHEET_ID)
+    : SpreadsheetApp.getActiveSpreadsheet();
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  doGet — READ all data from sheets, return as JSON
 // ═══════════════════════════════════════════════════════════════
 function doGet(e) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const data = {};
+    const ss = getLifeOsSpreadsheet();
+    const data = { _diagnostics: getSpreadsheetDiagnostics(ss) };
 
     // --- Tasks ---
     data.tasks = readSheet(ss, SHEETS.TASKS, TASK_COLS).map(parseTask);
@@ -272,7 +282,15 @@ function doGet(e) {
 
     return jsonResponse(data);
   } catch (err) {
-    return jsonResponse({ error: err.message, stack: err.stack }, 500);
+    return jsonResponse({
+      error: err.message,
+      stack: err.stack,
+      _diagnostics: {
+        backendVersion: BACKEND_VERSION,
+        configuredSpreadsheetId: SPREADSHEET_ID || '',
+        hint: 'If this says getActiveSpreadsheet is null or permissions failed, paste the latest code.gs into Apps Script and deploy a new Web App version.'
+      }
+    }, 500);
   }
 }
 
@@ -292,7 +310,7 @@ function doPost(e) {
     const lock = LockService.getScriptLock();
     lock.waitLock(10000); // Wait up to 10s for exclusive access
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = getLifeOsSpreadsheet();
     const D = JSON.parse(e.postData.contents);
 
     // --- Check for conflicts ---
@@ -590,6 +608,25 @@ function writeSheet(ss, name, cols, rows) {
   }
 }
 
+
+function getSpreadsheetDiagnostics(ss) {
+  const sheetNames = ss.getSheets().map(sheet => sheet.getName());
+  const rowCounts = {};
+  Object.keys(SHEETS).forEach(key => {
+    const name = SHEETS[key];
+    const sheet = ss.getSheetByName(name);
+    rowCounts[name] = sheet ? Math.max(0, sheet.getLastRow() - 1) : null;
+  });
+  return {
+    backendVersion: BACKEND_VERSION,
+    configuredSpreadsheetId: SPREADSHEET_ID || '',
+    openedSpreadsheetId: ss.getId(),
+    openedSpreadsheetName: ss.getName(),
+    sheetNames,
+    rowCounts
+  };
+}
+
 /** Build a JSON response */
 function jsonResponse(obj, status) {
   const output = ContentService.createTextOutput(JSON.stringify(obj))
@@ -633,7 +670,7 @@ function getHeaders(ss, sheetName) {
 //  SETUP — Run this once to create all sheets with headers
 // ═══════════════════════════════════════════════════════════════
 function setupSheets() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getLifeOsSpreadsheet();
 
   const sheetsConfig = [
     { name: SHEETS.TASKS,         cols: TASK_COLS },
@@ -703,7 +740,7 @@ function setupSheets() {
  */
 function scanMissingData() {
   const ui = SpreadsheetApp.getUi();
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getLifeOsSpreadsheet();
 
   const issues = [];
 
@@ -756,7 +793,7 @@ function scanMissingData() {
  * Call from frontend or dashboard to show notification badge
  */
 function countMissingData() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getLifeOsSpreadsheet();
   let count = 0;
 
   // Books without all required fields
@@ -789,7 +826,7 @@ function countMissingData() {
  * 3. Run scanMissingData() to verify
  */
 function restoreFromBackup(sheetData) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getLifeOsSpreadsheet();
 
   if (!sheetData || typeof sheetData !== 'object') {
     return { success: false, error: "Invalid data format" };
