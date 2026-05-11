@@ -1,4 +1,3 @@
-<!-- index (phase 1).html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -709,6 +708,173 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 /* Full-width card */
 .hl-full{margin-bottom:22px}
 
+
+
+/* ═══ FINANCIAL BUDDY Finance CSS (scoped to #v-finance) ═══ */
+#v-finance{
+  --bg: #06060f; --bg2: #0b0b1a;
+  --card: #0e0e22; --card2: #131335; --edge: #1a1a3d;
+  --gold: #d4a843; --gold-d: #d4a84355;
+  --teal: #43d4b3; --teal-d: #43d4b322;
+  --coral: #d4435a; --coral-d: #d4435a22;
+  --purple: #8b5cf6; --purple-d: #8b5cf622;
+  --text: #e8e8f0; --t2: #9090aa; --t3: #555570;
+  --div: #1c1c38; --s1: #0a0a1e; --s2: #101030;
+  --r: 12px; --rs: 8px;
+  --fn: 'DM Sans', sans-serif;
+  --mo: 'JetBrains Mono', 'Consolas', monospace;
+  --dp: 'Playfair Display', serif;
+}
+#v-finance body::before{
+  content: ''; position: fixed; top: -40%; left: -20%;
+  width: 80vw; height: 80vw;
+  background: radial-gradient(circle, var(--gold-d) 0%, transparent 60%);
+  pointer-events: none; z-index: 0; animation: drift 20s ease-in-out infinite alternate;
+}
+#v-finance body::after{
+  content: ''; position: fixed; bottom: -30%; right: -10%;
+  width: 60vw; height: 60vw;
+  background: radial-gradient(circle, var(--purple-d) 0%, transparent 60%);
+  pointer-events: none; z-index: 0; animation: drift 25s ease-in-out infinite alternate-reverse;
+}
+@keyframes drift{ 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px,-30px) scale(1.1); } }
+#v-finance .app{ position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 16px 14px 40px; }
+#v-finance /* \u2500\u2500 HEADER \u2500\u2500 */
+.hdr{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+#v-finance .hdr-l{ display: flex; align-items: center; gap: 10px; }
+#v-finance .logo{ width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--gold), #b8860d); display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 16px var(--gold-d); }
+#v-finance .hdr h1{ font-family: var(--dp); font-size: 22px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(135deg, var(--gold), #f0d68a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+#v-finance .hdr-sub{ font-size: 11px; color: var(--t3); font-weight: 300; }
+#v-finance .live{ display: inline-flex; align-items: center; gap: 5px; font-size: 10px; color: var(--teal); font-weight: 600; letter-spacing: .5px; }
+#v-finance .live::before{ content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse{ 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+#v-finance .btn{ background: var(--card); border: 1px solid var(--div); color: var(--t2); padding: 6px 12px; border-radius: var(--rs); font-family: var(--fn); font-size: 11px; cursor: pointer; transition: all .3s; }
+#v-finance .btn:hover{ background: var(--card2); color: var(--text); border-color: var(--gold); }
+#v-finance .btn.loading{ opacity: .5; pointer-events: none; }
+#v-finance /* \u2500\u2500 TABS \u2500\u2500 */
+.tabs{ display: flex; gap: 3px; background: var(--bg2); border-radius: var(--r); padding: 3px; margin-bottom: 14px; border: 1px solid var(--div); }
+#v-finance .tab{ flex: 1; padding: 8px 6px; border: none; border-radius: var(--rs); background: transparent; color: var(--t3); font-family: var(--fn); font-size: 12px; font-weight: 500; cursor: pointer; transition: all .3s; }
+#v-finance .tab.on{ background: var(--card); color: var(--text); font-weight: 700; box-shadow: 0 2px 10px rgba(0,0,0,.3); }
+#v-finance .tab:hover:not(.on){ color: var(--t2); }
+#v-finance /* \u2500\u2500 CARDS \u2500\u2500 */
+.card{ background: var(--card); border: 1px solid var(--div); border-radius: var(--r); padding: 14px 16px; margin-bottom: 10px; transition: transform .2s, box-shadow .2s; }
+#v-finance .card:hover{ transform: translateY(-1px); box-shadow: 0 6px 30px rgba(0,0,0,.2); }
+#v-finance .card-label{ font-size: 10px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+#v-finance /* \u2500\u2500 STAT GRID \u2500\u2500 */
+.stat-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+@media (max-width: 700px) {
+#v-finance .stat-grid{ grid-template-columns: 1fr 1fr; }
+ 
+}
+@media (max-width: 400px) {
+#v-finance .stat-grid{ grid-template-columns: 1fr; }
+ 
+}
+#v-finance .stat-card{ background: var(--card); border: 1px solid var(--div); border-radius: var(--r); padding: 12px 14px; opacity: 0; transform: translateY(12px); animation: fadeUp .5s forwards; }
+#v-finance .stat-card:nth-child(1){ animation-delay: 0s; }
+#v-finance .stat-card:nth-child(2){ animation-delay: .06s; }
+#v-finance .stat-card:nth-child(3){ animation-delay: .12s; }
+#v-finance .stat-card:nth-child(4){ animation-delay: .18s; }
+@keyframes fadeUp{ to { opacity: 1; transform: translateY(0); } }
+#v-finance .stat-emoji{ font-size: 20px; margin-bottom: 2px; }
+#v-finance .stat-label{ font-size: 9px; color: var(--t3); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 4px; }
+#v-finance .stat-value{ font-family: var(--mo); font-size: 22px; font-weight: 800; line-height: 1.1; }
+#v-finance .stat-sub{ font-size: 10px; color: var(--t2); margin-top: 3px; }
+#v-finance .c-gold{ color: var(--gold); }
+#v-finance .c-teal{ color: var(--teal); }
+#v-finance .c-coral{ color: var(--coral); }
+#v-finance .c-purple{ color: var(--purple); }
+#v-finance .glow-gold{ box-shadow: 0 0 20px var(--gold-d); }
+#v-finance .glow-teal{ box-shadow: 0 0 20px var(--teal-d); }
+#v-finance .glow-coral{ box-shadow: 0 0 20px var(--coral-d); }
+#v-finance .glow-purple{ box-shadow: 0 0 20px var(--purple-d); }
+#v-finance /* \u2500\u2500 TWO COLUMN LAYOUT \u2500\u2500 */
+.row2{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 700px) {
+#v-finance .row2{ grid-template-columns: 1fr; }
+ 
+}
+#v-finance .row3{ display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+@media (max-width: 700px) {
+#v-finance .row3{ grid-template-columns: 1fr; }
+ 
+}
+#v-finance /* \u2500\u2500 PROGRESS \u2500\u2500 */
+.prog-wrap{ margin-bottom: 10px; }
+#v-finance .prog-header{ display: flex; justify-content: space-between; margin-bottom: 4px; }
+#v-finance .prog-name{ font-size: 12px; font-weight: 600; }
+#v-finance .prog-val{ font-size: 11px; color: var(--t2); font-family: var(--mo); }
+#v-finance .prog-track{ width: 100%; height: 6px; border-radius: 3px; background: var(--div); overflow: hidden; }
+#v-finance .prog-fill{ height: 100%; border-radius: 3px; transition: width 1.5s cubic-bezier(.4,0,.2,1); }
+#v-finance /* \u2500\u2500 TRANSACTIONS \u2500\u2500 */
+.tx-row{ display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border-radius: var(--rs); transition: background .2s; }
+#v-finance .tx-row:nth-child(odd){ background: var(--s1); }
+#v-finance .tx-row:hover{ background: var(--card2); }
+#v-finance .tx-left{ display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+#v-finance .tx-icon{ width: 30px; height: 30px; border-radius: var(--rs); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+#v-finance .tx-desc{ font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+#v-finance .tx-meta{ font-size: 10px; color: var(--t3); }
+#v-finance .tx-amount{ font-family: var(--mo); font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; margin-left: 8px; }
+#v-finance /* \u2500\u2500 CATEGORY BARS \u2500\u2500 */
+.cat-row{ display: flex; align-items: center; gap: 8px; padding: 5px 0; }
+#v-finance .cat-emoji{ font-size: 13px; width: 22px; text-align: center; }
+#v-finance .cat-name{ font-size: 11px; color: var(--t2); width: 100px; flex-shrink: 0; }
+#v-finance .cat-bar-wrap{ flex: 1; height: 5px; border-radius: 3px; background: var(--div); overflow: hidden; }
+#v-finance .cat-bar-fill{ height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+#v-finance .cat-val{ font-family: var(--mo); font-size: 11px; font-weight: 700; width: 65px; text-align: right; }
+#v-finance .cat-pct{ font-size: 9px; color: var(--t3); width: 35px; text-align: right; }
+#v-finance /* \u2500\u2500 DONUT \u2500\u2500 */
+.donut-center{ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; }
+#v-finance .donut-center-val{ font-family: var(--mo); font-size: 18px; font-weight: 800; color: var(--coral); }
+#v-finance .donut-center-lbl{ font-size: 9px; color: var(--t3); text-transform: uppercase; letter-spacing: 1px; }
+#v-finance /* \u2500\u2500 DEBTS \u2500\u2500 */
+.debt-entry{ padding: 12px 16px; border-radius: 10px; background: var(--s1); border: 1px solid var(--div); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+#v-finance .debt-person{ font-size: 14px; font-weight: 700; }
+#v-finance .debt-meta{ font-size: 11px; color: var(--t3); }
+#v-finance .debt-amount{ font-family: var(--mo); font-size: 18px; font-weight: 800; text-align: right; }
+#v-finance .debt-detail{ font-size: 10px; color: var(--t3); }
+#v-finance .ref-box{ margin-top: 10px; padding: 12px 16px; border-radius: 10px; background: rgba(212,168,67,.05); border: 1px solid rgba(212,168,67,.15); }
+#v-finance .ref-box-title{ font-size: 11px; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
+#v-finance .ref-box p{ font-size: 10px; color: var(--t2); line-height: 1.8; }
+#v-finance .ref-box strong{ color: var(--text); }
+#v-finance /* \u2500\u2500 SUB-TOGGLE \u2500\u2500 */
+.sub-toggle{ display: inline-flex; gap: 2px; background: var(--bg2); border-radius: var(--rs); padding: 2px; border: 1px solid var(--div); }
+#v-finance .sub-toggle-btn{ padding: 5px 14px; border: none; border-radius: 6px; background: transparent; color: var(--t3); font-family: var(--fn); font-size: 11px; font-weight: 500; cursor: pointer; transition: all .3s; }
+#v-finance .sub-toggle-btn.on{ background: var(--card2); color: var(--text); font-weight: 700; }
+#v-finance .sub-toggle-btn:hover:not(.on){ color: var(--t2); }
+#v-finance /* \u2500\u2500 CNSS TAB \u2500\u2500 */
+.cnss-prog-track{ width: 100%; height: 10px; border-radius: 5px; background: var(--div); overflow: hidden; margin: 12px 0 6px; }
+#v-finance .cnss-prog-fill{ height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--purple), #a78bfa); transition: width 1.5s cubic-bezier(.4,0,.2,1); }
+#v-finance .cnss-prog-labels{ display: flex; justify-content: space-between; font-size: 10px; color: var(--t3); }
+#v-finance .cnss-tx-row{ display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: var(--rs); transition: background .2s; }
+#v-finance .cnss-tx-row:nth-child(odd){ background: var(--s1); }
+#v-finance .cnss-tx-row:hover{ background: var(--card2); }
+#v-finance .cnss-tx-desc{ font-size: 12px; font-weight: 600; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#v-finance .cnss-tx-meta{ font-size: 10px; color: var(--t3); margin-top: 2px; }
+#v-finance .cnss-tx-amount{ font-family: var(--mo); font-size: 13px; font-weight: 700; white-space: nowrap; margin-left: 12px; }
+#v-finance /* \u2500\u2500 LOADING / ERROR \u2500\u2500 */
+.loader{ display: flex; align-items: center; justify-content: center; min-height: 60vh; flex-direction: column; gap: 12px; }
+#v-finance .spinner{ width: 32px; height: 32px; border: 3px solid var(--div); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin{ to { transform: rotate(360deg); } }
+#v-finance .error-box{ background: var(--coral-d); border: 1px solid var(--coral); border-radius: var(--rs); padding: 14px 18px; margin: 16px 0; text-align: center; }
+#v-finance .error-box p{ font-size: 12px; color: var(--coral); }
+#v-finance /* \u2500\u2500 PANELS \u2500\u2500 */
+.panel{ display: none; }
+#v-finance .panel.on{ display: block; }
+#v-finance .footer{ text-align: center; margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--div); }
+#v-finance .footer p{ font-size: 10px; color: var(--t3); }
+@media (max-width: 600px) {
+#v-finance .hdr h1{ font-size: 18px; }
+#v-finance .stat-value{ font-size: 18px; }
+#v-finance .tx-desc{ max-width: 160px; }
+#v-finance .cnss-tx-desc{ max-width: 180px; }
+#v-finance .donut-flex{ flex-direction: column; }
+#v-finance .donut-flex .chart-wrap{ margin: 0 auto; }
+
+
+}
+
+
 </style>
 </head>
 <body>
@@ -720,7 +886,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <button class="nav-tab" data-v="deadlines">Deadlines</button>
     <button class="nav-tab" data-v="projects">Projects</button>
     <button class="nav-tab" data-v="books">Books</button>
-    <button class="nav-tab" data-v="groceries">Groceries</button>
+    <button class="nav-tab" data-v="finance">💰 Finance</button>
     <button class="nav-tab" data-v="health">Health</button>
   </nav>
   <div class="hdr-r">
@@ -840,26 +1006,199 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   </div>
 </div>
 
-<div class="vw" id="v-groceries">
-  <div class="groc-bar">
-    <button class="nbtn" id="ngTgl">+ NEW ITEM</button>
-    <div class="groc-flts">
-      <button class="chip groc-flt active" data-gf="all">ALL</button>
-      <button class="chip groc-flt rf" data-gf="refill">NEEDS REFILL</button>
+<div class="vw" id="v-finance">
+  <div class="app">
+    <div class="loader" id="loading">
+    <div style="font-size: 40px; margin-bottom: 4px;">\ud83d\udcb0</div>
+
+    <div id="errorBox" style="display: none;">
+    <div class="loader">
+      <div style="font-size: 40px;">\u26a0\ufe0f</div>
+      <div class="error-box">
+        <p id="errorMsg">Something went wrong</p>
+        <button class="btn" style="margin-top: 8px;" onclick="loadFinanceData()">Try Again</button>
+      </div>
     </div>
-    <div class="groc-loc-flts" id="gLocFlts"></div>
   </div>
-  <div class="tfrm" id="gFrm">
-    <div class="fr" style="grid-template-columns:1fr"><div><label class="fl">Item Name</label><input type="text" class="fi" id="gN" placeholder="E.G., OSTOMY POUCHES" style="text-transform:uppercase"></div></div>
-    <div class="fr fr3">
-      <div><label class="fl">Location</label><div style="display:flex;gap:4px"><select class="fs" id="gLoc" style="flex:1"></select><input type="text" class="fi" id="gLocNew" placeholder="Or type new..." style="flex:1;text-transform:uppercase"></div></div>
-      <div><label class="fl">Typical Price</label><input type="number" class="fi" id="gPrice" placeholder="0.00" step="0.01" min="0"></div>
-      <div class="fg tgl-row" style="padding-top:18px"><label class="tgl-sw"><input type="checkbox" id="gRefill"><span class="tgl-sl"></span></label><span class="tgl-lb">Needs Refill</span></div>
+
+    <div id="dash" style="display: none;">
+    <div class="hdr">
+      <div class="hdr-l">
+        <div class="logo">\ud83d\udc3a</div>
+        <div>
+          <h1>Welcome, Sami.</h1>
+          <div id="wolfQuote" style="font-size: 11px; color: var(--gold); font-style: italic; font-weight: 300; max-width: 400px; line-height: 1.4; margin-top: 2px;"></div>
+          <div class="hdr-sub" style="margin-top: 3px;"><span class="live">LIVE</span> <span id="updated" style="margin-left: 6px;"></span></div>
+        </div>
+      </div>
+      <button class="btn" id="refreshBtn" onclick="loadData()">\u21bb Refresh</button>
     </div>
-    <div class="fr" style="grid-template-columns:1fr"><div><label class="fl">Notes</label><input type="text" class="fi" id="gNo" placeholder="Optional..."></div></div>
-    <div class="fac"><button class="btn btn-gh" id="cgItem">CANCEL</button><button class="btn btn-g" id="sgItem">ADD ITEM</button></div>
+
+    <div class="tabs">
+      <button class="tab on" data-tab="overview" onclick="switchTab('overview')">\ud83d\udcca Overview</button>
+      <button class="tab" data-tab="spending" onclick="switchTab('spending')">\ud83d\udcb8 Spending</button>
+      <button class="tab" data-tab="weekly" onclick="switchTab('weekly')">\ud83d\udcc5 Week</button>
+      <button class="tab" data-tab="cnss" onclick="switchTab('cnss')">\ud83c\udfe5 CNSS</button>
+      <button class="tab" data-tab="debts" onclick="switchTab('debts')">\ud83d\udcb3 Debts</button>
+    </div>
+
+    <!-- \u2550\u2550\u2550 OVERVIEW \u2550\u2550\u2550 -->
+    <div class="panel on" id="p-overview">
+      <div class="stat-grid" id="statsGrid"></div>
+
+      
+
+      <div class="card">
+        <div class="card-label">\ud83d\udcc8 Monthly Trend</div>
+        <div style="height: 180px; position: relative;">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-label">\ud83c\udfe5 CNSS Medical</div>
+          <div id="cnssArea"></div>
+        </div>
+        <div class="card">
+          <div class="card-label">\ud83d\udcca Top Spending This Month</div>
+          <div id="topSpendArea"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">\ud83d\udcdd Recent Transactions</div>
+        <div id="txList" style="max-height: 400px; overflow-y: auto;"></div>
+      </div>
+    </div>
+
+    <!-- \u2550\u2550\u2550 SPENDING (with Monthly / All-Time toggle) \u2550\u2550\u2550 -->
+    <div class="panel" id="p-spending">
+      <div class="card">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+          <div class="card-label" style="margin-bottom: 0;" id="spendingTitle">\ud83d\udcca Monthly Spending</div>
+          <div class="sub-toggle" id="spendingToggle">
+            <button class="sub-toggle-btn on" data-mode="monthly" onclick="switchSpendingMode('monthly')">\ud83d\udcc5 This Month</button>
+            <button class="sub-toggle-btn" data-mode="alltime" onclick="switchSpendingMode('alltime')">\ud83d\udcca All-Time</button>
+          </div>
+        </div>
+        <div class="donut-flex" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <div style="width: 220px; height: 220px; position: relative; flex-shrink: 0; margin: 0 auto;">
+            <canvas id="donutChart"></canvas>
+            <div class="donut-center">
+              <div class="donut-center-val" id="donutTotal">\u2014</div>
+              <div class="donut-center-lbl" id="donutLabel">This Month</div>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 180px;" id="spendingLegend"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label" id="barChartLabel">\ud83d\udcca Category Breakdown</div>
+        <div style="height: 240px; position: relative;">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- \u2550\u2550\u2550 WEEKLY \u2550\u2550\u2550 -->
+    <div class="panel" id="p-weekly">
+      <div class="stat-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="stat-card glow-coral">
+          <div class="stat-label" id="weekLabel">This Week</div>
+          <div class="stat-value c-coral" id="weekTotal" style="font-size: 24px;">\u2014</div>
+          <div class="stat-sub">Total spent</div>
+        </div>
+        <div class="stat-card glow-teal">
+          <div class="stat-label">Income</div>
+          <div class="stat-value c-teal" id="weekIncome" style="font-size: 24px;">\u2014</div>
+        </div>
+        <div class="stat-card glow-purple">
+          <div class="stat-label">Net</div>
+          <div class="stat-value c-purple" id="weekNet" style="font-size: 24px;">\u2014</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">\ud83d\udcc5 Weekly Breakdown</div>
+        <div style="height: 200px; position: relative;">
+          <canvas id="weeklyBarChart"></canvas>
+        </div>
+        <div id="weeklyBars" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <!-- \u2550\u2550\u2550 CNSS TAB \u2550\u2550\u2550 -->
+    <div class="panel" id="p-cnss">
+      <div class="stat-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="stat-card glow-purple">
+          <div class="stat-emoji">\ud83d\udcb8</div>
+          <div class="stat-label">Pending Expenses</div>
+          <div class="stat-value c-purple" id="cnssPending" style="font-size: 22px;">\u2014</div>
+          <div class="stat-sub" id="cnssCount">\u2014 expenses</div>
+        </div>
+        <div class="stat-card glow-teal">
+          <div class="stat-emoji">\u2705</div>
+          <div class="stat-label">Refunded</div>
+          <div class="stat-value c-teal" id="cnssRefunded" style="font-size: 22px;">0</div>
+          <div class="stat-sub">from CNSS</div>
+        </div>
+        <div class="stat-card" style="border-color: var(--purple);">
+          <div class="stat-emoji">\ud83d\udcca</div>
+          <div class="stat-label">Reimbursement</div>
+          <div class="stat-value c-purple" id="cnssRate" style="font-size: 22px;">0%</div>
+          <div class="stat-sub" id="cnssRemaining">\u2014 remaining</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">\ud83d\udcc8 Reimbursement Progress</div>
+        <div class="cnss-prog-track">
+          <div class="cnss-prog-fill" id="cnssProg" style="width: 0%;"></div>
+        </div>
+        <div class="cnss-prog-labels">
+          <span id="cnssProgRefunded">0 MAD refunded</span>
+          <span id="cnssProgTotal">of 0 MAD</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">\ud83e\uddfe CNSS Expenses</div>
+        <div id="cnssTxList" style="max-height: 400px; overflow-y: auto;"></div>
+      </div>
+
+      <div class="ref-box" style="margin-top: 10px; background: rgba(139,92,246,.05); border-color: rgba(139,92,246,.15);">
+        <div class="ref-box-title" style="color: var(--purple);">\ud83d\udcdd How CNSS tracking works</div>
+        <p>
+          <strong>Log expense:</strong> Include "CNSS" in your message \u2192 <code style="color:var(--purple);">300 dr kanouni CNSS</code><br>
+          <strong>Log refund:</strong> Say you received from CNSS \u2192 <code style="color:var(--teal);">received 450 from CNSS</code><br>
+          Reimbursement rate updates automatically.
+        </p>
+      </div>
+    </div>
+
+    <!-- \u2550\u2550\u2550 DEBTS \u2550\u2550\u2550 -->
+    <div class="panel" id="p-debts">
+      <div class="stat-grid" style="grid-template-columns: 1fr 1fr;" id="debtStats"></div>
+      <div class="card">
+        <div class="card-label">\ud83d\udcb3 Debt Details</div>
+        <div id="debtEntries"></div>
+        <div class="ref-box">
+          <div class="ref-box-title">\ud83d\udcdd Quick Reference</div>
+          <p>
+            <strong>Borrowed</strong> \u2192 I owe someone money &nbsp;
+            <strong>Payment</strong> \u2192 I paid back what I owed<br>
+            <strong>Lent</strong> \u2192 Someone owes me money &nbsp;
+            <strong>Received</strong> \u2192 They paid me back
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer"><p>PHARAON NOIR FINANCES \u00b7 Telegram + Make.com + Google Sheets</p></div>
   </div>
-  <div id="gList" class="groc-grid"></div>
+
+  </div>
 </div>
 
 <div class="vw" id="v-health">
@@ -1593,7 +1932,7 @@ document.querySelectorAll('.nav-tab').forEach(t=>t.addEventListener('click',()=>
   $('v-'+t.dataset.v).classList.add('active');
   if(t.dataset.v==='deadlines')renderDL();
   if(t.dataset.v==='projects')renderProj();
-  if(t.dataset.v==='groceries')renderGrc();
+  if(t.dataset.v==='finance'){if(!_fnLoaded){_fnLoaded=true;loadFinanceData();}}
   if(t.dataset.v==='books')renderBooks();
   if(t.dataset.v==='health')renderHealth();
 }));
@@ -3167,7 +3506,7 @@ function fullR(){
   renderDL();
   const v=document.querySelector('.nav-tab.active').dataset.v;
   if(v==='projects') renderProj();
-  if(v==='groceries') renderGrc();
+  if(v==='finance'){}
   if(v==='books') renderBooks();
   if(v==='health') renderHealth();
 }
@@ -3748,6 +4087,543 @@ loadFromSheet(); // Initial cloud load
     delete window.__iframeHighlightCleanup;
   };
 })();
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FINANCIAL BUDDY — Finance Tab Logic (loaded on first tab open)
+   ═══════════════════════════════════════════════════════════════ */
+var _fnLoaded = false;
+
+const CAT_COLORS = {
+  'Food': '#f39c12', 'Transport': '#3498db', 'Rent': '#e74c3c',
+  'Subscriptions': '#9b59b6', 'Medical': '#2ecc71', 'Personal': '#95a5a6',
+  'Entertainment': '#e91e63', 'Other': '#7f8c8d', 'Groceries': '#27ae60',
+  'Production Costs': '#f1c40f', 'Gifts': '#e67e22', 'Charity': '#d35400',
+  'Phone': '#00bcd4', 'Utilities': '#607d8b', 'Salary': '#43d4b3',
+  'Gift': '#e67e22', 'Freelance': '#8b5cf6'
+};
+const CAT_EMOJI = {
+  'Food': '\ud83c\udf55', 'Transport': '\ud83d\ude95', 'Rent': '\ud83c\udfe0', 'Subscriptions': '\ud83d\udcf1',
+  'Medical': '\ud83c\udfe5', 'Personal': '\ud83e\uddf4', 'Entertainment': '\ud83c\udfac', 'Other': '\ud83d\udce6',
+  'Groceries': '\ud83d\uded2', 'Production Costs': '\ud83c\udfa5', 'Gifts': '\ud83c\udf81',
+  'Charity': '\ud83d\udc9d', 'Phone': '\ud83d\udcde', 'Utilities': '\ud83d\udca1', 'Salary': '\ud83d\udcbc',
+  'Gift': '\ud83c\udf81', 'Freelance': '\ud83d\udcbb'
+};
+let charts = {};
+let cachedData = null;
+let spendingMode = 'monthly';
+
+// \u2550\u2550\u2550 DATA LOADING \u2550\u2550\u2550
+function loadFinanceData() {
+  var btn = document.getElementById('refreshBtn');
+  if (btn) { btn.classList.add('loading'); btn.textContent = '\u21bb Loading...'; }
+  google.script.run.withSuccessHandler(onDataSuccess).withFailureHandler(onDataError).getFinanceData();
+}
+
+function onDataSuccess(data) {
+  var btn = document.getElementById('refreshBtn');
+  if (btn) { btn.classList.remove('loading'); btn.textContent = '\u21bb Refresh'; }
+  if (data.error) { onDataError(data.error); return; }
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('dash').style.display = 'block';
+  cachedData = data;
+  render(data);
+}
+
+function onDataError(e) {
+  var btn = document.getElementById('refreshBtn');
+  if (btn) { btn.classList.remove('loading'); btn.textContent = '\u21bb Refresh'; }
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('errorBox').style.display = 'block';
+  document.getElementById('errorMsg').textContent = 'Error: ' + (e.message || e);
+}
+
+// \u2550\u2550\u2550 HELPERS \u2550\u2550\u2550
+function fmt(n) { return Math.abs(Math.round(n)).toLocaleString(); }
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+function chartTheme() {
+  return { grid: '#1c1c38', tick: '#555570', tipBg: '#1a1a3e', tipBorder: '#1c1c38', tipTitle: '#9090aa', tipBody: '#e8e8f0' };
+}
+function tooltipConfig() {
+  var t = chartTheme();
+  return {
+    backgroundColor: t.tipBg, borderColor: t.tipBorder, borderWidth: 1,
+    titleColor: t.tipTitle, bodyColor: t.tipBody,
+    titleFont: { family: "'DM Sans'" }, bodyFont: { family: "'JetBrains Mono'" },
+    callbacks: { label: function(ctx) {
+      var val = ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed.x !== undefined ? ctx.parsed.x : ctx.parsed;
+      return (ctx.dataset.label || '') + ': ' + Number(val).toLocaleString() + ' MAD';
+    }}
+  };
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(function(el) { el.classList.toggle('on', el.getAttribute('data-tab') === tab); });
+  document.querySelectorAll('.panel').forEach(function(el) { el.classList.toggle('on', el.id === 'p-' + tab); });
+}
+
+function getMonthLabel() {
+  var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var now = new Date();
+  return m[now.getMonth()] + ' ' + now.getFullYear();
+}
+
+// \u2550\u2550\u2550 SPENDING MODE TOGGLE \u2550\u2550\u2550
+function switchSpendingMode(mode) {
+  spendingMode = mode;
+  document.querySelectorAll('#spendingToggle .sub-toggle-btn').forEach(function(btn) {
+    btn.classList.toggle('on', btn.getAttribute('data-mode') === mode);
+  });
+  if (!cachedData) return;
+  var cats, total;
+  if (mode === 'alltime') {
+    cats = cachedData.allTimeCategorySpending || cachedData.categorySpending || [];
+    total = cachedData.allTimeCategoryTotal || cachedData.categoryTotal || 0;
+  } else {
+    cats = cachedData.categorySpending || [];
+    total = cachedData.categoryTotal || 0;
+  }
+  renderSpendingCharts(cats, total, mode);
+}
+
+// \u2550\u2550\u2550 MAIN RENDER \u2550\u2550\u2550
+function render(d) {
+  var s = d.state || {};
+  var cur = d.currency || 'MAD';
+
+  document.getElementById('updated').textContent =
+    'Updated ' + new Date(d.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  // \u2500\u2500 STAT CARDS \u2500\u2500
+  document.getElementById('statsGrid').innerHTML =
+    '<div class="stat-card glow-gold">' +
+      '<div class="stat-emoji">\ud83d\udcb0</div>' +
+      '<div class="stat-label">Available</div>' +
+      '<div class="stat-value c-gold">' + fmt(s.availableBalance || 0) + '</div>' +
+      '<div class="stat-sub">' + cur + ' \u00b7 Total: ' + fmt(s.currentBalance || 0) + '</div>' +
+    '</div>' +
+    '<div class="stat-card glow-teal">' +
+      '<div class="stat-emoji">\ud83d\udcc8</div>' +
+      '<div class="stat-label">Month Income</div>' +
+      '<div class="stat-value c-teal">' + fmt(s.monthIncome || 0) + '</div>' +
+      '<div class="stat-sub">Net: ' + (s.monthNet >= 0 ? '+' : '-') + fmt(Math.abs(s.monthNet || 0)) + '</div>' +
+    '</div>' +
+    '<div class="stat-card glow-coral">' +
+      '<div class="stat-emoji">\ud83d\udcb8</div>' +
+      '<div class="stat-label">Month Expenses</div>' +
+      '<div class="stat-value c-coral">' + fmt(Math.abs(s.monthExpenses || 0)) + '</div>' +
+    '</div>' +
+    '<div class="stat-card glow-purple">' +
+      '<div class="stat-emoji">\ud83d\udcca</div>' +
+      '<div class="stat-label">This Week</div>' +
+      '<div class="stat-value c-purple">' + fmt(Math.abs(s.weekExpenses || 0)) + '</div>' +
+      '<div class="stat-sub">Since Monday</div>' +
+    '</div>';
+
+  // \u2500\u2500 CNSS OVERVIEW CARD (compact, with link to full tab) \u2500\u2500
+  var cn = d.cnss || {};
+  var cnPend = cn.pending || 0, cnRef = cn.refunded || 0, cnRt = cn.rate || 0;
+  document.getElementById('cnssArea').innerHTML =
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+      '<span style="font-size:12px;">Pending</span>' +
+      '<span style="font-family:var(--mo);font-size:12px;font-weight:700;color:var(--purple);">' + fmt(cnPend) + ' ' + cur + '</span>' +
+    '</div>' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+      '<span style="font-size:12px;">Refunded</span>' +
+      '<span style="font-family:var(--mo);font-size:12px;font-weight:700;color:var(--teal);">' + fmt(cnRef) + ' ' + cur + '</span>' +
+    '</div>' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">' +
+      '<span style="font-size:12px;">Rate</span>' +
+      '<span style="font-family:var(--mo);font-size:12px;font-weight:700;">' + (cnRt * 100).toFixed(0) + '%</span>' +
+    '</div>' +
+    '<div style="text-align:center;padding-top:6px;border-top:1px solid var(--div);">' +
+      '<a href="#" onclick="switchTab(\\'cnss\\');return false;" style="font-size:10px;color:var(--purple);text-decoration:none;font-weight:600;letter-spacing:.5px;">VIEW FULL TRACKER \u2192</a>' +
+    '</div>';
+
+  // \u2500\u2500 TOP SPENDING \u2500\u2500
+  var topCats = (d.categorySpending || []).slice().sort(function(a,b) { return b.value - a.value; }).slice(0, 5);
+  var topTotal = d.categoryTotal || 0;
+  var topHtml = '';
+  topCats.forEach(function(c) {
+    var pct = topTotal > 0 ? (c.value / topTotal * 100) : 0;
+    topHtml +=
+      '<div class="cat-row">' +
+        '<span class="cat-emoji">' + (CAT_EMOJI[c.name] || '\ud83d\udce6') + '</span>' +
+        '<span class="cat-name">' + c.name + '</span>' +
+        '<div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:' + pct + '%;background:' + (CAT_COLORS[c.name] || '#666') + '"></div></div>' +
+        '<span class="cat-val">' + fmt(c.value) + '</span>' +
+        '<span class="cat-pct">' + pct.toFixed(0) + '%</span>' +
+      '</div>';
+  });
+  document.getElementById('topSpendArea').innerHTML = topHtml ||
+    '<div style="color:var(--t3);font-size:11px;text-align:center;padding:8px;">No spending data</div>';
+
+  // \u2500\u2500 MONTHLY CHART \u2500\u2500
+  renderMonthlyChart(d.monthlySummary || []);
+
+  // \u2500\u2500 TRANSACTIONS \u2500\u2500
+  var txHtml = '';
+  (d.recentTransactions || []).forEach(function(t) {
+    var isNeg = t.amount < 0;
+    var isCnss = ((t.type || '').toUpperCase().indexOf('CNSS') >= 0) || ((t.note || '').toUpperCase().indexOf('CNSS') >= 0);
+    var col = isCnss ? 'var(--purple)' : isNeg ? 'var(--coral)' : 'var(--teal)';
+    var catColor = isCnss ? '#8b5cf6' : (CAT_COLORS[t.category] || '#666');
+    var emoji = isCnss ? '\ud83c\udfe5' : (CAT_EMOJI[t.category] || '\ud83d\udce6');
+    txHtml +=
+      '<div class="tx-row">' +
+        '<div class="tx-left">' +
+          '<div class="tx-icon" style="background:' + catColor + '20">' + emoji + '</div>' +
+          '<div style="min-width:0;">' +
+            '<div class="tx-desc">' + t.description + '</div>' +
+            '<div class="tx-meta">' + t.date + ' \u00b7 ' + t.category + (isCnss ? ' \u00b7 CNSS' : '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tx-amount" style="color:' + col + '">' +
+          (isNeg ? '-' : '+') + fmt(Math.abs(t.amount)) + '</div>' +
+      '</div>';
+  });
+  document.getElementById('txList').innerHTML = txHtml ||
+    '<div style="color:var(--t3);font-size:12px;padding:16px;text-align:center;">No recent transactions</div>';
+
+  // \u2500\u2500 SPENDING TAB (default monthly) \u2500\u2500
+  spendingMode = 'monthly';
+  document.querySelectorAll('#spendingToggle .sub-toggle-btn').forEach(function(btn) {
+    btn.classList.toggle('on', btn.getAttribute('data-mode') === 'monthly');
+  });
+  renderSpendingCharts(d.categorySpending || [], d.categoryTotal || 0, 'monthly');
+
+  // \u2500\u2500 WEEKLY TAB \u2500\u2500
+  renderWeeklyTab(d, s);
+
+  // \u2500\u2500 CNSS TAB \u2500\u2500
+  renderCnssTab(d);
+
+  // \u2500\u2500 DEBTS TAB \u2500\u2500
+  renderDebtsTab(d.debts || {});
+}
+
+// \u2550\u2550\u2550 MONTHLY CHART \u2550\u2550\u2550
+function renderMonthlyChart(months) {
+  destroyChart('monthly');
+  var src = months;
+  if (src.length === 0) {
+    document.getElementById('monthlyChart').parentElement.innerHTML =
+      '<div style="color:var(--t3);font-size:12px;text-align:center;padding:30px;">No monthly data yet</div>';
+    return;
+  }
+  var theme = chartTheme();
+
+  var datasets = [
+    { label: 'Income', data: src.map(function(m) { return m.income; }),
+      borderColor: '#43d4b3', backgroundColor: '#43d4b322', fill: true, tension: .4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#43d4b3' },
+    { label: 'Expenses', data: src.map(function(m) { return m.expenses; }),
+      borderColor: '#d4435a', backgroundColor: '#d4435a22', fill: true, tension: .4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#d4435a' }
+  ];
+
+  charts.monthly = new Chart(document.getElementById('monthlyChart'), {
+    type: 'line',
+    data: { labels: src.map(function(m) { return m.month; }), datasets: datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: theme.tick, font: { family: "'DM Sans'", size: 10 } } }, tooltip: tooltipConfig() },
+      scales: {
+        x: { ticks: { color: theme.tick, font: { size: 9 } }, grid: { color: theme.grid } },
+        y: { ticks: { color: theme.tick, font: { size: 9 }, callback: function(v) { return v.toLocaleString(); } }, grid: { color: theme.grid } }
+      }
+    }
+  });
+}
+
+// \u2550\u2550\u2550 SPENDING CHARTS (mode-aware) \u2550\u2550\u2550
+function renderSpendingCharts(cats, total, mode) {
+  destroyChart('donut'); destroyChart('bar');
+  var sorted = cats.slice().sort(function(a, b) { return b.value - a.value; });
+  var theme = chartTheme();
+
+  // Update labels based on mode
+  var periodLabel = mode === 'alltime' ? 'All-Time' : getMonthLabel();
+  document.getElementById('donutTotal').textContent = fmt(total) + ' MAD';
+  document.getElementById('donutLabel').textContent = periodLabel;
+  document.getElementById('spendingTitle').textContent =
+    mode === 'alltime' ? '\ud83d\udcca All-Time Spending' : '\ud83d\udcca ' + getMonthLabel() + ' Spending';
+  document.getElementById('barChartLabel').textContent =
+    mode === 'alltime' ? '\ud83d\udcca All-Time Breakdown' : '\ud83d\udcca ' + getMonthLabel() + ' Breakdown';
+
+  charts.donut = new Chart(document.getElementById('donutChart'), {
+    type: 'doughnut',
+    data: {
+      labels: sorted.map(function(c) { return c.name; }),
+      datasets: [{ data: sorted.map(function(c) { return c.value; }),
+        backgroundColor: sorted.map(function(c) { return CAT_COLORS[c.name] || '#666'; }),
+        borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '65%',
+      plugins: { legend: { display: false },
+        tooltip: { backgroundColor: theme.tipBg, borderColor: theme.tipBorder, borderWidth: 1,
+          titleColor: theme.tipTitle, bodyColor: theme.tipBody, bodyFont: { family: "'JetBrains Mono'" },
+          callbacks: { label: function(ctx) { var pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
+            return ctx.label + ': ' + ctx.parsed.toLocaleString() + ' MAD (' + pct + '%)'; } }
+        }
+      }
+    }
+  });
+
+  var legendHtml = '';
+  sorted.forEach(function(c) {
+    var pct = total > 0 ? ((c.value / total) * 100).toFixed(1) : 0;
+    legendHtml +=
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-radius:6px;transition:background .2s;cursor:default;" ' +
+        'onmouseenter="this.style.background=\\'var(--card2)\\'" onmouseleave="this.style.background=\\'transparent\\'">' +
+        '<div style="display:flex;align-items:center;gap:6px;">' +
+          '<div style="width:8px;height:8px;border-radius:2px;background:' + (CAT_COLORS[c.name] || '#666') + '"></div>' +
+          '<span style="font-size:11px;">' + c.name + '</span>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;">' +
+          '<span style="font-family:var(--mo);font-size:11px;font-weight:700;">' + fmt(c.value) + '</span>' +
+          '<span style="font-size:9px;color:var(--t3);">' + pct + '%</span>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('spendingLegend').innerHTML = legendHtml;
+
+  charts.bar = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(function(c) { return c.name; }),
+      datasets: [{ data: sorted.map(function(c) { return c.value; }),
+        backgroundColor: sorted.map(function(c) { return CAT_COLORS[c.name] || '#666'; }),
+        borderRadius: 5, borderSkipped: false }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { backgroundColor: theme.tipBg, bodyColor: theme.tipBody, bodyFont: { family: "'JetBrains Mono'" },
+          callbacks: { label: function(ctx) { return ctx.parsed.x.toLocaleString() + ' MAD'; } } }
+      },
+      scales: {
+        x: { ticks: { color: theme.tick, font: { size: 9 } }, grid: { color: theme.grid } },
+        y: { ticks: { color: '#9090aa', font: { size: 10 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// \u2550\u2550\u2550 WEEKLY TAB \u2550\u2550\u2550
+function renderWeeklyTab(d, s) {
+  destroyChart('weekly');
+  var wk = d.weeklySpending || [];
+  var total = d.weeklyTotal || Math.abs(s.weekExpenses || 0);
+  var sorted = wk.slice().sort(function(a, b) { return b.value - a.value; });
+  var theme = chartTheme();
+
+  document.getElementById('weekLabel').textContent = d.weekLabel || 'This Week';
+  document.getElementById('weekTotal').textContent = fmt(total);
+  document.getElementById('weekIncome').textContent = fmt(Math.abs(s.weekIncome || 0));
+  document.getElementById('weekNet').textContent = (s.weekNet >= 0 ? '+' : '-') + fmt(Math.abs(s.weekNet || 0));
+
+  charts.weekly = new Chart(document.getElementById('weeklyBarChart'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(function(c) { return c.name; }),
+      datasets: [{ data: sorted.map(function(c) { return c.value; }),
+        backgroundColor: sorted.map(function(c) { return CAT_COLORS[c.name] || '#666'; }),
+        borderRadius: 5, borderSkipped: false }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { backgroundColor: theme.tipBg, bodyColor: theme.tipBody, bodyFont: { family: "'JetBrains Mono'" },
+          callbacks: { label: function(ctx) { return ctx.parsed.y.toLocaleString() + ' MAD'; } } }
+      },
+      scales: {
+        x: { ticks: { color: theme.tick, font: { size: 9 } }, grid: { display: false } },
+        y: { ticks: { color: theme.tick, font: { size: 9 } }, grid: { color: theme.grid } }
+      }
+    }
+  });
+
+  var barsHtml = '';
+  sorted.forEach(function(c) {
+    var pct = total > 0 ? (c.value / total * 100) : 0;
+    barsHtml +=
+      '<div class="cat-row">' +
+        '<span class="cat-emoji">' + (CAT_EMOJI[c.name] || '\ud83d\udce6') + '</span>' +
+        '<span class="cat-name">' + c.name + '</span>' +
+        '<div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:' + pct + '%;background:' + (CAT_COLORS[c.name] || '#666') + '"></div></div>' +
+        '<span class="cat-val">' + fmt(c.value) + '</span>' +
+        '<span class="cat-pct">' + pct.toFixed(0) + '%</span>' +
+      '</div>';
+  });
+  document.getElementById('weeklyBars').innerHTML = barsHtml;
+}
+
+// \u2550\u2550\u2550 CNSS TAB \u2550\u2550\u2550
+function renderCnssTab(d) {
+  var cn = d.cnss || {};
+  var pending = cn.pending || 0;
+  var refunded = cn.refunded || 0;
+  var rate = cn.rate || 0;
+  var count = cn.count || 0;
+  var txs = cn.transactions || [];
+  var remaining = Math.max(0, pending - refunded);
+  var cur = d.currency || 'MAD';
+
+  document.getElementById('cnssPending').textContent = fmt(pending);
+  document.getElementById('cnssCount').textContent = count + ' expense' + (count !== 1 ? 's' : '');
+  document.getElementById('cnssRefunded').textContent = fmt(refunded);
+  document.getElementById('cnssRate').textContent = (rate * 100).toFixed(0) + '%';
+  document.getElementById('cnssRemaining').textContent = fmt(remaining) + ' ' + cur + ' remaining';
+
+  // Progress bar
+  var pct = pending > 0 ? Math.min((refunded / pending) * 100, 100) : 0;
+  document.getElementById('cnssProg').style.width = pct + '%';
+  document.getElementById('cnssProgRefunded').textContent = fmt(refunded) + ' ' + cur + ' refunded';
+  document.getElementById('cnssProgTotal').textContent = 'of ' + fmt(pending) + ' ' + cur;
+
+  // Transaction list
+  var txHtml = '';
+  txs.forEach(function(t) {
+    var isRefund = t.amount > 0;
+    txHtml +=
+      '<div class="cnss-tx-row">' +
+        '<div style="min-width:0;flex:1;">' +
+          '<div class="cnss-tx-desc">' + t.description + '</div>' +
+          '<div class="cnss-tx-meta">' + t.date + (isRefund ? ' \u00b7 Refund' : ' \u00b7 Expense') + '</div>' +
+        '</div>' +
+        '<div class="cnss-tx-amount" style="color:' + (isRefund ? 'var(--teal)' : 'var(--purple)') + '">' +
+          (isRefund ? '+' : '-') + fmt(Math.abs(t.amount)) + ' ' + cur +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('cnssTxList').innerHTML = txHtml ||
+    '<div style="color:var(--t3);font-size:12px;padding:16px;text-align:center;">No CNSS expenses yet. Log one with "CNSS" in the description.</div>';
+}
+
+// \u2550\u2550\u2550 DEBTS TAB \u2550\u2550\u2550
+function renderDebtsTab(debts) {
+  var summary = debts.summary || [];
+  var entries = debts.entries || [];
+
+  var totalIOwe = {};
+  var totalOwed = {};
+  summary.forEach(function(s) {
+    var c = s.currency || 'MAD';
+    if (s.iOwe > 0) totalIOwe[c] = (totalIOwe[c] || 0) + s.iOwe;
+    if (s.theyOwe > 0) totalOwed[c] = (totalOwed[c] || 0) + s.theyOwe;
+  });
+
+  var iOweStr = Object.keys(totalIOwe).map(function(c) { return fmt(totalIOwe[c]) + ' ' + c; }).join('<br>') || '0';
+  var owedStr = Object.keys(totalOwed).map(function(c) { return fmt(totalOwed[c]) + ' ' + c; }).join('<br>') || '0';
+
+  document.getElementById('debtStats').innerHTML =
+    '<div class="stat-card glow-coral">' +
+      '<div class="stat-emoji">\ud83d\udce4</div><div class="stat-label">I Owe</div>' +
+      '<div class="stat-value c-coral" style="font-size:22px;">' + iOweStr + '</div>' +
+    '</div>' +
+    '<div class="stat-card glow-teal">' +
+      '<div class="stat-emoji">\ud83d\udce5</div><div class="stat-label">Owed to Me</div>' +
+      '<div class="stat-value c-teal" style="font-size:22px;">' + owedStr + '</div>' +
+    '</div>';
+
+  var debtHtml = '';
+  summary.forEach(function(s) {
+    debtHtml +=
+      '<div class="debt-entry">' +
+        '<div>' +
+          '<div class="debt-person">' + s.person + '</div>' +
+          '<div class="debt-meta">' + s.currency + '</div>' +
+        '</div>' +
+        '<div style="text-align:right;">';
+    if (s.iOwe > 0) {
+      debtHtml += '<div class="debt-amount c-coral">' + fmt(s.iOwe) + ' ' + s.currency + '</div>' +
+                  '<div class="debt-detail">I owe</div>';
+    }
+    if (s.theyOwe > 0) {
+      debtHtml += '<div class="debt-amount c-teal">' + fmt(s.theyOwe) + ' ' + s.currency + '</div>' +
+                  '<div class="debt-detail">Owes me</div>';
+    }
+    if (s.iOwe <= 0 && s.theyOwe <= 0) {
+      debtHtml += '<div class="debt-amount c-teal">Settled \u2713</div>';
+    }
+    debtHtml += '</div></div>';
+  });
+
+  if (summary.length === 0 && entries.length > 0) {
+    var byPerson = {};
+    entries.forEach(function(e) {
+      if (!byPerson[e.person]) byPerson[e.person] = [];
+      byPerson[e.person].push(e);
+    });
+    Object.keys(byPerson).forEach(function(person) {
+      var txs = byPerson[person];
+      var cur = txs[0].currency || 'MAD';
+      var borrowed = 0, paid = 0, lent = 0, received = 0;
+      txs.forEach(function(t) {
+        if (t.type === 'Borrowed') borrowed += t.amount;
+        if (t.type === 'Payment') paid += t.amount;
+        if (t.type === 'Lent') lent += t.amount;
+        if (t.type === 'Received') received += t.amount;
+      });
+      var netIOwe = borrowed - paid;
+      var netOwed = lent - received;
+      debtHtml +=
+        '<div class="debt-entry">' +
+          '<div><div class="debt-person">' + person + '</div><div class="debt-meta">' + txs.length + ' tx \u00b7 ' + cur + '</div></div>' +
+          '<div style="text-align:right;">';
+      if (netIOwe > 0) debtHtml += '<div class="debt-amount c-coral">' + fmt(netIOwe) + ' ' + cur + '</div><div class="debt-detail">I owe</div>';
+      if (netOwed > 0) debtHtml += '<div class="debt-amount c-teal">' + fmt(netOwed) + ' ' + cur + '</div><div class="debt-detail">Owes me</div>';
+      if (netIOwe <= 0 && netOwed <= 0) debtHtml += '<div class="debt-amount c-teal">Settled \u2713</div>';
+      debtHtml += '</div></div>';
+    });
+  }
+
+  document.getElementById('debtEntries').innerHTML = debtHtml ||
+    '<div style="color:var(--t3);font-size:12px;padding:16px;text-align:center;">No active debts</div>';
+}
+
+// \u2550\u2550\u2550 WOLF QUOTES (rotates every 6 hours) \u2550\u2550\u2550
+var WOLF_QUOTES = [
+  "The only thing standing between you and your goal is the bullshit story you keep telling yourself.",
+  "Money doesn't sleep, Sami. Neither should your ambition.",
+  "You want comfort? Go sit on a couch. You want success? Go sit in discomfort.",
+  "Every morning you have two choices: keep dreaming or wake up and chase it.",
+  "Nobody's gonna hand it to you. Write your own damn check.",
+  "Spend like you're broke, invest like you're rich.",
+  "The real flex isn't spending \u2014 it's having the discipline not to.",
+  "Rich isn't a number. It's waking up and doing exactly what you want.",
+  "Track every dirham like it owes you money. Because it does.",
+  "Your budget isn't a cage \u2014 it's your runway.",
+  "Spielberg got rejected from film school three times. You got this.",
+  "Every frame you shoot is equity in your future.",
+  "The camera doesn't care about your excuses. Neither does your bank account.",
+  "First they ignore your films. Then they fund them.",
+  "Discipline today, freedom tomorrow. That's the trade.",
+  "You didn't come from Sudan to Morocco to play small.",
+  "The dip is where champions are made. Stay in the dip.",
+  "Comfort zones are where dreams go to collect dust.",
+  "A pharaoh doesn't wait for permission to build.",
+  "Stack your dirhams like you stack your festival selections.",
+  "The grind is quiet. The results are loud. Keep going.",
+  "One day they'll study your budget the way they study your films.",
+  "Your father writes calligraphy with precision. Handle your money the same way.",
+  "Legacy isn't inherited \u2014 it's built, frame by frame, dirham by dirham.",
+];
+
+function setWolfQuote() {
+  // Changes every 6 hours: floor(hours_since_epoch / 6) as seed
+  var now = new Date();
+  var hoursSinceEpoch = Math.floor(now.getTime() / (1000 * 60 * 60));
+  var index = Math.floor(hoursSinceEpoch / 6) % WOLF_QUOTES.length;
+  var el = document.getElementById('wolfQuote');
+  if (el) el.textContent = '"' + WOLF_QUOTES[index] + '"';
+}
+setWolfQuote();
+
+// \u2550\u2550\u2550 INIT \u2550\u2550\u2550
+/* loadFinanceData() called by nav-tab click */
 
 </script>
 </body>
