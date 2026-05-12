@@ -1,0 +1,18 @@
+<div class="vw" id="v-projects">
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px">
+    <button class="add-prj-btn" id="npTgl" style="margin-bottom:0">+ NEW PROJECT</button>
+    <button class="add-prj-btn active" id="projFilterTgl" style="margin-bottom:0">ACTIVE ONLY</button>
+  </div>
+  <div class="add-prj-bar" id="npFrm" style="display:none">
+    <input type="text" class="fi" id="nprN" placeholder="Title" style="flex:2;min-width:140px;text-transform:uppercase">
+    <input type="text" class="fi" id="nprCd" placeholder="CODE" style="width:70px">
+    <input type="color" class="clr-i" id="nprFg" value="#60a5fa" title="Accent Color" style="width:32px;height:32px">
+    <select class="fs" id="nprCat" title="Category"><option value="film">FILM</option><option value="personal">PERSONAL</option></select>
+    <select class="fs" id="nprTyp"><option value="Feature Film">Feature Film</option><option value="Feature Documentary">Feature Documentary</option><option value="Short Fiction">Short Fiction</option><option value="Short Documentary">Short Documentary</option></select>
+    <select class="fs" id="nprSt"><option value="idea">IDEA</option><option value="dev">DEVELOPMENT</option><option value="funding">FUNDING</option><option value="pre-production">PRE-PRODUCTION</option><option value="shooting">SHOOTING</option><option value="post">POST-PRODUCTION</option><option value="distribution">DISTRIBUTION</option><option value="delivery">FINAL DELIVERY</option></select>
+    <input type="text" class="fi" id="nprPoster" placeholder="Poster URL (optional)" style="flex:1;min-width:120px">
+    <button class="btn btn-g" id="aPrj" style="padding:7px 14px;font-size:.7rem">CREATE</button>
+    <button class="btn btn-gh" id="npCn" style="padding:7px 10px;font-size:.7rem">✕</button>
+  </div>
+  <div id="pSecs"></div>
+</div>

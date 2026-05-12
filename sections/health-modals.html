@@ -1,0 +1,70 @@
+<!-- Health Form Modals (triggered from + menu) -->
+<div class="hl-form-modal" id="hlFrmCRP">
+  <div class="hl-form-box">
+    <div class="hl-form-title">CRP — Saisie</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field"><label>Date</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlCRPDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>CRP (mg/L)</label><input type="number" step="0.01" id="hlCRPVal" placeholder="—"></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlCRPSave">ENREGISTRER</button></div>
+  </div>
+</div>
+
+<div class="hl-form-modal" id="hlFrmCalpro">
+  <div class="hl-form-box">
+    <div class="hl-form-title">Calprotectine Fécale — Saisie</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field"><label>Date</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlCalproDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>Calprotectine (µg/g)</label><input type="number" step="1" id="hlCalproVal" placeholder="—"></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlCalproSave">ENREGISTRER</button></div>
+  </div>
+</div>
+
+<div class="hl-form-modal" id="hlFrmGym">
+  <div class="hl-form-box">
+    <div class="hl-form-title">Gym — Log Séance</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field"><label>Date</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlGymDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>Notes (optionnel)</label><input type="text" id="hlGymNotes" placeholder="Push, Pull, Legs..."></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlGymSave">ENREGISTRER</button></div>
+  </div>
+</div>
+
+<div class="hl-form-modal" id="hlFrmBlood">
+  <div class="hl-form-box">
+    <div class="hl-form-title">Bilan Sanguin — Saisie Groupée</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field" style="grid-column:1/-1"><label>Date du bilan</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlBloodDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>Hémoglobine (g/dL)</label><input type="number" step="0.1" placeholder="—" data-metric="hemoglobin"></div>
+      <div class="hl-form-field"><label>Hématocrite (%)</label><input type="number" step="0.1" placeholder="—" data-metric="hematocrit"></div>
+      <div class="hl-form-field"><label>Plaquettes (/µL)</label><input type="number" step="1" placeholder="—" data-metric="platelets"></div>
+      <div class="hl-form-field"><label>Neutrophiles (10³/µL)</label><input type="number" step="0.01" placeholder="—" data-metric="neutrophils"></div>
+      <div class="hl-form-field"><label>Leucocytes (10³/µL)</label><input type="number" step="0.01" placeholder="—" data-metric="leukocytes"></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlBloodSave">ENREGISTRER TOUT</button></div>
+  </div>
+</div>
+
+<div class="hl-form-modal" id="hlFrmBody">
+  <div class="hl-form-box">
+    <div class="hl-form-title">Composition Corporelle — Saisie</div>
+    <div class="hl-form-grid">
+      <div class="hl-form-field" style="grid-column:1/-1"><label>Date</label><div style="display:flex;gap:4px"><input type="date" class="fi" id="hlBodyDate"><button type="button" class="setnow-b" onclick="this.previousElementSibling.value=td()">AUJ.</button></div></div>
+      <div class="hl-form-field"><label>Poids (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="weight"></div>
+      <div class="hl-form-field"><label>Graisse (%)</label><input type="number" step="0.1" placeholder="—" data-metric="body_fat"></div>
+      <div class="hl-form-field"><label>Masse grasse (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="fat_mass"></div>
+      <div class="hl-form-field"><label>Taux d'eau (%)</label><input type="number" step="0.1" placeholder="—" data-metric="water_pct"></div>
+      <div class="hl-form-field"><label>Masse musculaire (%)</label><input type="number" step="0.1" placeholder="—" data-metric="muscle_pct"></div>
+      <div class="hl-form-field"><label>Masse osseuse (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="bone_mass"></div>
+      <div class="hl-form-field"><label>Protéines (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="protein_mass"></div>
+      <div class="hl-form-field"><label>Masse maigre (kg)</label><input type="number" step="0.1" placeholder="—" data-metric="lean_mass"></div>
+      <div class="hl-form-field"><label>Graisse Viscérale (index)</label><input type="number" step="0.1" placeholder="—" data-metric="visceral_fat"></div>
+      <div class="hl-form-field"><label>Métabolisme de Base (kcal)</label><input type="number" step="1" placeholder="—" data-metric="bmr"></div>
+      <div class="hl-form-field"><label>Âge Métabolique (ans)</label><input type="number" step="1" placeholder="—" data-metric="metabolic_age"></div>
+      <div class="hl-form-field"><label>Score Global (/100)</label><input type="number" step="0.1" placeholder="—" data-metric="overall_score"></div>
+    </div>
+    <div class="hl-form-actions"><button class="btn btn-gh" onclick="this.closest('.hl-form-modal').classList.remove('open')">ANNULER</button><button class="btn btn-g" id="hlBodySave">ENREGISTRER TOUT</button></div>
+  </div>
+</div>

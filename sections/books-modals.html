@@ -1,0 +1,11 @@
+<!-- Books Modals -->
+<div class="mbg" id="bkMdl"><div class="mdl"><h3 id="bkMdlTitle">+ Add Book</h3>
+  <div class="fr fr2"><div class="fg"><label class="fl">Title</label><input type="text" class="fi" id="bkTitle"></div><div class="fg"><label class="fl">Author</label><input type="text" class="fi" id="bkAuthor"></div></div>
+  <div class="fr fr3"><div class="fg"><label class="fl">Cover URL</label><input type="url" class="fi" id="bkCover" placeholder="https://..."></div><div class="fg"><label class="fl">Track by</label><select class="fs" id="bkMetric"><option value="pages">Pages</option><option value="hours">Hours</option></select></div><div class="fg"><label class="fl">Total Pages/Hours</label><input type="number" class="fi" id="bkTotal" min="1"></div></div>
+  <div class="fr fr2"><div class="fg"><label class="fl">Current Page/Hour</label><input type="number" class="fi" id="bkCurrent" min="0"></div><div class="fg"><label class="fl">Progress (%)</label><input type="number" class="fi" id="bkProgress" min="0" max="100"></div></div>
+  <div class="mdla"><button class="btn btn-r" id="bkDel" style="margin-right:auto;display:none">DELETE</button><button class="btn btn-gh" id="bkCancel">CANCEL</button><button class="btn btn-g" id="bkSave">SAVE</button></div></div></div>
+
+<div class="mbg" id="bkReadMdl"><div class="mdl" style="max-width:640px"><h3>📖 Reading Progress</h3>
+  <div id="bkReadCard" class="book-open"></div>
+  <div class="fr fr3"><div class="fg"><label class="fl">Update By</label><select class="fs" id="bkUpdMode"><option value="percent">Percentage</option><option value="unit">Page / Hour</option></select></div><div class="fg"><label class="fl" id="bkUpdLabel">Progress (%)</label><input type="number" class="fi" id="bkUpdValue" min="0"></div><div class="fg" style="display:flex;align-items:flex-end;gap:6px"><button class="btn btn-g" id="bkUpdSave" style="width:100%">UPDATE</button></div></div>
+  <div class="mdla"><button class="btn btn-gh" id="bkReadClose">CLOSE</button></div></div></div>
