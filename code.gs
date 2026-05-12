@@ -30,7 +30,6 @@ const SHEETS = {
   CLIENTS:       'Clients',
   BOOKS:         'Books',
   BOOKS_QUEUE:   'BooksQueue',
-  GROCERIES:     'Groceries',
   HEALTH_LOGS:   'HealthLogs'
 };
 
@@ -51,9 +50,7 @@ const BANKACCT_COLS   = ['id','name','ribImageFileId'];
 const CLIENT_COLS     = ['name','address','siren','defaultCostCenter'];
 const BOOK_COLS       = ['id','title','author','cover','metric','total','current','progress','rating','status','genre','createdAt','updatedAt','notes','imageUrl'];
 const BOOK_QUEUE_COLS = ['id','title','author','genre','priority','addedAt','notes'];
-const GROCERY_COLS    = ['id','name','location','needsRefill','typicalPrice','lastPurchased','notes','createdAt','updatedAt'];
 const LEGACY_BOOK_COLS    = ['id','title','author','cover','progress','rating','status','genre','createdAt','updatedAt','notes','imageUrl'];
-const LEGACY_GROCERY_COLS = ['id','item','location','category','quantity','unit','priority','purchased','createdAt','updatedAt','notes'];
 const HEALTH_LOG_COLS = ['id','date','metric','value','unit','category','notes','createdAt'];
 
 // ═══════════════════════════════════════════════════════════════
@@ -226,35 +223,6 @@ function doGet(e) {
     data.bkid = toNum(meta.bkid) || 1;
     data.booksGoal = toNum(meta.booksGoal) || 30;
 
-    // --- Groceries ---
-    const groceryHeaders = getHeaders(ss, SHEETS.GROCERIES);
-    data.groceries = groceryHeaders.includes('name')
-      ? readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS).map(row => ({
-          id: toNum(row.id),
-          name: str(row.name),
-          location: str(row.location),
-          needsRefill: toBool(row.needsRefill),
-          typicalPrice: row.typicalPrice === '' ? null : toNum(row.typicalPrice),
-          lastPurchased: str(row.lastPurchased),
-          createdAt: str(row.createdAt),
-          updatedAt: str(row.updatedAt),
-          notes: str(row.notes)
-        }))
-      : readSheet(ss, SHEETS.GROCERIES, LEGACY_GROCERY_COLS).map(row => ({
-          id: toNum(row.id),
-          name: str(row.item),
-          location: str(row.location),
-          needsRefill: false,
-          typicalPrice: null,
-          lastPurchased: '',
-          createdAt: str(row.createdAt),
-          updatedAt: str(row.updatedAt),
-          notes: str(row.notes)
-        }));
-
-    data.gid = toNum(meta.gid) || 1;
-    data.groceryLocations = [...new Set(data.groceries.map(g => g.location).filter(Boolean))];
-
     // --- Health Logs ---
     data.healthLogs = readSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS).map(row => ({
       id: toNum(row.id),
@@ -379,14 +347,6 @@ function doPost(e) {
         '', '', '', '', ''
       ]));
 
-    // --- Groceries ---
-    writeSheet(ss, SHEETS.GROCERIES, GROCERY_COLS,
-      (D.groceries || []).map(g => [
-        g.id, g.name, g.location || '', g.needsRefill ? 'TRUE' : 'FALSE',
-        g.typicalPrice === null || g.typicalPrice === undefined ? '' : g.typicalPrice,
-        g.lastPurchased || '', g.notes || '', g.createdAt || '', g.updatedAt || ''
-      ]));
-
     // --- Health Logs ---
     writeSheet(ss, SHEETS.HEALTH_LOGS, HEALTH_LOG_COLS,
       (D.healthLogs || []).map(h => [
@@ -401,7 +361,6 @@ function doPost(e) {
       ['invid',      D.invid || 1],
       ['bkid',       D.bkid || 1],
       ['booksGoal',  D.booksGoal || 30],
-      ['gid',        D.gid || 1],
       ['hid',        D.hid || 1],
       ['poidsCible', D.poidsCible || 65],
       ['savedAt',    now],
@@ -645,7 +604,6 @@ function setupSheets() {
     { name: SHEETS.CLIENTS,       cols: CLIENT_COLS },
     { name: SHEETS.BOOKS,         cols: BOOK_COLS },
     { name: SHEETS.BOOKS_QUEUE,   cols: BOOK_QUEUE_COLS },
-    { name: SHEETS.GROCERIES,     cols: GROCERY_COLS },
     { name: SHEETS.HEALTH_LOGS,   cols: HEALTH_LOG_COLS }
   ];
 
@@ -689,7 +647,6 @@ function setupSheets() {
  *
  * Checks for:
  * - Books without stored metadata (title, author, cover missing)
- * - Groceries without location/category
  * - Health logs without proper date/metric
  * - Any items with temporary data (in-memory only)
  */
@@ -712,14 +669,6 @@ function scanMissingData() {
   const queue = readSheet(ss, SHEETS.BOOKS_QUEUE, BOOK_QUEUE_COLS);
   queue.forEach(q => {
     if (!str(q.title)) issues.push('📥 Queue item missing title');
-  });
-
-  // Check Groceries
-  const groceries = readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS);
-  groceries.forEach(g => {
-    if (!str(g.name)) issues.push('🛒 Grocery missing item name');
-    if (!str(g.location)) issues.push('🛒 Grocery missing location: ' + str(g.name));
-    if (!g.createdAt) issues.push('🛒 Grocery missing createdAt: ' + str(g.name));
   });
 
   // Check Health Logs
@@ -754,11 +703,6 @@ function countMissingData() {
   // Books without all required fields
   readSheet(ss, SHEETS.BOOKS, BOOK_COLS).forEach(b => {
     if (!str(b.title) || !str(b.author) || !str(b.cover)) count++;
-  });
-
-  // Groceries without location
-  readSheet(ss, SHEETS.GROCERIES, GROCERY_COLS).forEach(g => {
-    if (str(g.name) && !str(g.location)) count++;
   });
 
   // Health logs without date

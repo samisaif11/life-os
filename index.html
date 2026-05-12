@@ -372,57 +372,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .tcl{font-size:.6rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);margin-top:2px}
 .tcs{font-size:.7rem;color:var(--t2);margin-top:2px}
 
-/* ═══════ GROCERIES ═══════ */
-.groc-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.groc-flts{display:flex;gap:6px}
-.groc-loc-flts{display:flex;gap:6px;flex-wrap:wrap}
-.groc-flt.rf.active{background:var(--orange-d);color:var(--orange);border-color:rgba(245,158,11,.3)}
-.groc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
-@media(min-width:1400px){.groc-grid{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}}
-
-/* Grocery location group */
-.groc-loc-group{grid-column:1/-1;margin-top:8px}
-.groc-loc-group:first-child{margin-top:0}
-.groc-loc-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--b0)}
-.groc-loc-icon{font-size:1.1rem}
-.groc-loc-name{font-family:'Outfit';font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--t2)}
-.groc-loc-cnt{font-family:'JetBrains Mono';font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg-4);color:var(--t3)}
-.groc-loc-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
-@media(min-width:1400px){.groc-loc-items{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}}
-
-/* Grocery card */
-.groc-card{position:relative;border-radius:16px;padding:22px 26px;background:rgba(18,18,22,.7);backdrop-filter:blur(16px);border:1px solid var(--b0);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;gap:10px}
-@media(min-width:1200px){.groc-card{padding:26px 30px}}
-.groc-card:hover{border-color:var(--b2);background:rgba(24,24,30,.85);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
-.groc-card-top{display:flex;align-items:flex-start;gap:12px}
-.groc-card-name{font-size:1.3rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px;line-height:1.3;word-break:break-word;color:var(--t0);flex:1}
-@media(min-width:1200px){.groc-card-name{font-size:1.4rem}}
-.groc-card-refill{position:relative;width:12px;height:12px;flex-shrink:0;margin-top:8px}
-.groc-card-refill .pulse-dot{width:10px;height:10px;border-radius:50%;background:var(--orange);animation:refill-pulse 2.5s ease-in-out infinite}
-@keyframes refill-pulse{0%,100%{opacity:.4;box-shadow:0 0 0 0 rgba(245,158,11,.3)}50%{opacity:1;box-shadow:0 0 8px 3px rgba(245,158,11,.25)}}
-.groc-card-loc{display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;padding:4px 12px;border-radius:5px;background:var(--bg-4);color:var(--t2);border:1px solid var(--b0)}
-.groc-card-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:auto}
-.groc-card-price{font-family:'JetBrains Mono';font-size:.78rem;font-weight:700;color:var(--green);letter-spacing:.5px}
-.groc-card-date{font-family:'JetBrains Mono';font-size:.62rem;font-weight:600;color:var(--t3);padding:3px 8px;border-radius:4px;background:rgba(138,136,152,.06)}
-.groc-card-note{font-size:.68rem;color:var(--t3);font-style:italic;opacity:.5;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.groc-card-note:hover{opacity:.8;white-space:normal}
-.groc-card-acts{display:flex;gap:4px;margin-left:auto;opacity:0;transition:var(--tr)}
-.groc-card:hover .groc-card-acts{opacity:1}
-.groc-card-btn{font-size:14px;cursor:pointer;background:none;border:none;color:var(--t3);transition:var(--tr);padding:4px;border-radius:5px}
-.groc-card-btn:hover{color:var(--gold);background:var(--gold-d)}
-.groc-card-btn.del:hover{color:var(--red);background:var(--red-d)}
-.groc-card-refill-btn{font-size:11px;cursor:pointer;background:none;border:1px solid var(--b0);border-radius:5px;padding:4px 10px;color:var(--t3);font-family:'Outfit';font-weight:700;text-transform:uppercase;letter-spacing:.6px;transition:var(--tr);opacity:0}
-.groc-card:hover .groc-card-refill-btn{opacity:1}
-.groc-card-refill-btn:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-d)}
-.groc-card-refill-btn.flagged{border-color:var(--green);color:var(--green)}
-.groc-card-refill-btn.flagged:hover{background:var(--green-d)}
-
-/* Location icons */
-.loc-super-market{color:var(--green)}
-.loc-mini-store{color:var(--cyan)}
-.loc-pharmacy{color:var(--red)}
-.loc-custom{color:var(--t2)}
-
 /* Settings */
 .sov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none}.sov.op{display:block}
 .sdr{position:fixed;top:0;right:-520px;width:520px;height:100vh;background:var(--bg-1);border-left:1px solid var(--b1);z-index:201;transition:right .35s cubic-bezier(.4,0,.2,1);overflow-y:auto}.sdr.op{right:0}
@@ -485,7 +434,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .mdl{padding:18px 14px;max-width:96vw}
 .add-prj-bar{flex-direction:column;align-items:stretch}
 .add-prj-bar .fi,.add-prj-bar .fs{width:100%}
-.tcards,.pgrid,.groc-loc-items{grid-template-columns:1fr}
+.tcards,.pgrid{grid-template-columns:1fr}
 .poster-w{width:70px;min-width:70px;height:105px}
 .logo-sub{display:none}
 .dlc{flex-direction:column;padding:14px;gap:10px;align-items:flex-start}
@@ -720,7 +669,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <button class="nav-tab" data-v="deadlines">Deadlines</button>
     <button class="nav-tab" data-v="projects">Projects</button>
     <button class="nav-tab" data-v="books">Books</button>
-    <button class="nav-tab" data-v="groceries">Groceries</button>
     <button class="nav-tab" data-v="health">Health</button>
   </nav>
   <div class="hdr-r">
@@ -840,28 +788,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   </div>
 </div>
 
-<div class="vw" id="v-groceries">
-  <div class="groc-bar">
-    <button class="nbtn" id="ngTgl">+ NEW ITEM</button>
-    <div class="groc-flts">
-      <button class="chip groc-flt active" data-gf="all">ALL</button>
-      <button class="chip groc-flt rf" data-gf="refill">NEEDS REFILL</button>
-    </div>
-    <div class="groc-loc-flts" id="gLocFlts"></div>
-  </div>
-  <div class="tfrm" id="gFrm">
-    <div class="fr" style="grid-template-columns:1fr"><div><label class="fl">Item Name</label><input type="text" class="fi" id="gN" placeholder="E.G., OSTOMY POUCHES" style="text-transform:uppercase"></div></div>
-    <div class="fr fr3">
-      <div><label class="fl">Location</label><div style="display:flex;gap:4px"><select class="fs" id="gLoc" style="flex:1"></select><input type="text" class="fi" id="gLocNew" placeholder="Or type new..." style="flex:1;text-transform:uppercase"></div></div>
-      <div><label class="fl">Typical Price</label><input type="number" class="fi" id="gPrice" placeholder="0.00" step="0.01" min="0"></div>
-      <div class="fg tgl-row" style="padding-top:18px"><label class="tgl-sw"><input type="checkbox" id="gRefill"><span class="tgl-sl"></span></label><span class="tgl-lb">Needs Refill</span></div>
-    </div>
-    <div class="fr" style="grid-template-columns:1fr"><div><label class="fl">Notes</label><input type="text" class="fi" id="gNo" placeholder="Optional..."></div></div>
-    <div class="fac"><button class="btn btn-gh" id="cgItem">CANCEL</button><button class="btn btn-g" id="sgItem">ADD ITEM</button></div>
-  </div>
-  <div id="gList" class="groc-grid"></div>
-</div>
-
 <div class="vw" id="v-health">
   <!-- Dynamic content rendered by JS -->
   <div id="hl-content"></div>
@@ -949,21 +875,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   <div id="bkReadCard" class="book-open"></div>
   <div class="fr fr3"><div class="fg"><label class="fl">Update By</label><select class="fs" id="bkUpdMode"><option value="percent">Percentage</option><option value="unit">Page / Hour</option></select></div><div class="fg"><label class="fl" id="bkUpdLabel">Progress (%)</label><input type="number" class="fi" id="bkUpdValue" min="0"></div><div class="fg" style="display:flex;align-items:flex-end;gap:6px"><button class="btn btn-g" id="bkUpdSave" style="width:100%">UPDATE</button></div></div>
   <div class="mdla"><button class="btn btn-gh" id="bkReadClose">CLOSE</button></div></div></div>
-
-<!-- Edit Grocery Modal -->
-<div class="mbg" id="egMdl"><div class="mdl"><h3>✎ Edit Grocery Item</h3>
-  <div class="fg"><label class="fl">Item Name</label><input type="text" class="fi" id="egN" style="text-transform:uppercase"></div>
-  <div class="fr fr3">
-    <div class="fg"><label class="fl">Location</label><div style="display:flex;gap:4px"><select class="fs" id="egLoc" style="flex:1"></select><input type="text" class="fi" id="egLocNew" placeholder="Or type new..." style="flex:1;text-transform:uppercase"></div></div>
-    <div class="fg"><label class="fl">Typical Price</label><input type="number" class="fi" id="egPrice" placeholder="0.00" step="0.01" min="0"></div>
-    <div class="fg tgl-row" style="padding-top:18px"><label class="tgl-sw"><input type="checkbox" id="egRefill"><span class="tgl-sl"></span></label><span class="tgl-lb">Needs Refill</span></div>
-  </div>
-  <div class="fr fr2">
-    <div class="fg"><label class="fl">Last Purchased</label><div style="display:flex;gap:4px;align-items:center"><input type="date" class="fi" id="egLP"><button type="button" class="setnow-b" id="egLPToday">TODAY</button><button type="button" class="setnow-b" id="egLPClear" style="color:var(--t3)">✕</button></div></div>
-    <div class="fg"><label class="fl">Notes</label><input type="text" class="fi" id="egNo"></div>
-  </div>
-  <div class="mdla"><button class="btn btn-r" id="egDel" style="margin-right:auto">DELETE</button><button class="btn btn-gh" id="egC">CANCEL</button><button class="btn btn-g" id="egS">SAVE</button></div>
-</div></div>
 
 <div class="sov" id="sOv2"></div>
 <div class="sdr" id="sDr">
@@ -1244,7 +1155,6 @@ async function saveToSheet() {
       monthly: D.monthly, projDone: D.projDone, nid: D.nid, dlid: D.dlid,
       posters: D.posters,
       invoices: D.invoices, bankAccounts: D.bankAccounts, clients: D.clients, invid: D.invid,
-      groceries: D.groceries, groceryLocations: D.groceryLocations, gid: D.gid,
       books: D.books, booksGoal: D.booksGoal, booksQueue: D.booksQueue, bkid: D.bkid,
       healthLogs: D.healthLogs, hid: D.hid,
       partners: PA, projectColors: PC, peopleColors: PP,
@@ -1296,9 +1206,6 @@ async function loadFromSheet(manual = false) {
     if (data.bankAccounts) D.bankAccounts = data.bankAccounts;
     if (data.clients) D.clients = data.clients;
     if (data.invid != null) D.invid = data.invid;
-    if (data.groceries) D.groceries = data.groceries;
-    if (data.groceryLocations && data.groceryLocations.length) D.groceryLocations = data.groceryLocations;
-    if (data.gid != null) D.gid = data.gid;
     if (data.books) D.books = normalizeBookArray(data.books);
     if (data.booksGoal != null) D.booksGoal = data.booksGoal;
     if (data.booksQueue) D.booksQueue = data.booksQueue;
@@ -1502,9 +1409,6 @@ const D = {
   bankAccounts: [],
   clients: [],
   invid: 1,
-  groceries: [],
-  groceryLocations: ['SUPER MARKET','MINI-STORE','PHARMACY'],
-  gid: 1,
   books: [],
   booksGoal: 30,
   booksQueue: [],
@@ -1560,7 +1464,7 @@ function getPoster(title){
 
 /* ═══════ UNDO HISTORY ═══════ */
 const HS=[];const MH=30;let hLock=false;
-function pH(label){if(hLock)return;HS.push({s:JSON.parse(JSON.stringify({tasks:D.tasks,completed:D.completed,deadlines:D.deadlines,projects:D.projects,closed:D.closed,people:D.people,monthly:D.monthly,projDone:D.projDone,nid:D.nid,dlid:D.dlid,groceries:D.groceries,groceryLocations:D.groceryLocations,gid:D.gid,books:D.books,booksGoal:D.booksGoal,booksQueue:D.booksQueue,bkid:D.bkid,healthLogs:D.healthLogs,hid:D.hid})),l:label});if(HS.length>MH)HS.shift();toast('✓ '+label.toUpperCase(),'gld');scheduleSave()}
+function pH(label){if(hLock)return;HS.push({s:JSON.parse(JSON.stringify({tasks:D.tasks,completed:D.completed,deadlines:D.deadlines,projects:D.projects,closed:D.closed,people:D.people,monthly:D.monthly,projDone:D.projDone,nid:D.nid,dlid:D.dlid,books:D.books,booksGoal:D.booksGoal,booksQueue:D.booksQueue,bkid:D.bkid,healthLogs:D.healthLogs,hid:D.hid})),l:label});if(HS.length>MH)HS.shift();toast('✓ '+label.toUpperCase(),'gld');scheduleSave()}
 function popH(){if(!HS.length){toast('NOTHING TO UNDO','rd');return}hLock=true;Object.assign(D,HS.pop().s);hLock=false;toast('↶ UNDONE','und');fullR()}
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();popH()}});
 
@@ -1593,7 +1497,6 @@ document.querySelectorAll('.nav-tab').forEach(t=>t.addEventListener('click',()=>
   $('v-'+t.dataset.v).classList.add('active');
   if(t.dataset.v==='deadlines')renderDL();
   if(t.dataset.v==='projects')renderProj();
-  if(t.dataset.v==='groceries')renderGrc();
   if(t.dataset.v==='books')renderBooks();
   if(t.dataset.v==='health')renderHealth();
 }));
@@ -2260,171 +2163,6 @@ $('npTgl').onclick=()=>{const f=$('npFrm');f.style.display=f.style.display==='no
 $('npCn').onclick=()=>{$('npFrm').style.display='none'};
 $('nprCat').onchange=()=>{const isP=$('nprCat').value==='personal';$('nprTyp').style.display=isP?'none':'';$('nprSt').style.display=isP?'none':''};
 $('aPrj').onclick=()=>{const n=$('nprN').value.trim().toUpperCase(),cd=$('nprCd').value.trim().toUpperCase(),fg=$('nprFg').value,cat=$('nprCat').value||'film',typ=$('nprTyp').value||'Feature Film',st=$('nprSt').value||'idea';const posterUrl=fixPosterUrl($('nprPoster').value.trim());if(!n||!cd){toast('NAME+CODE REQUIRED','rd');return}if(D.projects.some(p=>p.title===n)||D.closed.some(p=>p.title===n)){toast('PROJECT NAME ALREADY EXISTS','rd');return}pH('add project');PC[n]={c:fg,b:hexToRgba(fg,.12),code:cd};D.projects.push({title:n,status:cat==='personal'?'personal':st,type:cat==='personal'?'personal':typ,category:cat});if(posterUrl){D.posters=D.posters||{};D.posters[n]=posterUrl}['nprN','nprCd','nprPoster'].forEach(i=>$(i).value='');$('npFrm').style.display='none';fillDD();renderProj();toast('PROJECT ADDED','gld')};
-
-/* ═══════════════════════════════════════════════════════════════
-   GROCERIES
-   ═══════════════════════════════════════════════════════════════ */
-let gFilter='all',gLocFilter='all';
-const LOC_ICONS={'SUPER MARKET':'🛒','MINI-STORE':'🏪','PHARMACY':'💊'};
-
-function fillGrocLocDD(){
-  ['gLoc','egLoc'].forEach(id=>{
-    const s=$(id);if(!s)return;
-    s.innerHTML='<option value="">— Select —</option>';
-    D.groceryLocations.forEach(l=>s.innerHTML+=`<option value="${l}">${l}</option>`);
-  });
-}
-
-function renderGrc(){
-  const el=$('gList');el.innerHTML='';
-  fillGrocLocDD();
-
-  // Filter
-  let items=[...D.groceries];
-  if(gFilter==='refill')items=items.filter(g=>g.needsRefill);
-  if(gLocFilter!=='all')items=items.filter(g=>g.location===gLocFilter);
-
-  // Group by location
-  const groups={};
-  items.forEach(g=>{
-    const loc=g.location||'UNCATEGORIZED';
-    if(!groups[loc])groups[loc]=[];
-    groups[loc].push(g);
-  });
-
-  // Location filter chips
-  const lfEl=$('gLocFlts');lfEl.innerHTML='';
-  const allLocs=[...new Set(D.groceries.map(g=>g.location).filter(Boolean))];
-  if(allLocs.length>1){
-    const allBtn=document.createElement('button');
-    allBtn.className=`chip ${gLocFilter==='all'?'active':''}`;
-    allBtn.textContent='ALL LOCATIONS';
-    allBtn.onclick=()=>{gLocFilter='all';renderGrc()};
-    lfEl.appendChild(allBtn);
-    allLocs.forEach(loc=>{
-      const b=document.createElement('button');
-      b.className=`chip ${gLocFilter===loc?'active':''}`;
-      b.innerHTML=`${LOC_ICONS[loc]||'📍'} ${loc}`;
-      b.onclick=()=>{gLocFilter=loc;renderGrc()};
-      lfEl.appendChild(b);
-    });
-  }
-
-  // Render filter toggle states
-  document.querySelectorAll('.groc-flt').forEach(b=>{b.classList.toggle('active',b.dataset.gf===gFilter)});
-
-  if(!items.length){
-    el.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t3);font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;opacity:.5">${gFilter==='refill'?'NO ITEMS NEED REFILL':'NO GROCERY ITEMS YET'}</div>`;
-    return;
-  }
-
-  // Render grouped
-  const locOrder=[...D.groceryLocations,...Object.keys(groups).filter(l=>!D.groceryLocations.includes(l))];
-  locOrder.forEach(loc=>{
-    if(!groups[loc]||!groups[loc].length)return;
-    const group=document.createElement('div');
-    group.className='groc-loc-group';
-    const icon=LOC_ICONS[loc]||'📍';
-    group.innerHTML=`<div class="groc-loc-hdr"><span class="groc-loc-icon">${icon}</span><span class="groc-loc-name">${loc}</span><span class="groc-loc-cnt">${groups[loc].length}</span></div>`;
-    const grid=document.createElement('div');
-    grid.className='groc-loc-items';
-    groups[loc].forEach(g=>{
-      const priceHtml=g.typicalPrice?`<span class="groc-card-price">${parseFloat(g.typicalPrice).toFixed(2)} MAD</span>`:'';
-      const dateHtml=g.lastPurchased?`<span class="groc-card-date">${fD(g.lastPurchased)}</span>`:'';
-      const noteHtml=g.notes?`<div class="groc-card-note">${g.notes}</div>`:'';
-      const refillDot=g.needsRefill?`<div class="groc-card-refill"><div class="pulse-dot"></div></div>`:'';
-      const refillBtnTxt=g.needsRefill?'✓ STOCKED':'⚑ REFILL';
-      const refillBtnCls=g.needsRefill?'groc-card-refill-btn flagged':'groc-card-refill-btn';
-      grid.innerHTML+=`<div class="groc-card" data-gid="${g.id}">
-        <div class="groc-card-top"><span class="groc-card-name">${g.name}</span>${refillDot}</div>
-        ${noteHtml}
-        <div class="groc-card-meta">${priceHtml}${dateHtml}<button class="${refillBtnCls}" data-gid="${g.id}">${refillBtnTxt}</button><div class="groc-card-acts"><button class="groc-card-btn edit" data-gid="${g.id}">✎</button><button class="groc-card-btn del" data-gid="${g.id}">✕</button></div></div>
-      </div>`;
-    });
-    group.appendChild(grid);
-    el.appendChild(group);
-  });
-
-  // Bind events
-  el.querySelectorAll('.groc-card-btn.edit').forEach(b=>b.onclick=e=>{e.stopPropagation();openEG(+b.dataset.gid)});
-  el.querySelectorAll('.groc-card-btn.del').forEach(b=>b.onclick=e=>{e.stopPropagation();const g=D.groceries.find(x=>x.id===+b.dataset.gid);if(!g)return;pH('delete grocery');D.groceries=D.groceries.filter(x=>x.id!==g.id);toast('DELETED','rd');renderGrc()});
-  el.querySelectorAll('.groc-card-refill-btn').forEach(b=>b.onclick=e=>{e.stopPropagation();const g=D.groceries.find(x=>x.id===+b.dataset.gid);if(!g)return;pH(g.needsRefill?'mark stocked':'mark refill');g.needsRefill=!g.needsRefill;if(!g.needsRefill)g.lastPurchased=td();renderGrc()});
-  // Click card to edit
-  el.querySelectorAll('.groc-card').forEach(c=>{c.onclick=()=>openEG(+c.dataset.gid)});
-}
-
-// Create grocery
-$('ngTgl').onclick=()=>{const f=$('gFrm');f.classList.toggle('open');if(f.classList.contains('open')){fillGrocLocDD();$('gN').focus()}};
-$('cgItem').onclick=()=>$('gFrm').classList.remove('open');
-$('sgItem').onclick=()=>{
-  const name=$('gN').value.trim().toUpperCase();
-  if(!name){toast('ENTER AN ITEM NAME','rd');return}
-  const locSel=$('gLoc').value;
-  const locNew=$('gLocNew').value.trim().toUpperCase();
-  const loc=locNew||locSel;
-  if(!loc){toast('SELECT OR TYPE A LOCATION','rd');return}
-  // Add custom location if new
-  if(locNew&&!D.groceryLocations.includes(locNew)){D.groceryLocations.push(locNew)}
-  pH('add grocery');
-  D.groceries.push({
-    id:D.gid++,name,location:loc,
-    needsRefill:$('gRefill').checked,
-    typicalPrice:$('gPrice').value?parseFloat($('gPrice').value):null,
-    lastPurchased:null,
-    notes:$('gNo').value.trim(),
-    createdAt:nowI()
-  });
-  ['gN','gLocNew','gNo'].forEach(i=>$(i).value='');$('gPrice').value='';$('gRefill').checked=false;$('gLoc').value='';
-  $('gFrm').classList.remove('open');toast('ITEM ADDED','gld');renderGrc();
-};
-
-// Filter buttons
-document.querySelectorAll('.groc-flt').forEach(b=>b.onclick=()=>{gFilter=b.dataset.gf;renderGrc()});
-
-// Edit grocery modal
-let eGid=null;
-function openEG(id){
-  const g=D.groceries.find(x=>x.id===id);if(!g)return;
-  eGid=id;fillGrocLocDD();
-  $('egN').value=g.name;
-  // Set location dropdown or new field
-  const inList=D.groceryLocations.includes(g.location);
-  $('egLoc').value=inList?g.location:'';
-  $('egLocNew').value=inList?'':g.location;
-  $('egPrice').value=g.typicalPrice||'';
-  $('egRefill').checked=g.needsRefill;
-  $('egLP').value=g.lastPurchased||'';
-  $('egNo').value=g.notes||'';
-  $('egMdl').classList.add('op');$('egN').focus();
-}
-$('egC').onclick=()=>{$('egMdl').classList.remove('op');eGid=null};
-$('egS').onclick=()=>{
-  if(eGid===null)return;
-  const g=D.groceries.find(x=>x.id===eGid);if(!g)return;
-  const name=$('egN').value.trim().toUpperCase();
-  if(!name){toast('ENTER A NAME','rd');return}
-  const locSel=$('egLoc').value;
-  const locNew=$('egLocNew').value.trim().toUpperCase();
-  const loc=locNew||locSel;
-  if(!loc){toast('SELECT OR TYPE A LOCATION','rd');return}
-  if(locNew&&!D.groceryLocations.includes(locNew)){D.groceryLocations.push(locNew)}
-  pH('edit grocery');
-  g.name=name;g.location=loc;
-  g.typicalPrice=$('egPrice').value?parseFloat($('egPrice').value):null;
-  g.needsRefill=$('egRefill').checked;
-  g.lastPurchased=$('egLP').value||null;
-  g.notes=$('egNo').value.trim();
-  $('egMdl').classList.remove('op');eGid=null;toast('UPDATED','gld');renderGrc();
-};
-$('egDel').onclick=()=>{
-  if(eGid===null)return;
-  pH('delete grocery');D.groceries=D.groceries.filter(x=>x.id!==eGid);
-  $('egMdl').classList.remove('op');eGid=null;toast('DELETED','rd');renderGrc();
-};
-$('egLPToday').onclick=()=>{$('egLP').value=td()};
-$('egLPClear').onclick=()=>{$('egLP').value=''};
-
-
 
 /* ═══════ BOOKS ═══════ */
 let eBookId=null, openReadId=null, qDragIndex=null, bkView='carousel', bkActiveId=null;
@@ -3167,7 +2905,6 @@ function fullR(){
   renderDL();
   const v=document.querySelector('.nav-tab.active').dataset.v;
   if(v==='projects') renderProj();
-  if(v==='groceries') renderGrc();
   if(v==='books') renderBooks();
   if(v==='health') renderHealth();
 }
