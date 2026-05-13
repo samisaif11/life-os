@@ -474,8 +474,6 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .q-greeting{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);opacity:.55}
 .q-skip{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);opacity:.3;background:none;border:none;cursor:pointer;padding:6px 10px;transition:opacity .2s}
 .q-skip:hover{opacity:.65}
-.q-paused-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:0;transition:opacity .2s;pointer-events:none}
-.loading-overlay.paused .q-paused-hint{opacity:.45}
 .loading-overlay.paused .q-progress-fill{transition:none!important}
 /* Project edit modal poster preview */
 .poster-prev{width:60px;height:90px;border-radius:4px;border:1px solid var(--b1);background:var(--bg-4);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
@@ -506,23 +504,22 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .books-main{min-width:0}
 .books-side{position:sticky;top:84px}
 .books-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
-.books-view{display:flex;gap:6px}
-.books-vbtn{padding:6px 10px;border:1px solid var(--b1);background:var(--bg-3);color:var(--t3);border-radius:6px;font-size:.58rem;font-weight:700;letter-spacing:.08em;cursor:pointer}
-.books-vbtn.active{border-color:var(--gold);color:var(--gold);background:var(--gold-d)}
 .books-hint{font-size:.58rem;color:var(--t3);letter-spacing:.06em}
-.books-carousel-wrap{display:grid;grid-template-columns:44px 1fr 44px;gap:10px;align-items:center}
-.books-nav{height:44px;border-radius:50%;border:1px solid var(--b1);background:var(--bg-3);color:var(--t2);cursor:pointer;font-size:22px}
-.books-carousel{display:flex;gap:18px;overflow:auto;padding:18px 12px;scroll-behavior:smooth;min-height:460px}
-.books-carousel.view-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));align-content:start;overflow:auto}
-.books-carousel.view-list{display:flex;flex-direction:column;gap:10px;overflow:auto}
-.books-carousel.view-list .bk-card{display:grid;grid-template-columns:90px 1fr;max-width:none;width:100%;min-width:unset}
-.books-carousel.view-list .bk-cover{height:100%}
-.books-carousel::-webkit-scrollbar{height:6px}.books-carousel::-webkit-scrollbar-thumb{background:var(--b1);border-radius:10px}
-.bk-card{min-width:250px;max-width:250px;background:var(--bg-3);border:1px solid var(--b0);border-radius:12px;overflow:hidden;cursor:pointer;transition:var(--tr);position:relative}
+.books-grid-wrap{display:block}
+.books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));align-content:start;gap:18px;overflow:auto;padding:18px 12px;min-height:460px}
+.books-grid::-webkit-scrollbar{height:6px}.books-grid::-webkit-scrollbar-thumb{background:var(--b1);border-radius:10px}
+.bk-card{width:100%;background:var(--bg-3);border:1px solid var(--b0);border-radius:12px;overflow:hidden;cursor:pointer;transition:var(--tr);position:relative}
 .bk-card:hover{transform:translateY(-2px);border-color:var(--b1)}
-.bk-card.done{opacity:.45;filter:saturate(.55)}
-.bk-cover{height:350px;background:var(--bg-4);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em}
+.bk-card.done{opacity:.42;filter:grayscale(.45) saturate(.45) brightness(.74)}
+.bk-card.progressing{animation:bookProgressCardPop .72s cubic-bezier(.2,.9,.2,1)}
+.bk-cover{height:350px;background:var(--bg-4);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;position:relative;overflow:hidden}
 .bk-cover img{width:100%;height:100%;object-fit:cover}
+.bk-progress-fade{position:absolute;top:0;bottom:0;left:0;width:0;background:linear-gradient(90deg,rgba(6,6,8,.84),rgba(6,6,8,.62));backdrop-filter:grayscale(1) brightness(.56);pointer-events:none;transition:width .7s cubic-bezier(.16,1,.3,1)}
+.bk-progress-fade::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(212,175,55,.18),rgba(255,255,255,.08),transparent 72%)}
+.bk-progress-fade.is-reading{animation:bookProgressDopamine 1.15s cubic-bezier(.16,1,.3,1),bookProgressPulse 2.2s ease-in-out 1.15s infinite}
+@keyframes bookProgressDopamine{0%{opacity:.32;filter:brightness(.7);box-shadow:inset 0 0 0 rgba(212,175,55,0)}38%{opacity:.98;filter:brightness(1.25);box-shadow:inset -18px 0 28px rgba(212,175,55,.38)}100%{opacity:.76;filter:brightness(1);box-shadow:inset -4px 0 16px rgba(212,175,55,.12)}}
+@keyframes bookProgressPulse{0%,100%{opacity:.72}50%{opacity:.9}}
+@keyframes bookProgressCardPop{0%{transform:translateY(0) scale(1)}42%{transform:translateY(-5px) scale(1.018);box-shadow:0 18px 38px rgba(212,175,55,.16)}100%{transform:translateY(0) scale(1);box-shadow:none}}
 .bk-body{padding:10px 10px 12px}.bk-title{font-weight:700;font-size:.8rem;line-height:1.2}.bk-auth{font-size:.62rem;color:var(--t3);margin-top:2px}.bk-meta{font-size:.58rem;color:var(--gold);margin-top:8px}
 .bk-act{position:absolute;inset:auto 8px 8px 8px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;opacity:0;pointer-events:none;transform:translateY(8px);transition:all .2s ease}
 .bk-card:hover .bk-act,.bk-card:focus-within .bk-act{opacity:1;pointer-events:auto;transform:translateY(0)}
@@ -549,8 +546,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 .book-open-page{flex:1;background:rgba(255,255,255,.02);border:1px dashed var(--b1);border-radius:8px;padding:10px}
 @keyframes openBook{from{transform:perspective(600px) rotateY(-28deg);opacity:.4}to{transform:none;opacity:1}}
 @media(max-width:1100px){.books-layout{grid-template-columns:1fr}.books-side{position:static}}
-@media(max-width:900px){.books-carousel-wrap{grid-template-columns:36px 1fr 36px}.bk-card{min-width:148px;max-width:148px}.bk-cover{height:210px}.books-carousel{min-height:300px}}
-@media(min-width:1200px){.bk-card{min-width:290px;max-width:290px}.bk-cover{height:400px}.books-carousel{gap:20px;padding:20px;min-height:520px}}
+@media(max-width:900px){.bk-cover{height:210px}.books-grid{min-height:300px}}
+@media(min-width:1200px){.bk-cover{height:400px}.books-grid{gap:20px;padding:20px;min-height:520px}}
 
 /* ═══════ HEALTH — Pro Medical Dashboard v2 ═══════ */
 :root{--hg:#39FF14;--hg1:rgba(57,255,20,.10);--hg2:rgba(57,255,20,.22);--hg3:rgba(57,255,20,.38);--hr:#FF3864;--hr1:rgba(255,56,100,.13);--hw:#FF9F1C;--hw1:rgba(255,159,28,.13);--hice:#64FFDA}
@@ -758,16 +755,12 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <div class="books-main">
       <div class="books-toolbar">
         <div class="books-view">
-          <button class="books-vbtn active" data-bkv="carousel">CAROUSEL</button>
-          <button class="books-vbtn" data-bkv="grid">GRID</button>
-          <button class="books-vbtn" data-bkv="list">LIST</button>
+          <span class="books-hint">LATEST BOOKS FIRST</span>
         </div>
-        <div class="books-hint">SHORTCUTS: J/L NAV • G GRID • C CAROUSEL</div>
+        <div class="books-hint">GRID VIEW ONLY</div>
       </div>
-      <div class="books-carousel-wrap">
-        <button class="books-nav" id="bkPrev">‹</button>
-        <div class="books-carousel" id="bkCarousel"></div>
-        <button class="books-nav" id="bkNext">›</button>
+      <div class="books-grid-wrap">
+        <div class="books-grid" id="bkCarousel"></div>
       </div>
     </div>
     <div class="books-side">
@@ -2165,16 +2158,10 @@ $('nprCat').onchange=()=>{const isP=$('nprCat').value==='personal';$('nprTyp').s
 $('aPrj').onclick=()=>{const n=$('nprN').value.trim().toUpperCase(),cd=$('nprCd').value.trim().toUpperCase(),fg=$('nprFg').value,cat=$('nprCat').value||'film',typ=$('nprTyp').value||'Feature Film',st=$('nprSt').value||'idea';const posterUrl=fixPosterUrl($('nprPoster').value.trim());if(!n||!cd){toast('NAME+CODE REQUIRED','rd');return}if(D.projects.some(p=>p.title===n)||D.closed.some(p=>p.title===n)){toast('PROJECT NAME ALREADY EXISTS','rd');return}pH('add project');PC[n]={c:fg,b:hexToRgba(fg,.12),code:cd};D.projects.push({title:n,status:cat==='personal'?'personal':st,type:cat==='personal'?'personal':typ,category:cat});if(posterUrl){D.posters=D.posters||{};D.posters[n]=posterUrl}['nprN','nprCd','nprPoster'].forEach(i=>$(i).value='');$('npFrm').style.display='none';fillDD();renderProj();toast('PROJECT ADDED','gld')};
 
 /* ═══════ BOOKS ═══════ */
-let eBookId=null, openReadId=null, qDragIndex=null, bkView='carousel', bkActiveId=null;
+let eBookId=null, openReadId=null, qDragIndex=null, bkActiveId=null;
 const bkAccentCache={};
 function normPct(v){return normalizePct(v);}
 function calcPct(book){const t=Number(book.total)||0,c=Number(book.current)||0;if(!t)return normPct(book.progress);return normPct((c/t)*100)}
-function applyBooksView(){
-  const el=$('bkCarousel'); if(!el) return;
-  el.classList.remove('view-carousel','view-grid','view-list');
-  el.classList.add(`view-${bkView}`);
-  document.querySelectorAll('[data-bkv]').forEach(btn=>btn.classList.toggle('active',btn.dataset.bkv===bkView));
-}
 function scoreQueueItem(title,index){
   const b=(D.books||[]).find(x=>x.title===title);
   if(!b) return 35+index*2+title.length*0.15;
@@ -2241,7 +2228,9 @@ function upsertBookFromInputs(){
   let current=Math.max(0,Number($('bkCurrent').value)||0);
   if(total>0&&current>0)progress=normPct((current/total)*100);
   if(progress>0&&total>0&&current===0)current=Math.round((progress/100)*total);
-  const b={id:eBookId||D.bkid++,title,author:$('bkAuthor').value.trim(),cover:$('bkCover').value.trim(),metric,total,current,progress};
+  const existing=eBookId?D.books.find(x=>x.id===eBookId):null;
+  const now=Date.now();
+  const b={...existing,id:eBookId||D.bkid++,title,author:$('bkAuthor').value.trim(),cover:$('bkCover').value.trim(),metric,total,current,progress,createdAt:existing?.createdAt||now,updatedAt:now};
   if(eBookId){pH('edit book');D.books=D.books.map(x=>x.id===eBookId?b:x)}
   else{pH('add book');D.books.push(b)}
   $('bkMdl').classList.remove('op');eBookId=null;renderBooks();
@@ -2257,9 +2246,13 @@ function renderBooks(){
   const el=$('bkCarousel'); if(!el) return;
   const total=D.books.length,done=D.books.filter(b=>normPct(b.progress)>=100).length,avg=total?Math.round(D.books.reduce((a,b)=>a+normPct(b.progress),0)/total):0;
   $('bkStats').innerHTML=`<span>${total} BOOKS</span><span style="color:var(--green)">${done} FINISHED</span><span>${avg}% AVG</span>`;
-  applyBooksView();
   if(!total){el.innerHTML='<div class="emp">NO BOOKS YET. ADD YOUR FIRST BOOK.</div>';}else{
-    el.innerHTML=D.books.map(b=>`<div class="bk-card ${normPct(b.progress)>=100?'done':''}" data-bid="${b.id}"><div class="bk-act"><button data-act="edit">EDIT</button><button data-act="cover">COVER</button><button data-act="plus5">+5%</button><button data-act="plus10">+10</button><button data-act="done">DONE</button><button data-act="del">DEL</button></div><div class="bk-cover">${b.cover?`<img src="${b.cover}" alt="${b.title}">`:'NO COVER'}</div><div class="bk-body"><div class="bk-title">${b.title}</div><div class="bk-auth">${b.author||''}</div><div class="bk-meta">${normPct(b.progress)}% • ${b.metric==='hours'?'AUDIOBOOK':'BOOK'}</div></div></div>`).join('');
+    const latestBooks=[...D.books].sort((a,b)=>(Number(b.updatedAt)||Number(b.createdAt)||Number(b.id)||0)-(Number(a.updatedAt)||Number(a.createdAt)||Number(a.id)||0));
+    el.innerHTML=latestBooks.map(b=>{
+      const pct=normPct(b.progress);
+      const isReading=pct>0&&pct<100;
+      return `<div class="bk-card ${pct>=100?'done':isReading?'progressing':''}" data-bid="${b.id}"><div class="bk-act"><button data-act="edit">EDIT</button><button data-act="cover">COVER</button><button data-act="plus5">+5%</button><button data-act="plus10">+10%</button><button data-act="done">DONE</button><button data-act="del">DEL</button></div><div class="bk-cover">${b.cover?`<img src="${b.cover}" alt="${b.title}">`:'NO COVER'}<span class="bk-progress-fade ${isReading?'is-reading':''}" style="width:${pct}%" aria-hidden="true"></span></div><div class="bk-body"><div class="bk-title">${b.title}</div><div class="bk-auth">${b.author||''}</div><div class="bk-meta">${pct}% • ${b.metric==='hours'?'AUDIOBOOK':'BOOK'}</div></div></div>`;
+    }).join('');
   }
   const goal=Math.max(1,Number(D.booksGoal)||30),pct=Math.min(100,Math.round((done/goal)*100));
   $('bkGoalTxt').textContent=`${done} read • ${Math.max(0,goal-done)} to go (goal ${goal})`; $('bkGoalPct').textContent=`${pct}%`; $('bkGoalFill').style.width=pct+'%';
@@ -2275,12 +2268,6 @@ $('bkDel')?.addEventListener('click',()=>{if(!eBookId)return;pH('delete book');D
 $('bkGoalBtn')?.addEventListener('click',()=>{const v=prompt('Yearly reading goal (books):',String(D.booksGoal||30));if(v===null)return;const n=Math.max(1,parseInt(v,10)||30);pH('set reading goal');D.booksGoal=n;renderBooks();});
 $('bkQueueAdd')?.addEventListener('click',()=>{const v=prompt('Book title to read next:');if(!v)return;pH('add queue');D.booksQueue=[...(D.booksQueue||[]),v.trim().toUpperCase()];renderBooks();});
 $('bkSmartSort')?.addEventListener('click',smartSortQueue);
-$('v-books')?.addEventListener('click',e=>{
-  const btn=e.target.closest('[data-bkv]');
-  if(!btn) return;
-  bkView=btn.dataset.bkv;
-  applyBooksView();
-});
 $('bkQueue')?.addEventListener('click',e=>{
   const del=e.target.closest('[data-qdel]');
   if(del){pH('remove queue');const i=+del.dataset.qdel;D.booksQueue=D.booksQueue.filter((_,ix)=>ix!==i);renderBooks();return;}
@@ -2344,11 +2331,11 @@ $('bkCarousel')?.addEventListener('click',e=>{
   updateBooksAccent(b);
   if(act==='edit'){openBookModal(id); return;}
   if(act==='del'){pH('delete book');D.books=D.books.filter(x=>x.id!==id);renderBooks();return;}
-  if(act==='plus5'){pH('quick +5%');b.progress=normPct((Number(b.progress)||0)+5);renderBooks();return;}
-  if(act==='plus10'){pH('quick +10');b.current=Math.max(0,(Number(b.current)||0)+10);if(Number(b.total)>0)b.progress=normPct((b.current/b.total)*100);renderBooks();return;}
-  if(act==='done'){pH('mark book done');b.progress=100;if(Number(b.total)>0)b.current=b.total;renderBooks();return;}
-  if(act==='cover'){const v=prompt('Paste new cover URL (leave empty to remove):',b.cover||'');if(v===null)return;pH('update book cover');b.cover=(v||'').trim();renderBooks();return;}
-  openReadId=id; $('bkReadCard').innerHTML=`<div class="book-open-cover">${b.cover?`<img src="${b.cover}" alt="${b.title}">`:''}</div><div class="book-open-page"><div style="font-size:.8rem;font-weight:700">${b.title}</div><div style="font-size:.62rem;color:var(--t3)">${b.author||''}</div><div style="margin-top:8px;font-size:.66rem">Current progress: <strong>${normPct(b.progress)}%</strong></div><div style="font-size:.62rem;color:var(--t3);margin-top:4px">Last position: ${Math.round((normPct(b.progress)/100)*(b.total||0))} / ${b.total||'—'} ${b.metric==='hours'?'hours':'pages'}</div></div>`;
+  if(act==='plus5'){pH('quick +5%');b.progress=normPct((Number(b.progress)||0)+5);b.updatedAt=Date.now();renderBooks();return;}
+  if(act==='plus10'){pH('quick +10%');b.progress=normPct((Number(b.progress)||0)+10);if(Number(b.total)>0)b.current=Math.round((b.progress/100)*Number(b.total));b.updatedAt=Date.now();renderBooks();return;}
+  if(act==='done'){pH('mark book done');b.progress=100;if(Number(b.total)>0)b.current=b.total;b.updatedAt=Date.now();renderBooks();return;}
+  if(act==='cover'){const v=prompt('Paste new cover URL (leave empty to remove):',b.cover||'');if(v===null)return;pH('update book cover');b.cover=(v||'').trim();b.updatedAt=Date.now();renderBooks();return;}
+  openReadId=id; $('bkReadCard').innerHTML=`<div class="book-open-cover bk-cover">${b.cover?`<img src="${b.cover}" alt="${b.title}">`:''}<span class="bk-progress-fade ${normPct(b.progress)>0&&normPct(b.progress)<100?'is-reading':''}" style="width:${normPct(b.progress)}%" aria-hidden="true"></span></div><div class="book-open-page"><div style="font-size:.8rem;font-weight:700">${b.title}</div><div style="font-size:.62rem;color:var(--t3)">${b.author||''}</div><div style="margin-top:8px;font-size:.66rem">Current progress: <strong>${normPct(b.progress)}%</strong></div><div style="font-size:.62rem;color:var(--t3);margin-top:4px">Last position: ${Math.round((normPct(b.progress)/100)*(b.total||0))} / ${b.total||'—'} ${b.metric==='hours'?'hours':'pages'}</div></div>`;
   $('bkUpdMode').value='percent';$('bkUpdLabel').textContent='Progress (%)';$('bkUpdValue').value=normPct(b.progress);$('bkReadMdl').classList.add('op');
 });
 $('bkUpdMode')?.addEventListener('change',()=>{
@@ -2356,18 +2343,12 @@ $('bkUpdMode')?.addEventListener('change',()=>{
   const unitLabel=activeBook?.metric==='hours'?'Hour':'Page';
   $('bkUpdLabel').textContent=$('bkUpdMode').value==='percent'?'Progress (%)':`Current ${unitLabel}`;
 });
-$('bkUpdSave')?.addEventListener('click',()=>{const b=D.books.find(x=>x.id===openReadId);if(!b)return;const mode=$('bkUpdMode').value;let pct=normPct(b.progress);if(mode==='percent')pct=normPct($('bkUpdValue').value);else{const cur=Math.max(0,Number($('bkUpdValue').value)||0);b.current=cur;pct=b.total?normPct((cur/b.total)*100):pct;}pH('update book progress');b.progress=pct;if(b.total&&!b.current)b.current=Math.round((pct/100)*b.total);renderBooks();$('bkReadMdl').classList.remove('op');});
+$('bkUpdSave')?.addEventListener('click',()=>{const b=D.books.find(x=>x.id===openReadId);if(!b)return;const mode=$('bkUpdMode').value;let pct=normPct(b.progress);if(mode==='percent')pct=normPct($('bkUpdValue').value);else{const cur=Math.max(0,Number($('bkUpdValue').value)||0);b.current=cur;pct=b.total?normPct((cur/b.total)*100):pct;}pH('update book progress');b.progress=pct;b.updatedAt=Date.now();if(b.total&&!b.current)b.current=Math.round((pct/100)*b.total);renderBooks();$('bkReadMdl').classList.remove('op');});
 $('bkReadClose')?.addEventListener('click',()=>{$('bkReadMdl').classList.remove('op');openReadId=null});
-$('bkPrev')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:-260,behavior:'smooth'})});
-$('bkNext')?.addEventListener('click',()=>{$('bkCarousel').scrollBy({left:260,behavior:'smooth'})});
 document.addEventListener('keydown',e=>{
   const booksActive=$('v-books')?.classList.contains('active');
   if(!booksActive) return;
   if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) return;
-  if(e.key.toLowerCase()==='j'){$('bkPrev')?.click();}
-  if(e.key.toLowerCase()==='l'){$('bkNext')?.click();}
-  if(e.key.toLowerCase()==='g'){bkView='grid';applyBooksView();}
-  if(e.key.toLowerCase()==='c'){bkView='carousel';applyBooksView();}
   if(e.key.toLowerCase()==='e'&&bkActiveId){openBookModal(bkActiveId);}
 });
 
