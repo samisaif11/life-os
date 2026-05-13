@@ -938,6 +938,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 <button class="sync-btn" id="syncBtn" title="Sync from cloud">⟳</button>
 <div class="loading-overlay" id="loadOv">
   <div class="q-progress-bar"><div class="q-progress-fill" id="qFill"></div></div>
+  <div class="q-paused-hint">PAUSED · SPACE TO RESUME</div>
   <div class="q-body">
     <span class="q-deco open">&ldquo;</span>
     <div class="q-text" id="qText"></div>
@@ -1017,16 +1018,21 @@ const QUOTES = [
 /* ═══════ SPLASH COORDINATION ═══════ */
 window._quoteDone = false;
 window._dataLoaded = false;
+window._splashHidden = false;
 window._tryHide = function(){
-  if(!window._quoteDone || !window._dataLoaded) return;
+  if(!window._quoteDone || window._splashHidden) return;
+  window._splashHidden = true;
   const ov = document.getElementById('loadOv');
   if(ov){ ov.classList.add('fade-out'); setTimeout(()=>ov.remove(), 500); }
 };
 
 (function(){
-  const WPM = 170;
-  const MIN_MS = 3500, MAX_MS = 14000;
-  function readTime(text){ return Math.min(MAX_MS, Math.max(MIN_MS, Math.round((text.split(/\s+/).length / WPM) * 60000))); }
+  const WPM = 230;
+  const MIN_MS = 2200, MAX_MS = 9000;
+  function readTime(text){
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+    return Math.min(MAX_MS, Math.max(MIN_MS, Math.round((words / WPM) * 60000)));
+  }
 
   const gi = id => document.getElementById(id);
   const ov = gi('loadOv');
@@ -1069,6 +1075,8 @@ window._tryHide = function(){
   }
   function pause(){ if(paused||done) return; paused=true; cancelAnimationFrame(rafId); ov.classList.add('paused'); }
   function resume(){ if(!paused||done) return; paused=false; ov.classList.remove('paused'); startTime=performance.now()-elapsed; rafId=requestAnimationFrame(tick); }
+  function togglePause(){ paused ? resume() : pause(); }
+  function isInteractiveTarget(el){ return el&&el.closest('input,textarea,select,button,[contenteditable="true"]'); }
 
   rafId = requestAnimationFrame(tick);
   ov.addEventListener('mousedown', pause);
@@ -1078,13 +1086,11 @@ window._tryHide = function(){
   qSkip.addEventListener('click',     e=>{e.stopPropagation(); finish();});
   qSkip.addEventListener('mousedown', e=>e.stopPropagation());
 
-  // Hold space to pause, release to resume
-  function onKD(e){if(e.code==='Space'&&!e.repeat&&!e.target.matches('input,textarea,select,button')){e.preventDefault();pause();}}
-  function onKU(e){if(e.code==='Space'&&!e.target.matches('input,textarea,select,button')){e.preventDefault();resume();}}
+  // Press space once to pause, press it again to resume.
+  function onKD(e){if(e.code==='Space'&&!e.repeat&&!isInteractiveTarget(e.target)){e.preventDefault();togglePause();}}
   document.addEventListener('keydown', onKD);
-  document.addEventListener('keyup',   onKU);
   const _finish = finish;
-  finish = function(){ document.removeEventListener('keydown', onKD); document.removeEventListener('keyup', onKU); _finish(); };
+  finish = function(){ document.removeEventListener('keydown', onKD); _finish(); };
 })();
 
 /* ═══════ GOOGLE SHEETS SYNC CONFIG ═══════ */
